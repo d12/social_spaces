@@ -19,7 +19,7 @@ A "hub" where people within a company can partake in various social activities.
 - Setup public/private games
 - Auto-join existing game (matchmaking)
 
-Games have a hangouts call already setup.
+Games have a hangouts / Zoom call already setup.
 
 For third party games, we can try to set it up if there's an API. If not, we can embed. If we can't do that, we can give instructions.
 
