@@ -44,5 +44,7 @@ It's temporary.
 ## Interesting references / links
 
 https://framevr.io/
+
 https://en.boardgamearena.com/
+
 https://skribbl.io/
