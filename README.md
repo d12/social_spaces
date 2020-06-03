@@ -37,6 +37,10 @@ Each enterprise will have their own insulated space. Employees will only interac
 
 Not that I could find.
 
+## What's up with the name?
+
+It's temporary.
+
 ## Interesting references / links
 
 https://framevr.io/
