@@ -22,12 +22,19 @@ describe User do
       end
     end
 
+    context "when the omniauth object does not exist" do
+      it "returns nil" do
+        expect(User.from_omniauth(nil)).to be_nil
+      end
+    end
+
     context "when the user exists" do
       it "returns the correct user and does not create a new user" do
         email = "foo@bar.com"
         name = "My Name"
 
         allow(omniauth).to receive_message_chain(:info, :email).and_return(email)
+        allow(omniauth).to receive_message_chain(:info, :name).and_return(name)
 
         User.create(email: email, name: name)
 
