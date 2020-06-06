@@ -1,4 +1,4 @@
-require_relative "../../rails_helper"
+require "rails_helper"
 
 describe Activity::Chat do
   it "returns the correct display name" do

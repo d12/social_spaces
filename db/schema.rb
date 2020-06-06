@@ -10,11 +10,26 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_06_04_000240) do
+ActiveRecord::Schema.define(version: 2020_06_06_162110) do
+
+  create_table "activity_rooms", force: :cascade do |t|
+    t.string "activity_slug", null: false
+    t.integer "video_call_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["video_call_id"], name: "index_activity_rooms_on_video_call_id"
+  end
 
   create_table "users", force: :cascade do |t|
     t.string "email", null: false
     t.string "name", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "video_calls", force: :cascade do |t|
+    t.string "url", null: false
+    t.integer "timeout_in_days", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end

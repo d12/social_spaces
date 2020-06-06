@@ -1,3 +1,7 @@
 <h2>Hey, <%= @user.name %></h2>
-<br><br>
-<%= link_to 'Log out', logout_path, method: :delete %>
+
+<% @activities.each do |activity| %>
+    - Join activity: <%= link_to activity.display_name, "#" %>
+    </br>
+<% end %>
+- <%= link_to 'Log out', logout_path, method: :delete %>
