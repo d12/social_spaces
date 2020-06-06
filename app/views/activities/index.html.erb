@@ -1,4 +1,4 @@
-<h2>Hey, <%= @user.name %></h2>
+<%= react_component("Greeting", { userName: @user.name }) %>
 
 <% @activities.each do |activity| %>
     - Join activity: <%= link_to activity.display_name, "#" %>
