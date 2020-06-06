@@ -1,5 +1,7 @@
 # Social Spaces
 
+[See the MVP description](https://github.com/d12/social_spaces/issues/13#issue-632100362)
+
 ## Problem Statement
 
 Buiding relationships and making strong connections has always been a struggle as a remote employee. With the vast majority of companies forced to be remote at the moment (and many committing to be remote-first forever), this struggle has been realized by a lot of people.
