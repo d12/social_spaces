@@ -1,5 +1,9 @@
 # Social Spaces
 
+## Problem Statement
+
+Buiding relationships and making strong connections has always been a struggle as a remote employee. With the vast majority of companies forced to be remote at the moment (and many committing to be remote-first forever), this struggle has been realized by a lot of people.
+
 ## Mission
 
 Lower the barriers for employees trying to remotely socialize, bond with, and meet new people within their company.
@@ -16,14 +20,11 @@ Lower the barriers for employees trying to remotely socialize, bond with, and me
 
 A "hub" where people within a company can partake in various social activities.
 
-- Setup public/private games
-- Auto-join existing game (matchmaking)
+Activities have a hangouts / Zoom call already setup.
 
-Games have a hangouts / Zoom call already setup.
+For third party games, we can try to set it up if there's an API. If not, we can embed. If we can't do that, we can give instructions for how to play and setup the hangouts/zoom
 
-For third party games, we can try to set it up if there's an API. If not, we can embed. If we can't do that, we can give instructions.
-
-"Games" don't have to be video games at all. It could be social games (The interface could facilitate the game, tell people their roles, etc), or even just casual hangouts.
+Activities don't have to be video games. It could be social games (The interface could facilitate the game, tell people their roles, etc), or even just casual hangouts.
 
 The "AoR" is all things empowering social connectivity within a company, so I think the functionality here can be expanded quite a bit.
 
