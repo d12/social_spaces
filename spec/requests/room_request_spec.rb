@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe "Rooms", type: :request do
+RSpec.describe "Activities", type: :request do
   describe "#index" do
     context "when the user is not logged in" do
       it "redirects to the Google oauth page" do
