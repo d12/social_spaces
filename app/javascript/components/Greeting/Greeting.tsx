@@ -1,9 +1,11 @@
 import React from "react";
 
+import * as styles from "./Greeting.module.scss";
+
 interface Props {
   userName: string;
 }
 
 export default function Greeting({ userName }: Props) {
-  return <h2>Hello {userName}! Welcome to SocialSpaces</h2>;
+  return <h2 className={styles.Greeting}>Hello {userName}!</h2>;
 }
