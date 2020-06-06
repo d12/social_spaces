@@ -3,19 +3,13 @@ task :add_video_call => :environment do
   ARGV.each { |a| task a.to_sym do ; end }
 
   unless ARGV[1] && ARGV[2]
-    puts "Usage:"
-    puts "rake add_video_call <url> <number of inactive days the URL is valid for>"
-    return
+    abort <<~ERROR
+            add_video_call usage:
+            rake add_video_call <url> <number of inactive days the URL is valid for>
+          ERROR
   end
 
   url, days = ARGV[1], ARGV[2]
-
-  # This will go in the model at some point
-  begin
-    URI.parse(url)
-  rescue URI::InvalidURIError
-    puts "[Error] Please pass a valid URL"
-  end
 
   puts "Creating video call..."
   VideoCall.create(url: url, timeout_in_days: days)
