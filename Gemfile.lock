@@ -265,7 +265,7 @@ DEPENDENCIES
   omniauth-google-oauth2 (~> 0.8.0)
   puma (~> 4.1)
   rails (~> 6.0.3, >= 6.0.3.1)
-  react-rails
+  react-rails (~> 2.6)
   rspec-rails
   sass-rails (>= 6)
   selenium-webdriver
