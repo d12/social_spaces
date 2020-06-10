@@ -1,4 +1,4 @@
-class Activity::Chat < BaseActivity
+class Activity::Chat < Activity
   class << self
     def display_name
       "Chat"

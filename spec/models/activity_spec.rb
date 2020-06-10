@@ -1,9 +1,9 @@
 require "rails_helper"
 
-class BadActivity < BaseActivity
+class BadActivity < Activity
 end
 
-class GoodActivity < BaseActivity
+class GoodActivity < Activity
   class << self
     def display_name
       "Good"
@@ -15,11 +15,11 @@ class GoodActivity < BaseActivity
   end
 end
 
-describe BaseActivity do
+describe Activity do
   context "when subclass does not implement methods" do
     it "raises" do
-      expect { BadActivity.display_name }.to raise_error(BaseActivity::NotSubclassedError)
-      expect { BadActivity.max_users }.to raise_error(BaseActivity::NotSubclassedError)
+      expect { BadActivity.display_name }.to raise_error(Activity::NotSubclassedError)
+      expect { BadActivity.max_users }.to raise_error(Activity::NotSubclassedError)
     end
   end
 

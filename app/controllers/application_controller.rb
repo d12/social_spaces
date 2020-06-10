@@ -3,6 +3,10 @@ class ApplicationController < ActionController::Base
 
   private
 
+  def not_found
+    render plain: "Not found", status: 404
+  end
+
   def current_user
     @user ||= User.find_by(id: session[:user_id])
   end

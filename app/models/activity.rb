@@ -1,4 +1,4 @@
-class BaseActivity
+class Activity
   class NotSubclassedError < StandardError; end
 
   class << self
@@ -13,6 +13,12 @@ class BaseActivity
     # Activity::ChatGame -> chat_game
     def slug
       self.name.demodulize.underscore
+    end
+
+    def from_slug(slug)
+      "Activity::#{slug.classify}".constantize
+    rescue NameError
+      nil
     end
   end
 end

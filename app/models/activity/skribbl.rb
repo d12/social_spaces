@@ -1,4 +1,4 @@
-class Activity::Skribbl < BaseActivity
+class Activity::Skribbl < Activity
   class << self
     def display_name
       "Skribbl.io"
