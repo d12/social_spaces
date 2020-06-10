@@ -12,21 +12,19 @@
 
 ActiveRecord::Schema.define(version: 2020_06_06_171755) do
 
-  create_table "activity_rooms", force: :cascade do |t|
-    t.string "activity_slug", null: false
-    t.integer "video_call_id"
+  create_table "group_memberships", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "group_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["video_call_id"], name: "index_activity_rooms_on_video_call_id"
+    t.index ["group_id"], name: "index_group_memberships_on_group_id"
+    t.index ["user_id"], name: "index_group_memberships_on_user_id"
   end
 
-  create_table "room_memberships", force: :cascade do |t|
-    t.integer "user_id"
-    t.integer "activity_room_id"
+  create_table "groups", force: :cascade do |t|
+    t.string "key", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["activity_room_id"], name: "index_room_memberships_on_activity_room_id"
-    t.index ["user_id"], name: "index_room_memberships_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -36,13 +34,6 @@ ActiveRecord::Schema.define(version: 2020_06_06_171755) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
-  create_table "video_calls", force: :cascade do |t|
-    t.string "url", null: false
-    t.integer "timeout_in_days", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-  end
-
-  add_foreign_key "room_memberships", "activity_rooms"
-  add_foreign_key "room_memberships", "users"
+  add_foreign_key "group_memberships", "groups"
+  add_foreign_key "group_memberships", "users"
 end
