@@ -1,7 +1,11 @@
 Rails.application.routes.draw do
   root "groups#index"
 
-  resource :groups, only: [:index, :create]
+  resources :groups, only: [:index, :create]
+  get "join/:group_key", to: "groups#join", as: "join_group" # TODO: This shouldn't be GET.
+  delete "groups/:group_id/leave", to: "groups#leave", as: "leave_group"
+
+  resources :activities, only: [:index]
 
   # Authentication
   get "/auth/:provider/callback" => "sessions#create"
