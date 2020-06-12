@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  devise_for :users, :controllers => { :omniauth_callbacks => "users/omniauth_callbacks" }
   root "groups#index"
 
   resources :groups, only: [:index, :create]
@@ -8,6 +9,6 @@ Rails.application.routes.draw do
   resources :activities, only: [:index]
 
   # Authentication
-  get "/auth/:provider/callback" => "sessions#create"
+  # get "/auth/:provider/callback" => "sessions#create"
   delete "/logout" => "sessions#destroy"
 end

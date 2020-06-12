@@ -7,7 +7,7 @@ RSpec.describe "Groups", type: :request do
     context "when not logged in" do
       it "redirects you to the google oauth page" do
         post groups_path
-        expect(response).to redirect_to("/auth/google_oauth2")
+        expect(response).to redirect_to(user_google_oauth2_omniauth_authorize_path)
       end
     end
 
@@ -52,7 +52,7 @@ RSpec.describe "Groups", type: :request do
     context "when not logged in" do
       it "redirects you to the google oauth page" do
         get join_group_path("AAAAAA")
-        expect(response).to redirect_to("/auth/google_oauth2")
+        expect(response).to redirect_to(user_google_oauth2_omniauth_authorize_path)
       end
     end
 
@@ -117,7 +117,7 @@ RSpec.describe "Groups", type: :request do
     context "when not logged in" do
       it "redirects you to the google oauth page" do
         delete leave_group_path
-        expect(response).to redirect_to("/auth/google_oauth2")
+        expect(response).to redirect_to(user_google_oauth2_omniauth_authorize_path)
       end
     end
 

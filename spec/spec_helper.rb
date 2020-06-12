@@ -1,4 +1,4 @@
-require "omniauth"
+require "devise"
 
 RSpec.configure do |config|
   # rspec-expectations config goes here. You can use an alternate
@@ -32,17 +32,7 @@ RSpec.configure do |config|
   config.shared_context_metadata_behavior = :apply_to_host_groups
 end
 
-OmniAuth.config.test_mode = true
-
 def login_as(user)
-  OmniAuth.config.mock_auth[:google] = OmniAuth::AuthHash.new({
-    provider: "google",
-    info: {
-      name: user.name,
-      email: user.email
-    }
-  })
-
-  Rails.application.env_config["omniauth.auth"] = OmniAuth.config.mock_auth[:google]
-  get "/auth/google/callback"
+  sign_in user, :event => :authentication
+  get "/users/auth/google_oauth2/callback"
 end

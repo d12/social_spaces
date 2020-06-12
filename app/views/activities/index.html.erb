@@ -9,6 +9,6 @@ You're in group: <%= @group.key %>
     </br>
 <% end %>
 
-- <%= link_to "Leave group", leave_group_path(@group), method: :delete %>
+- <%= link_to "Leave group", leave_group_path, method: :delete %>
 <br>
 - <%= link_to "Log out", logout_path, method: :delete %>

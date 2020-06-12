@@ -58,3 +58,5 @@ gem "omniauth-google-oauth2", "~> 0.8.0"
 gem "dotenv-rails", "~> 2.7"
 
 gem "react-rails", "~> 2.6"
+
+gem "devise", "~> 4.7"
