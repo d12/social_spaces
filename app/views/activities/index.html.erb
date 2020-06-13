@@ -1,6 +1,8 @@
 <%= react_component("Greeting", { userName: @user.name }) %>
 
 You're in group: <%= @group.key %>
+<br>
+<%= link_to "Google Meet video call", @group.meet_url %>
 
 <br><br>
 

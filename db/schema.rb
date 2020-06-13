@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_06_12_001223) do
+ActiveRecord::Schema.define(version: 2020_06_13_025116) do
 
   create_table "group_memberships", force: :cascade do |t|
     t.integer "user_id"
@@ -25,6 +25,7 @@ ActiveRecord::Schema.define(version: 2020_06_12_001223) do
     t.string "key", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "meet_url"
   end
 
   create_table "users", force: :cascade do |t|

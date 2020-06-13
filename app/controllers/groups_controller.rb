@@ -4,10 +4,9 @@ class GroupsController < ApplicationController
   def index; end
 
   def create
-    @group = Group.create
+    @group = Group.create(users: [current_user])
 
     session[:group_id] = @group.id
-    GroupMembership.create(group_id: @group.id, user_id: current_user.id)
 
     redirect_to activities_path
   end
