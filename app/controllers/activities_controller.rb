@@ -16,7 +16,7 @@ class ActivitiesController < ApplicationController
     ActivityInstance.create(
       group: current_group,
       activity: params[:activity],
-      status: :awaiting_game_process,
+      status: :awaiting_activity_thread,
     )
 
     # TODO: Render some UI here.

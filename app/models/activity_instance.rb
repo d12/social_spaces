@@ -1,6 +1,6 @@
 class ActivityInstance < ApplicationRecord
   belongs_to :group
-  enum status: { awaiting_game_thread: 0, ongoing: 1, finished: 2 }
+  enum status: { awaiting_activity_thread: 0, ongoing: 1, finished: 2 }
   validate :ensure_activity_state_data_is_json
 
   private
