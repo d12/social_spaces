@@ -1,4 +1,5 @@
 class GroupsController < ApplicationController
+  skip_before_action :redirect_to_activity_if_in_progress, only: [:leave]
   before_action :ensure_not_in_group, only: [:index, :create, :join]
 
   def index; end

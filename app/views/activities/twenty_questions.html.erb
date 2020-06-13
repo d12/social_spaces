@@ -1,0 +1,7 @@
+<h1>Twenty Questions</h1>
+
+<%= react_component("Greeting", { userName: @user.name }) %>
+
+You're in group: <%= @group.key %>
+
+<%= link_to "Leave group", leave_group_path, method: :delete %>

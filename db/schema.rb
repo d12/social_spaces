@@ -10,7 +10,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_06_13_025116) do
+ActiveRecord::Schema.define(version: 2020_06_13_183156) do
+
+  create_table "activity_instances", force: :cascade do |t|
+    t.integer "group_id"
+    t.integer "status"
+    t.string "activity"
+    t.string "activity_state_data"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["group_id"], name: "index_activity_instances_on_group_id"
+  end
 
   create_table "group_memberships", force: :cascade do |t|
     t.integer "user_id"
@@ -41,6 +51,7 @@ ActiveRecord::Schema.define(version: 2020_06_13_025116) do
     t.string "refresh_token"
   end
 
+  add_foreign_key "activity_instances", "groups"
   add_foreign_key "group_memberships", "groups"
   add_foreign_key "group_memberships", "users"
 end

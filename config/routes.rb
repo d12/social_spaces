@@ -7,8 +7,12 @@ Rails.application.routes.draw do
   delete "leave_group", to: "groups#leave", as: "leave_group"
 
   resources :activities, only: [:index]
+  post "activities/join", to: "activities#join", as: "join_activity"
+  get "play", to: "activities#show", as: "play_activity"
 
   # Authentication
   # get "/auth/:provider/callback" => "sessions#create"
   delete "/logout" => "sessions#destroy"
+
+  mount ActionCable.server => '/cable'
 end

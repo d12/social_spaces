@@ -7,10 +7,12 @@ You're in group: <%= @group.key %>
 <br><br>
 
 <% @activities.each do |activity| %>
-    - Join activity: <%= link_to activity.display_name, "#" %>
+    - Join activity: <%= link_to activity.display_name, join_activity_path(activity: activity.slug), method: :post %>
     </br>
 <% end %>
 
 - <%= link_to "Leave group", leave_group_path, method: :delete %>
 <br>
 - <%= link_to "Log out", logout_path, method: :delete %>
+
+<%= react_component("GroupChat", { groupId: @group.key }) %>
