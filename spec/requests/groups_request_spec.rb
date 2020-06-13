@@ -108,9 +108,9 @@ RSpec.describe "Groups", type: :request do
             expect(response).to redirect_to(groups_path)
           end
 
-          it "sets a flash error" do
+          it "sets a flash alert" do
             get join_group_path("BBBBBB")
-            expect(flash[:error]).to be_present
+            expect(flash[:alert]).to be_present
           end
         end
       end

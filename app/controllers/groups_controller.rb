@@ -15,7 +15,7 @@ class GroupsController < ApplicationController
   def join
     @group = Group.find_by(key: params["group_key"])
     unless @group
-      flash[:error] = "Group not found! Did you type the group key correctly?"
+      flash[:alert] = "Group not found! Did you type the group key correctly?"
       redirect_to groups_path
       return
     end
