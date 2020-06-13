@@ -11,4 +11,6 @@ Rails.application.routes.draw do
   # Authentication
   # get "/auth/:provider/callback" => "sessions#create"
   delete "/logout" => "sessions#destroy"
+
+  mount ActionCable.server => '/cable'
 end

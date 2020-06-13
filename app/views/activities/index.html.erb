@@ -12,3 +12,5 @@ You're in group: <%= @group.key %>
 - <%= link_to "Leave group", leave_group_path, method: :delete %>
 <br>
 - <%= link_to "Log out", logout_path, method: :delete %>
+
+<%= react_component("GroupChat", { groupId: @group.key }) %>
