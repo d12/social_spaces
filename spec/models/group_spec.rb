@@ -4,6 +4,10 @@ describe GroupMembership do
   let(:user) { User.create(name: "n", email: "e") }
   let(:group) { Group.create(key: "hello") }
 
+  before(:each) do
+    allow(GoogleAPI).to receive(:generate_meet_url)
+  end
+
   describe "validations" do
     it "auto-creates a key" do
       group = Group.create

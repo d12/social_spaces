@@ -3,6 +3,10 @@ require 'rails_helper'
 RSpec.describe "Groups", type: :request do
   let(:user) { User.create(name: "name", email: "email") }
 
+  before(:each) do
+    allow(GoogleAPI).to receive(:generate_meet_url)
+  end
+
   describe "#create" do
     context "when not logged in" do
       it "redirects you to the google oauth page" do
@@ -84,7 +88,7 @@ RSpec.describe "Groups", type: :request do
 
           it "adds user to the group" do
             get join_group_path("AAAAAA")
-            expect(group.users.first).to eq(user)
+            expect(group.reload.users.first).to eq(user)
           end
 
           it "redirects to the activities page" do
