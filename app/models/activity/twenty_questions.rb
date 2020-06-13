@@ -1,11 +1,11 @@
-class Activity::Chat < Activity
+class Activity::TwentyQuestions < Activity
   class << self
     def display_name
-      "Chat"
+      "Twenty Questions"
     end
 
     def max_users
-      5
+      8
     end
 
     def tick(instance)

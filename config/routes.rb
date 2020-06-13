@@ -8,6 +8,7 @@ Rails.application.routes.draw do
 
   resources :activities, only: [:index]
   post "activities/join", to: "activities#join", as: "join_activity"
+  get "play", to: "activities#show", as: "play_activity"
 
   # Authentication
   # get "/auth/:provider/callback" => "sessions#create"

@@ -7,5 +7,9 @@ class Activity::Skribbl < Activity
     def max_users
       8
     end
+
+    def tick(instance)
+
+    end
   end
 end
