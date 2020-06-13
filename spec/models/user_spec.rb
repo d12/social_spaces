@@ -38,7 +38,6 @@ describe User do
         allow(omniauth).to receive_message_chain(:credentials, :expires_at).and_return(5)
         allow(omniauth).to receive_message_chain(:credentials, :refresh_token).and_return("A")
 
-
         User.create(provider: "Google", uid: "uid", email: "foo@bar.com", name: "name")
 
         user = nil
