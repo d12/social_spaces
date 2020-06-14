@@ -11,8 +11,11 @@ class GoogleAPI
         refresh_token: user.refresh_token
       )
 
-      auth.fetch_access_token! # TODO: Check expiry before fetching access token
-      user.update(token: auth.access_token) # TODO: Store new expiry datetime
+      # Don't refresh token if there's more than 30 seconds remaining before it expires.
+      if(Time.at(user.expires_at) - Time.now < 30)
+        auth.fetch_access_token!
+        user.update(token: auth.access_token, expires_at: auth.expires_at)
+      end
 
       service = Google::Apis::CalendarV3::CalendarService.new
       service.authorization = auth
@@ -36,6 +39,7 @@ class GoogleAPI
       }
 
       # TODO: error handling
+      # TODO: Delete the calendar event lol
       res = service.insert_event(user.email, event, conference_data_version: 1, send_notifications: false, send_updates: "none")
       res.hangout_link
     end
