@@ -8,10 +8,21 @@ class Group < ApplicationRecord
   before_save :generate_hangout_link
   validates :key, presence: true, uniqueness: true
 
+  def host
+    host_membership = group_memberships.find_by(host: true)
+    return host_membership.user if host_membership
+
+    membership = group_memberships.first
+    return unless membership
+
+    membership.update(host: true)
+    membership.user
+  end
+
   private
 
-  def generate_hangout_link # TODO: Add link to group model
-    self.meet_url = GoogleAPI.generate_meet_url(users.first) # TODO: A group should have a "host"
+  def generate_hangout_link
+    self.meet_url = GoogleAPI.generate_meet_url(users.first)
   end
 
   def generate_key_if_missing

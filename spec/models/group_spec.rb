@@ -1,8 +1,9 @@
 require "rails_helper"
 
 describe GroupMembership do
-  let(:user) { User.create(name: "n", email: "e") }
-  let(:group) { Group.create(key: "hello") }
+  let(:user)   { User.create(name: "n", email: "e") }
+  let(:user_2) { User.create(name: "nn", email: "ee") }
+  let(:group)  { Group.create(key: "hello") }
 
   before(:each) do
     allow(GoogleAPI).to receive(:generate_meet_url)
@@ -21,6 +22,28 @@ describe GroupMembership do
 
     it "can accept users" do
       expect(Group.new(key: "foo", users: [user]).valid?).to be_truthy
+    end
+  end
+
+  describe "host" do
+    context "a group with no members" do
+      it "has no host" do
+        expect(Group.create.host).to be_nil
+      end
+    end
+
+    context "a group with one member" do
+      it "elects the member to be host" do
+        group = Group.create(users: [user])
+        expect(group.host).to eq(user)
+      end
+    end
+
+    context "a group with multiple members" do
+      it "elects the first joined member to be host" do
+        group = Group.create(users: [user, user_2])
+        expect(group.host).to eq(user)
+      end
     end
   end
 end

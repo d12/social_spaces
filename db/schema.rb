@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_06_13_183156) do
+ActiveRecord::Schema.define(version: 2020_06_14_000000) do
 
   create_table "activity_instances", force: :cascade do |t|
     t.integer "group_id"
@@ -27,6 +27,7 @@ ActiveRecord::Schema.define(version: 2020_06_13_183156) do
     t.integer "group_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.boolean "host"
     t.index ["group_id"], name: "index_group_memberships_on_group_id"
     t.index ["user_id"], name: "index_group_memberships_on_user_id"
   end
