@@ -18,7 +18,7 @@ export default function GroupMembers({ groupId, initialUsers }: Props) {
   const [users, setUsers] = useState<User[]>(initialUsers);
 
   function addUser(user: User): void {
-    setUsers([...users, user]);
+    setUsers((prevUsers) => [...prevUsers, user])
   }
 
   function removeUser(user: User): void {
