@@ -26,6 +26,10 @@ export default function GroupMembers({ groupId, initialUsers }: Props) {
     setUsers([...users.slice(0, i), ...users.slice(i + 1)]);
   }
 
+  function navigateToActivity(): void {
+    window.location.replace("/play");
+  }
+
   useEffect(() => {
     consumer.subscriptions.create(
       { channel: "GroupChannel", group_id: groupId },
@@ -37,6 +41,9 @@ export default function GroupMembers({ groupId, initialUsers }: Props) {
               break;
             case "LEFT":
               removeUser(user);
+              break;
+            case "ACTIVITY_START":
+              navigateToActivity();
               break;
             default:
               console.error("Unexpected message");

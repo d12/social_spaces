@@ -4,4 +4,10 @@
 
 You're in group: <%= @group.key %>
 
+<% if @user == @group.host %>
+  <%= link_to "Leave activity", leave_activity_path, method: :delete %>
+<% end %>
+
+<br>
+
 <%= link_to "Leave group", leave_group_path, method: :delete %>

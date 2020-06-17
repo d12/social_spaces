@@ -12,6 +12,7 @@ class Group < ApplicationRecord
     host_membership = group_memberships.find_by(host: true)
     return host_membership.user if host_membership
 
+    # If no host, appoint a new host
     membership = group_memberships.first
     return unless membership
 

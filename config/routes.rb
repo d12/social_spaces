@@ -8,6 +8,7 @@ Rails.application.routes.draw do
 
   resources :activities, only: [:index]
   post "activities/join", to: "activities#join", as: "join_activity"
+  delete "leave_activity", to: "activities#leave", as: "leave_activity"
   get "play", to: "activities#show", as: "play_activity"
 
   # Authentication
