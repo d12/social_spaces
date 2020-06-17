@@ -62,3 +62,5 @@ gem "react-rails", "~> 2.6"
 gem "devise", "~> 4.7"
 
 gem "google-api-client", "~> 0.40.1"
+
+gem "pg", "~> 1.2"
