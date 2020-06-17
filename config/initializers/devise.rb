@@ -270,7 +270,7 @@ Devise.setup do |config|
 
   # ==> OmniAuth
   config.omniauth :google_oauth2, ENV["GOOGLE_CLIENT_ID"], ENV["GOOGLE_CLIENT_SECRET"], {
-    scope: "calendar.events,email,profile"
+    scope: "calendar.events,email,profile", access_type: 'offline', approval_prompt: 'force', prompt: 'consent'
   }
 
   # ==> Warden configuration
