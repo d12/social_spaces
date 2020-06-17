@@ -15,13 +15,14 @@ class GroupsController < ApplicationController
   def join
     @group = Group.find_by(key: params["group_key"])
     unless @group
-      flash[:error] = "Group not found! Did you type the group key correctly?"
+      flash[:alert] = "Group not found! Did you type the group key correctly?"
       redirect_to groups_path
       return
     end
 
     session[:group_id] = @group.id
     GroupMembership.create(group_id: @group.id, user_id: current_user.id)
+    GroupChannel.broadcast_user_joined(@group, current_user)
 
     redirect_to activities_path
   end
@@ -34,6 +35,7 @@ class GroupsController < ApplicationController
     end
 
     GroupMembership.find_by(group_id: current_group.id, user_id: current_user.id)&.destroy
+    GroupChannel.broadcast_user_left(current_group, current_user)
 
     session[:group_id] = nil
 

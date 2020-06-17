@@ -17,4 +17,8 @@ class User < ApplicationRecord
       user.refresh_token = auth.credentials.refresh_token
     end
   end
+
+  def as_json(*)
+    super(only: [:id, :name])
+  end
 end
