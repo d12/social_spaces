@@ -40,8 +40,7 @@ jobs:
       with:
         ruby-version: 2.6
     - name: Install required apt packages
-      run: |
-      sudo apt-get -y install libpq-dev
+      run: sudo apt-get -y install libpq-dev
     - name: Install dependencies
       run: |
         bundle install
