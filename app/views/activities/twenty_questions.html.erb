@@ -4,6 +4,9 @@
 
 You're in group: <%= @group.key %>
 
+<% # TODO: This should be present but disabled if you're not the host %>
+<% # TODO: This should be react %>
+<% # TODO: This should be a button %>
 <% if @user == @group.host %>
   <%= link_to "Leave activity", leave_activity_path, method: :delete %>
 <% end %>
