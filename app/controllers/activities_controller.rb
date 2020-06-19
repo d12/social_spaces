@@ -41,6 +41,8 @@ class ActivitiesController < ApplicationController
       status: :awaiting_activity_thread
     )
 
+    @bootstrap_data = @instance.client_bootstrap_data
+
     GroupChannel.broadcast_activity_started(@group)
 
     redirect_to play_activity_path(params[:activity])
@@ -55,6 +57,8 @@ class ActivitiesController < ApplicationController
       flash[:alert] = "Your group is not currently in this activity"
       return redirect_back
     end
+
+    @bootstrap_data = @instance.client_bootstrap_data
 
     render "activities/#{@instance.activity}"
   end
