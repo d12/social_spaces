@@ -1,6 +1,7 @@
 <h1>Twenty Questions</h1>
 
-<%= react_component("Greeting", { userName: @user.name }) %>
+<% # TODO: This user_id should be encrypted or something, it's too easy to spoof someone else %>
+<%= react_component("TwentyQuestions", { groupKey: @group.key, instanceId: @instance.id, userId: @user.id, bootstrapData: @bootstrap_data }) %>
 
 You're in group: <%= @group.key %>
 

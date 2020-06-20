@@ -7,7 +7,7 @@ You're in group: <%= @group.key %>
 <br><br>
 
 <% @activities.each do |activity| %>
-    - Join activity: <%= link_to activity.display_name, join_activity_path(activity: activity.slug), method: :post %>
+    - Join activity: <%= link_to activity.display_name, join_activity_path(activity: activity.name), method: :post %>
     </br>
 <% end %>
 

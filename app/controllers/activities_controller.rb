@@ -5,20 +5,14 @@ class ActivitiesController < ApplicationController
   skip_before_action :redirect_to_activity_if_in_progress, only: [:leave]
 
   ACTIVITIES = [
-    "twenty_questions",
-    "chat",
-    "skribbl"
+    TwentyQuestions
   ]
 
   def index
     @user = current_user
     @group = current_group
 
-    @activities = [
-      Activity::Chat,
-      Activity::Skribbl,
-      Activity::TwentyQuestions
-    ]
+    @activities = ACTIVITIES
   end
 
   def join
@@ -41,9 +35,11 @@ class ActivitiesController < ApplicationController
       status: :awaiting_activity_thread
     )
 
+    @bootstrap_data = @instance.client_bootstrap_data
+
     GroupChannel.broadcast_activity_started(@group)
 
-    redirect_to play_activity_path(params[:activity])
+    redirect_to play_activity_path(params[:activity].underscore)
   end
 
   def show
@@ -53,10 +49,12 @@ class ActivitiesController < ApplicationController
 
     unless @instance
       flash[:alert] = "Your group is not currently in this activity"
-      return redirect_back
+      return redirect_back(fallback_location: root_path)
     end
 
-    render "activities/#{@instance.activity}"
+    @bootstrap_data = @instance.client_bootstrap_data
+
+    render "activities/#{@instance.activity.underscore}"
   end
 
   def leave
@@ -65,12 +63,12 @@ class ActivitiesController < ApplicationController
 
     unless @user == @group.host
       flash[:alert] = "Only the host can leave an activity"
-      return redirect_back
+      return redirect_back(fallback_location: root_path)
     end
 
     ActivityInstance.find_by(group: @group).destroy
 
-    # TODO: Broadcast to group to send them back to the actiities page
+    # TODO: Broadcast to group to send them back to the activities page
 
     redirect_to activities_path
   end
@@ -78,7 +76,7 @@ class ActivitiesController < ApplicationController
   private
 
   def ensure_activity_exists
-    unless ACTIVITIES.include?(params[:activity])
+    unless ACTIVITIES.include?(params[:activity].constantize)
       return not_found
     end
   end
