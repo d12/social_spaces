@@ -6,6 +6,7 @@ class Group < ApplicationRecord
 
   before_validation :generate_key_if_missing, :generate_hangout_link
   before_save :generate_hangout_link
+
   validates :key, presence: true, uniqueness: true
 
   def host

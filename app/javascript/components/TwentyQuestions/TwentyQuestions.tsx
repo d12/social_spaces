@@ -5,7 +5,9 @@ import * as styles from "./TwentyQuestions.module.scss";
 import consumer from "../../channels/consumer";
 
 interface BootstrapData {
-  count: number;
+  status: string;
+  leader: number;
+  wordOptions: string[];
 }
 
 interface Props {
@@ -16,15 +18,32 @@ interface Props {
 }
 
 export default function TwentyQuestions({ groupKey, instanceId, userId, bootstrapData }: Props) {
-  const [count, setCount] = useState<number>(0);
+  const [text, setText] = useState<string>("");
   const [subscription, setSubscription] = useState();
 
-  function add() {
-    subscription.send({ add: true, userId: userId });
+  function selectWord(word) {
+    subscription.send({ action: "select_word", userId: userId, word: word});
   }
 
   function bootstrap(data) {
-    setCount(data["count"])
+    console.log("bootstrapping")
+    acceptMessage(data)
+  }
+
+  function acceptMessage(data){
+    if(data["status"] == "selecting_word"){
+      if(data["leader"] == userId){
+        console.log("I'm the leader!")
+        setText(
+          <>
+            <p>Please select a word</p>
+            {data["word_options"].map((word, index) => {
+              return <button key={word} onClick={() => selectWord(word)}>{word}</button>
+            })}
+          </>
+        )
+      }
+    }
   }
 
   useEffect(() => {
@@ -34,7 +53,6 @@ export default function TwentyQuestions({ groupKey, instanceId, userId, bootstra
         {
           received: (data) => {
             console.log("RECIEVED A MESSAGE");
-            setCount(data["updatedCount"]);
           },
         }
       )
@@ -46,8 +64,7 @@ export default function TwentyQuestions({ groupKey, instanceId, userId, bootstra
   return (
     <>
       <p>Twenty Questions</p>
-      <button onClick={add}>Click me!</button>
-      <p>I've been pressed {count} times.</p>
+      {text}
     </>
   );
 }

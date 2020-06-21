@@ -1,12 +1,15 @@
 class ActivityInstance < ApplicationRecord
   self.inheritance_column = "activity"
 
-  serialize :state, IndifferentHashSerializer
+  before_create :initialize_storage
 
   belongs_to :group
-  enum status: { awaiting_activity_thread: 0, ongoing: 1, finished: 2 }
 
-  before_create :initialize_storage
+  delegate :users, to: :group
+
+  serialize :state, IndifferentHashSerializer
+
+  enum status: { awaiting_activity_thread: 0, ongoing: 1, finished: 2 }
 
   def self.display_name
     raise NotImplementedError
