@@ -23,7 +23,7 @@ class ApplicationController < ActionController::Base
   def redirect_to_activity_if_in_progress
     return if request.path == "/play"
 
-    if current_user && current_group && instance = ActivityInstance.find_by(group: current_group)
+    if current_user && current_group && ActivityInstance.find_by(group: current_group)
       redirect_to play_activity_path
     end
   end
