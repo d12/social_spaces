@@ -7,21 +7,26 @@ class ActivityInstance < ApplicationRecord
   before_create :initialize_storage
 
   def self.display_name
-    "Twenty Questions"
+    raise NotImplementedError
   end
 
   def self.max_users
-    8
+    raise NotImplementedError
   end
 
+  # Called when a client sends a message to the game server.
+  # Data is an arbitrary JSON hash.
   def message(data)
     raise NotImplementedError
   end
 
+  # When a client is loaded into an activity midway, they need
+  # enough data to be able to properly bootstrap themselves. Return any necessary data here.
   def client_bootstrap_data
     raise NotImplementedError
   end
 
+  # Used by the game loop. Not currently in use.
   def tick
     raise NotImplementedError
   end
@@ -32,6 +37,7 @@ class ActivityInstance < ApplicationRecord
     self.state ||= initial_state
   end
 
+  # The initial state stored in the database for a new activity instance.
   def initial_state
     raise NotImplementedError
   end
