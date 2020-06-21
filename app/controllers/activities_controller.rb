@@ -1,6 +1,7 @@
 class ActivitiesController < ApplicationController
   before_action :ensure_group
   before_action :ensure_activity_exists, only: [:join]
+  before_action :ensure_current_activity, only: [:show, :leave]
 
   skip_before_action :redirect_to_activity_if_in_progress, only: [:leave]
 
@@ -45,12 +46,7 @@ class ActivitiesController < ApplicationController
   def show
     @user = current_user
     @group = current_group
-    @instance = ActivityInstance.find_by(group: @group)
-
-    unless @instance
-      flash[:alert] = "Your group is not currently in this activity"
-      return redirect_back(fallback_location: root_path)
-    end
+    @instance = current_activity
 
     @bootstrap_data = @instance.client_bootstrap_data
 
@@ -75,9 +71,20 @@ class ActivitiesController < ApplicationController
 
   private
 
+  def current_activity
+    @current_activity ||= ActivityInstance.find_by(group: current_group)
+  end
+
   def ensure_activity_exists
     unless ACTIVITIES.include?(params[:activity].constantize)
       return not_found
+    end
+  end
+
+  def ensure_current_activity
+    unless current_activity
+      flash[:error] = "You can't do this unless you're in an activity!"
+      redirect_back(fallback_location: root_path)
     end
   end
 
