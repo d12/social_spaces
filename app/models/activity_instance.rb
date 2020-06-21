@@ -36,7 +36,7 @@ class ActivityInstance < ApplicationRecord
   private
 
   def initialize_storage
-    self.state ||= initial_state
+    self.state = initial_state
   end
 
   # The initial state stored in the database for a new activity instance.

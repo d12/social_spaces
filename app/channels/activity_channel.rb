@@ -4,7 +4,7 @@ class ActivityChannel < ApplicationCable::Channel
   end
 
   def receive(data)
-    response = instance.message(data)
+    response = instance.reload.message(data)
     if response
       # TODO: This should send to a specific user
       ActionCable.server.broadcast(broadcasting_key, response)

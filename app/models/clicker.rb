@@ -1,6 +1,6 @@
-class TwentyQuestions < ActivityInstance
+class Clicker < ActivityInstance
   def self.display_name
-    "Twenty Questions"
+    "Clicker"
   end
 
   def self.max_users
@@ -24,6 +24,7 @@ class TwentyQuestions < ActivityInstance
   # E.g. When a client joins midway, they need enough information
   # to render the current state of the game
   def client_bootstrap_data
+    reload
     {count: state[:count]}
   end
 

@@ -1,0 +1,17 @@
+<h1>Clicker</h1>
+
+<% # TODO: This user_id should be encrypted or something, it's too easy to spoof someone else %>
+<%= react_component("Clicker", { groupKey: @group.key, instanceId: @instance.id, userId: @user.id, bootstrapData: @bootstrap_data }) %>
+
+You're in group: <%= @group.key %>
+
+<% # TODO: This should be present but disabled if you're not the host %>
+<% # TODO: This should be react %>
+<% # TODO: This should be a button %>
+<% if @user == @group.host %>
+  <%= link_to "Leave activity", leave_activity_path, method: :delete %>
+<% end %>
+
+<br>
+
+<%= link_to "Leave group", leave_group_path, method: :delete %>
