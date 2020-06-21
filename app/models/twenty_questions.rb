@@ -10,10 +10,10 @@ class TwentyQuestions < ActivityInstance
   def message(data)
     return unless data["add"]
 
-    state["count"] += 1
+    state[:count] += 1
     save!
 
-    {"updatedCount" => state["count"]}
+    {updatedCount: state[:count]}
   end
 
   def tick
@@ -25,11 +25,11 @@ class TwentyQuestions < ActivityInstance
   # to render the current state of the game
   def client_bootstrap_data
     reload
-    {"count" => state["count"]}
+    {count: state[:count]}
   end
 
   # The initial value to use for a instances save state
   def initial_state
-    {"count" => 0}
+    {count: 0}
   end
 end
