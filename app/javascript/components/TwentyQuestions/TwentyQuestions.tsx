@@ -4,6 +4,8 @@ import * as styles from "./TwentyQuestions.module.scss";
 
 import consumer from "../../channels/consumer";
 
+import Game from "./Game.tsx";
+
 interface BootstrapData {
   status: string;
   leader: number;
@@ -18,31 +20,31 @@ interface Props {
 }
 
 export default function TwentyQuestions({ groupKey, instanceId, userId, bootstrapData }: Props) {
-  const [text, setText] = useState<string>("");
+  const [status, setStatus] = useState();
+  const [leader, setLeader] = useState();
+  const [wordOptions, setWordOptions] = useState();
   const [subscription, setSubscription] = useState();
 
-  function selectWord(word) {
-    subscription.send({ action: "select_word", userId: userId, word: word});
-  }
-
-  function bootstrap(data) {
-    console.log("bootstrapping")
-    acceptMessage(data)
-  }
-
   function acceptMessage(data){
-    if(data["status"] == "selecting_word"){
-      if(data["leader"] == userId){
-        console.log("I'm the leader!")
-        setText(
-          <>
-            <p>Please select a word</p>
-            {data["word_options"].map((word, index) => {
-              return <button key={word} onClick={() => selectWord(word)}>{word}</button>
-            })}
-          </>
-        )
-      }
+    console.log("Accepted message!")
+    console.log(data);
+
+    setStatus(data["status"])
+    setLeader(data["leader"])
+    setWordOptions(data["word_options"])
+  }
+
+  // A callback used by client-side components when we need to update state
+  // or send requests to the server.
+  function clientEvent(event, data){
+    switch(event){
+      case "select_word":
+        subscription.send({ event: "select_word", userId: userId, word: data.word });
+        break
+
+      default:
+        console.log("Unknown event: " + event)
+        break
     }
   }
 
@@ -58,13 +60,17 @@ export default function TwentyQuestions({ groupKey, instanceId, userId, bootstra
       )
     );
 
-    bootstrap(bootstrapData);
+    acceptMessage(bootstrapData);
   }, []);
 
   return (
     <>
-      <p>Twenty Questions</p>
-      {text}
+      <h1>Twenty Questions</h1>
+      <Game status={status}
+            leader={leader}
+            isLeader={userId == leader}
+            wordOptions={wordOptions}
+            clientEventCallback={clientEvent} />
     </>
-  );
+  )
 }

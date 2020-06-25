@@ -18,9 +18,11 @@ class TwentyQuestions < ActivityInstance
 
   def message(data)
     puts "Got a message: #{data}"
-    case data["action"]
+
+    case data["event"]
     when "select_word"
       puts "Selected #{data["word"]}"
+      # Transition game to next state
     end
   end
 
