@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 
-import * as styles from "./TwentyQuestions.module.scss";
+import * as _styles from "./TwentyQuestions.module.scss";
 
 import consumer from "../../channels/consumer";
 
-import Game from "./Game.tsx";
+import Game from "./Game";
 
 interface BootstrapData {
   status: string;
@@ -19,11 +19,11 @@ interface Props {
   bootstrapData: BootstrapData;
 }
 
-export default function TwentyQuestions({ groupKey, instanceId, userId, bootstrapData }: Props) {
-  const [status, setStatus] = useState();
-  const [leader, setLeader] = useState();
-  const [wordOptions, setWordOptions] = useState();
-  const [subscription, setSubscription] = useState();
+export default function TwentyQuestions({ groupId, instanceId, userId, bootstrapData }: Props) {
+  const [status, setStatus] = useState(undefined);
+  const [leader, setLeader] = useState(undefined);
+  const [wordOptions, setWordOptions] = useState(undefined);
+  const [subscription, setSubscription] = useState(undefined);
 
   function acceptMessage(data){
     console.log("Accepted message!")
@@ -36,7 +36,7 @@ export default function TwentyQuestions({ groupKey, instanceId, userId, bootstra
 
   // A callback used by client-side components when we need to update state
   // or send requests to the server.
-  function clientEvent(event, data){
+  function clientEvent(event: String, data){
     switch(event){
       case "select_word":
         subscription.send({ event: "select_word", userId: userId, word: data.word });

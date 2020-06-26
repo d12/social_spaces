@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import * as styles from "./Clicker.module.scss";
+import * as _styles from "./Clicker.module.scss";
 
 import consumer from "../../channels/consumer";
 
@@ -15,15 +15,17 @@ interface Props {
   bootstrapData: BootstrapData;
 }
 
-export default function Clicker({ groupKey, instanceId, userId, bootstrapData }: Props) {
+export default function Clicker({ groupId, instanceId, userId, bootstrapData }: Props) {
   const [count, setCount] = useState<number>(0);
-  const [subscription, setSubscription] = useState();
+  const [subscription, setSubscription] = useState(undefined);
 
   function add() {
-    subscription.send({ add: true, userId: userId });
+    if(subscription !== undefined){
+      subscription.send({ add: true, userId: userId });
+    }
   }
 
-  function bootstrap(data) {
+  function bootstrap(data: Object) {
     setCount(data["count"])
   }
 
@@ -32,7 +34,7 @@ export default function Clicker({ groupKey, instanceId, userId, bootstrapData }:
       consumer.subscriptions.create(
         { channel: "ActivityChannel", activity_instance_id: instanceId },
         {
-          received: (data) => {
+          received: (data: Object) => {
             console.log("RECIEVED A MESSAGE");
             setCount(data["updatedCount"]);
           },

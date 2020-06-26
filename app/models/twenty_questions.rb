@@ -38,7 +38,6 @@ class TwentyQuestions < ActivityInstance
   end
 
   def tick
-
   end
 
   # All the data required for a client to set its local state
