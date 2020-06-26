@@ -4,8 +4,12 @@ import * as styles from "./TwentyQuestions.module.scss";
 
 import consumer from "../../channels/consumer";
 
+import Game from "./Game.tsx";
+
 interface BootstrapData {
-  count: number;
+  status: string;
+  leader: number;
+  wordOptions: string[];
 }
 
 interface Props {
@@ -16,15 +20,32 @@ interface Props {
 }
 
 export default function TwentyQuestions({ groupKey, instanceId, userId, bootstrapData }: Props) {
-  const [count, setCount] = useState<number>(0);
+  const [status, setStatus] = useState();
+  const [leader, setLeader] = useState();
+  const [wordOptions, setWordOptions] = useState();
   const [subscription, setSubscription] = useState();
 
-  function add() {
-    subscription.send({ add: true, userId: userId });
+  function acceptMessage(data){
+    console.log("Accepted message!")
+    console.log(data);
+
+    setStatus(data["status"])
+    setLeader(data["leader"])
+    setWordOptions(data["word_options"])
   }
 
-  function bootstrap(data) {
-    setCount(data["count"])
+  // A callback used by client-side components when we need to update state
+  // or send requests to the server.
+  function clientEvent(event, data){
+    switch(event){
+      case "select_word":
+        subscription.send({ event: "select_word", userId: userId, word: data.word });
+        break
+
+      default:
+        console.log("Unknown event: " + event)
+        break
+    }
   }
 
   useEffect(() => {
@@ -34,20 +55,22 @@ export default function TwentyQuestions({ groupKey, instanceId, userId, bootstra
         {
           received: (data) => {
             console.log("RECIEVED A MESSAGE");
-            setCount(data["updatedCount"]);
           },
         }
       )
     );
 
-    bootstrap(bootstrapData);
+    acceptMessage(bootstrapData);
   }, []);
 
   return (
     <>
-      <p>Twenty Questions</p>
-      <button onClick={add}>Click me!</button>
-      <p>I've been pressed {count} times.</p>
+      <h1>Twenty Questions</h1>
+      <Game status={status}
+            leader={leader}
+            isLeader={userId === leader}
+            wordOptions={wordOptions}
+            clientEventCallback={clientEvent} />
     </>
-  );
+  )
 }
