@@ -4,17 +4,17 @@ class TwentyQuestions < ActivityInstance
   end
 
   class Status
-    SELECTING_WORD = :selecting_word_status # The leader is selecting a word
-    ASKING_QUESTIONS = :asking_questions_status # The others are asking yes/no questions
+    SELECTING_WORD = :selecting_word # The leader is selecting a word
+    ASKING_QUESTIONS = :asking_questions # The others are asking yes/no questions
   end
 
-  WORDS = [
-    "airpods",
-    "piano",
-    "sunglasses",
-    "salt",
-    "bike",
-    "cat"
+  WORDS = %w[
+    airpods
+    piano
+    sunglasses
+    salt
+    bike
+    cat
   ]
 
   def self.display_name

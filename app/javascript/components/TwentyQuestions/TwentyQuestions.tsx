@@ -68,7 +68,7 @@ export default function TwentyQuestions({ groupKey, instanceId, userId, bootstra
       <h1>Twenty Questions</h1>
       <Game status={status}
             leader={leader}
-            isLeader={userId == leader}
+            isLeader={userId === leader}
             wordOptions={wordOptions}
             clientEventCallback={clientEvent} />
     </>
