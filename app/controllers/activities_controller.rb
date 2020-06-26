@@ -37,7 +37,7 @@ class ActivitiesController < ApplicationController
       status: :awaiting_activity_thread
     )
 
-    @bootstrap_data = @instance.client_bootstrap_data
+    @bootstrap_data = @instance.client_data
 
     GroupChannel.broadcast_activity_started(@group)
 
@@ -49,7 +49,7 @@ class ActivitiesController < ApplicationController
     @group = current_group
     @instance = current_activity
 
-    @bootstrap_data = @instance.client_bootstrap_data
+    @bootstrap_data = @instance.client_data
 
     render "activities/#{@instance.activity.underscore}"
   end

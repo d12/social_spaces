@@ -18,7 +18,7 @@ export default function Game({ isLeader, status, leader, wordOptions, clientEven
   }
 
   switch(status) {
-    case "selecting_word":
+    case "selecting_word_status":
       return <SelectingWordStatus leader={leader}
                                   isLeader={isLeader}
                                   wordOptions={wordOptions}
