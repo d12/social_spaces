@@ -1,6 +1,5 @@
 class User < ApplicationRecord
-  has_many :group_memberships
-  has_many :groups, through: :group_memberships # TODO: A user should only be allowed to be in one group
+  belongs_to :group, optional: true
 
   devise :omniauthable, :omniauth_providers => [:google_oauth2]
 

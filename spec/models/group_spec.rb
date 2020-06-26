@@ -1,6 +1,6 @@
 require "rails_helper"
 
-describe GroupMembership do
+describe Group do
   let(:user)   { User.create(name: "n", email: "e") }
   let(:user_2) { User.create(name: "nn", email: "ee") }
   let(:group)  { Group.create(key: "hello") }

@@ -1,27 +1,34 @@
 require "google_api"
 
 class Group < ApplicationRecord
-  has_many :group_memberships
-  has_many :users, through: :group_memberships
+  has_many :users
 
   before_validation :generate_key_if_missing, :generate_hangout_link
   before_save :generate_hangout_link
 
+  before_create :set_host
+
   validates :key, presence: true, uniqueness: true
 
   def host
-    host_membership = group_memberships.find_by(host: true)
-    return host_membership.user if host_membership
+    if self.host_id
+      return User.find(self.host_id)
+    end
 
-    # If no host, appoint a new host
-    membership = group_memberships.first
-    return unless membership
+    new_host = users.first
+    return unless new_host
 
-    membership.update(host: true)
-    membership.user
+    update!(host_id: new_host.id)
+    new_host
   end
 
   private
+
+  def set_host
+    if users.any?
+      self.host_id = users.first.id
+    end
+  end
 
   def generate_hangout_link
     self.meet_url = GoogleAPI.generate_meet_url(users.first)

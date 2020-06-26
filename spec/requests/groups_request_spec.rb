@@ -100,7 +100,7 @@ RSpec.describe "Groups", type: :request do
         context "when group key is invalid" do
           it "does not add the user to any group" do
             get join_group_path("BBBBBB")
-            expect(user.groups).to be_empty
+            expect(user.group).to be_nil
           end
 
           it "redirects to group index" do

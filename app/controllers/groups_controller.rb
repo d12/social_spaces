@@ -21,7 +21,7 @@ class GroupsController < ApplicationController
     end
 
     session[:group_id] = @group.id
-    GroupMembership.create(group_id: @group.id, user_id: current_user.id)
+    current_user.update!(group: @group)
     GroupChannel.broadcast_user_joined(@group, current_user)
 
     redirect_to activities_path
@@ -34,7 +34,7 @@ class GroupsController < ApplicationController
       return
     end
 
-    GroupMembership.find_by(group_id: current_group.id, user_id: current_user.id)&.destroy
+    current_user.update!(group: nil)
     GroupChannel.broadcast_user_left(current_group, current_user)
 
     session[:group_id] = nil
