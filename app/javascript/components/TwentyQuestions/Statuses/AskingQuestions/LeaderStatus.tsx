@@ -24,6 +24,9 @@ export default function AskingQuestionsLeaderStatus({
       <button onClick={() => askedQuestionCallback("correctanswer")}>
         You guessed the word!
       </button>
+      <p>
+        Remember, your word is <strong>{gameState.word}</strong>.
+      </p>
     </>
   );
 }
