@@ -29,8 +29,8 @@ export interface GameState {
 }
 
 export enum ClientEvent {
-  SELECT_WORD,
-  ASKED_QUESTION,
+  SELECT_WORD = "select_word",
+  ASKED_QUESTION = "asked_question",
 }
 
 export function leader(gameState: GameState): User {

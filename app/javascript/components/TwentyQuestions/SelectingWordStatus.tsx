@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 
 import * as styles from "./TwentyQuestions.module.scss";
 
-import { GameState } from "./TwentyQuestions"
+import { GameState, leader } from "./TwentyQuestions";
 
 interface Props {
   gameState: GameState;
@@ -10,17 +10,25 @@ interface Props {
   selectWordCallback(word: string): void;
 }
 
-export default function SelectingWordStatus({ gameState, isLeader, selectWordCallback }: Props) {
-  if(isLeader){
-    return(
+export default function SelectingWordStatus({
+  gameState,
+  isLeader,
+  selectWordCallback,
+}: Props) {
+  if (isLeader) {
+    return (
       <>
         <h3>Please select a word:</h3>
         {gameState.wordOptions.map((word) => {
-          return <button key={word} onClick={()=> selectWordCallback(word)}>{word}</button>;
+          return (
+            <button key={word} onClick={() => selectWordCallback(word)}>
+              {word}
+            </button>
+          );
         })}
       </>
-    )
-  } else{
-    return <h3>Please wait for the leader to choose a word</h3>
+    );
+  } else {
+    return <h3>Please wait for {leader(gameState).name} to choose a word</h3>;
   }
 }

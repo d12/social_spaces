@@ -1,6 +1,7 @@
 class TwentyQuestions < ActivityInstance
   class Event
     SELECT_WORD = "select_word"
+    ASKED_QUESTION = "asked_question"
   end
 
   class Status
@@ -31,6 +32,8 @@ class TwentyQuestions < ActivityInstance
     case data[:event]
     when Event::SELECT_WORD
       select_word_event(data)
+    when Event::ASKED_QUESTION
+      asked_question_event(data)
     end
 
     save!
@@ -82,18 +85,66 @@ class TwentyQuestions < ActivityInstance
     state[:status] = Status::ASKING_QUESTIONS
     state[:question_index] = 1
 
-    increment_asker
+    set_next_asker
 
     if state[:asker_index] == state[:leader_index]
-      increment_asker
+      set_next_asker
     end
   end
 
-  def increment_asker
+  def set_next_asker
     if state[:asker_index]
       state[:asker_index] = (state[:asker_index] + 1) % state[:users].length
     else
       state[:asker_index] = 1
     end
+
+    if state[:asker_index] == state[:leader_index]
+      set_next_asker
+    end
+  end
+
+  def set_next_leader
+    state[:leader_index] = (state[:leader_index] + 1) % state[:users].length
+
+    set_next_asker
+  end
+
+  def asked_question_event(data)
+    case data[:result]
+    when "yes", "no"
+      process_yes_no
+    when "correctanswer"
+      process_correct_answer
+    else
+      puts "Unknown result!"
+    end
+  end
+
+  def process_yes_no
+    if state[:question_index] == 20
+      game_over
+      return
+    end
+
+    state[:question_index] += 1
+    set_next_asker
+  end
+
+  def process_correct_answer
+    # TELL PEOPLE THEY GOT THE CORRECT ANSWER
+    finish_game
+  end
+
+  def game_over
+    # TELL PEOPLE THEY GOT A GAME OVER, ASK THE LEADER TO TELL THE OTHERS WHAT THE WORD WAS
+    finish_game
+  end
+
+  def finish_game
+    set_next_leader
+    state[:status] = Status::SELECTING_WORD
+    state[:word] = nil
+    state[:word_options] = WORDS.sample(3)
   end
 end
