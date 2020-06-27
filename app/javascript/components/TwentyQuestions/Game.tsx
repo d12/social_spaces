@@ -1,32 +1,64 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 
-import * as styles from "./TwentyQuestions.module.scss";
+import * as _styles from "./TwentyQuestions.module.scss";
 
-import SelectingWordStatus from "./SelectingWordStatus.tsx";
+import SelectingWordStatus from "./SelectingWordStatus";
+
+import AskingQuestionsLeaderStatus from "./Statuses/AskingQuestions/LeaderStatus";
+import AskingQuestionsAskerStatus from "./Statuses/AskingQuestions/AskerStatus";
+import AskingQuestionsWaiterStatus from "./Statuses/AskingQuestions/WaiterStatus";
+
+import { GameState, ClientEvent, leader, asker } from "./TwentyQuestions";
 
 interface Props {
-  isLeader: boolean;
-  status: string;
-  leader: number;
-  wordOptions: string[];
-  clientEventCallback: function;
+  gameState: GameState;
+  userId: number;
+  clientEventCallback(event: ClientEvent, data: Object): void;
 }
 
-export default function Game({ isLeader, status, leader, wordOptions, clientEventCallback }: Props) {
-  function selectWord(word) {
-    clientEventCallback("select_word", {word: word})
+export default function Game({
+  gameState,
+  userId,
+  clientEventCallback,
+}: Props) {
+  function selectWord(word: string) {
+    clientEventCallback(ClientEvent.SELECT_WORD, { word: word });
   }
 
-  switch(status) {
+  function askedQuestion(result: string) {
+    clientEventCallback(ClientEvent.ASKED_QUESTION, { result: result });
+  }
+
+  const isLeader = userId === leader(gameState).id;
+
+  switch (gameState.status) {
     case "selecting_word":
-      return <SelectingWordStatus leader={leader}
-                                  isLeader={isLeader}
-                                  wordOptions={wordOptions}
-                                  selectWordCallback={selectWord} />
-      break
+      return (
+        <SelectingWordStatus
+          gameState={gameState}
+          isLeader={isLeader}
+          selectWordCallback={selectWord}
+        />
+      );
+    case "asking_questions":
+      if (isLeader) {
+        return (
+          <AskingQuestionsLeaderStatus
+            gameState={gameState}
+            askedQuestionCallback={askedQuestion}
+          />
+        );
+      }
+
+      const isAsking = userId === asker(gameState).id;
+
+      if (isAsking) {
+        return <AskingQuestionsAskerStatus gameState={gameState} />;
+      } else {
+        return <AskingQuestionsWaiterStatus gameState={gameState} />;
+      }
+
     default:
-      console.log("Loading...")
-      return <>Loading...</>
-      break
+      return <p>Loading...</p>;
   }
 }

@@ -1,6 +1,6 @@
 class TwentyQuestions < ActivityInstance
   class Event
-    SELECT_WORD = :select_word_event
+    SELECT_WORD = "select_word"
   end
 
   class Status
@@ -28,7 +28,7 @@ class TwentyQuestions < ActivityInstance
   def process_message(data)
     puts "Got a message: #{data}"
 
-    case data[:word]
+    case data[:event]
     when Event::SELECT_WORD
       select_word_event(data)
     end
@@ -44,19 +44,23 @@ class TwentyQuestions < ActivityInstance
   # E.g. When a client joins midway, they need enough information
   # to render the current state of the game
   def client_data
-    case state[:status].to_sym
+    data = case state[:status].to_sym
     when Status::SELECTING_WORD
-      state.slice(:status, :leader, :word_options)
+      state.slice(:status, :leader_index, :word_options, :users)
     when Status::ASKING_QUESTIONS
-      state.slice(:status, :leader, :word, :current_player, :question_index)
+      state.slice(:status, :leader_index, :word, :asker_index, :question_index, :users)
     end
+
+    # Transform keys to camelCase as JS will expect
+    data.transform_keys{ |k| k.camelcase(:lower) }
   end
 
   # The initial value to use for a instances save state
   def initial_state
     users_array = users.map do |user|
       {
-        user_id: user.id
+        id: user.id,
+        name: user.name
       }
     end
 
@@ -64,9 +68,9 @@ class TwentyQuestions < ActivityInstance
       status: Status::SELECTING_WORD,
       word: nil,                           # The current word being guessed
       word_options: WORDS.sample(3),       # The word options for the leader to pick from
-      leader: users_array.first[:user_id], # The current leader
+      leader_index: 0,                     # The index of thecurrent leader in the users list
       users: users_array,                  # The users in the game
-      current_player: nil,                 # The current player asking a question
+      asker_index: nil,                    # The current player asking a question
       question_index: nil                  # Which question # are we asking now?
     }
   end
@@ -76,7 +80,20 @@ class TwentyQuestions < ActivityInstance
   def select_word_event(data)
     state[:word] = data[:word]
     state[:status] = Status::ASKING_QUESTIONS
-    state[:current_player] = state[:users].first[:user_id]
     state[:question_index] = 1
+
+    increment_asker
+
+    if state[:asker_index] == state[:leader_index]
+      increment_asker
+    end
+  end
+
+  def increment_asker
+    if state[:asker_index]
+      state[:asker_index] = (state[:asker_index] + 1) % state[:users].length
+    else
+      state[:asker_index] = 1
+    end
   end
 end

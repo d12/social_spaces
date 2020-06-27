@@ -2,24 +2,25 @@ import React, { useEffect, useState } from "react";
 
 import * as styles from "./TwentyQuestions.module.scss";
 
+import { GameState } from "./TwentyQuestions"
+
 interface Props {
-  leader: number
-  isLeader: boolean
-  wordOptions: string[]
-  selectWordCallback: function
+  gameState: GameState;
+  isLeader: boolean;
+  selectWordCallback(word: string): void;
 }
 
-export default function SelectingWordStatus({ leader, isLeader, wordOptions, selectWordCallback }: Props) {
+export default function SelectingWordStatus({ gameState, isLeader, selectWordCallback }: Props) {
   if(isLeader){
     return(
       <>
         <h3>Please select a word:</h3>
-        {wordOptions.map((word, index) => {
+        {gameState.wordOptions.map((word) => {
           return <button key={word} onClick={()=> selectWordCallback(word)}>{word}</button>;
         })}
       </>
     )
   } else{
-    return <> <h3>Please wait for the leader to choose a word</h3> </>
+    return <h3>Please wait for the leader to choose a word</h3>
   }
 }
