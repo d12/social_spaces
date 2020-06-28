@@ -16,6 +16,8 @@ class TwentyQuestions < ActivityInstance
     salt
     bike
     cat
+    phone
+    umbrella
   ]
 
   def self.display_name
@@ -47,11 +49,11 @@ class TwentyQuestions < ActivityInstance
   # E.g. When a client joins midway, they need enough information
   # to render the current state of the game
   def client_data
-    data = case state[:status].to_sym
+    data = case storage[:status].to_sym
     when Status::SELECTING_WORD
-      state.slice(:status, :leader_index, :word_options, :users)
+      storage.slice(:status, :leader_index, :word_options, :users)
     when Status::ASKING_QUESTIONS
-      state.slice(:status, :leader_index, :word, :asker_index, :question_index, :users)
+      storage.slice(:status, :leader_index, :word, :asker_index, :question_index, :users)
     end
 
     # Transform keys to camelCase as JS will expect
@@ -59,7 +61,7 @@ class TwentyQuestions < ActivityInstance
   end
 
   # The initial value to use for a instances save state
-  def initial_state
+  def initial_storage
     users_array = users.map do |user|
       {
         id: user.id,
@@ -81,31 +83,27 @@ class TwentyQuestions < ActivityInstance
   private
 
   def select_word_event(data)
-    state[:word] = data[:word]
-    state[:status] = Status::ASKING_QUESTIONS
-    state[:question_index] = 1
+    storage[:word] = data[:word]
+    storage[:status] = Status::ASKING_QUESTIONS
+    storage[:question_index] = 1
 
     set_next_asker
-
-    if state[:asker_index] == state[:leader_index]
-      set_next_asker
-    end
   end
 
   def set_next_asker
-    if state[:asker_index]
-      state[:asker_index] = (state[:asker_index] + 1) % state[:users].length
+    if storage[:asker_index]
+      storage[:asker_index] = (storage[:asker_index] + 1) % storage[:users].length
     else
-      state[:asker_index] = 1
+      storage[:asker_index] = 1
     end
 
-    if state[:asker_index] == state[:leader_index]
+    if storage[:asker_index] == storage[:leader_index]
       set_next_asker
     end
   end
 
   def set_next_leader
-    state[:leader_index] = (state[:leader_index] + 1) % state[:users].length
+    storage[:leader_index] = (storage[:leader_index] + 1) % storage[:users].length
 
     set_next_asker
   end
@@ -122,12 +120,12 @@ class TwentyQuestions < ActivityInstance
   end
 
   def process_yes_no
-    if state[:question_index] == 20
+    if storage[:question_index] == 20
       game_over
       return
     end
 
-    state[:question_index] += 1
+    storage[:question_index] += 1
     set_next_asker
   end
 
@@ -143,8 +141,8 @@ class TwentyQuestions < ActivityInstance
 
   def finish_game
     set_next_leader
-    state[:status] = Status::SELECTING_WORD
-    state[:word] = nil
-    state[:word_options] = WORDS.sample(3)
+    storage[:status] = Status::SELECTING_WORD
+    storage[:word] = nil
+    storage[:word_options] = WORDS.sample(3)
   end
 end

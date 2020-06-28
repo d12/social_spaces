@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_06_26_205237) do
+ActiveRecord::Schema.define(version: 2020_06_28_152752) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -21,7 +21,7 @@ ActiveRecord::Schema.define(version: 2020_06_26_205237) do
     t.string "activity"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.json "state"
+    t.json "storage"
     t.index ["group_id"], name: "index_activity_instances_on_group_id"
   end
 
