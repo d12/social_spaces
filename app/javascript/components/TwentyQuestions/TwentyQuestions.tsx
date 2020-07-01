@@ -19,7 +19,7 @@ interface User {
 }
 
 export interface GameState {
-  status: string;
+  status: ActivityStatus;
   leaderIndex: number;
   wordOptions: string[];
   word: string;
@@ -31,6 +31,11 @@ export interface GameState {
 export enum ClientEvent {
   SELECT_WORD = "select_word",
   ASKED_QUESTION = "asked_question",
+}
+
+export enum ActivityStatus {
+  SELECTING_WORD = "selecting_word",
+  ASKING_QUESTIONS = "asking_questions",
 }
 
 export function leader(gameState: GameState): User {

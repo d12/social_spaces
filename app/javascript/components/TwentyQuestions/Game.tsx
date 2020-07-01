@@ -8,7 +8,13 @@ import AskingQuestionsLeaderStatus from "./Statuses/AskingQuestions/LeaderStatus
 import AskingQuestionsAskerStatus from "./Statuses/AskingQuestions/AskerStatus";
 import AskingQuestionsWaiterStatus from "./Statuses/AskingQuestions/WaiterStatus";
 
-import { GameState, ClientEvent, leader, asker } from "./TwentyQuestions";
+import {
+  GameState,
+  ClientEvent,
+  ActivityStatus,
+  leader,
+  asker,
+} from "./TwentyQuestions";
 
 interface Props {
   gameState: GameState;
@@ -32,7 +38,7 @@ export default function Game({
   const isLeader = userId === leader(gameState).id;
 
   switch (gameState.status) {
-    case "selecting_word":
+    case ActivityStatus.SELECTING_WORD:
       return (
         <SelectingWordStatus
           gameState={gameState}
@@ -40,7 +46,7 @@ export default function Game({
           selectWordCallback={selectWord}
         />
       );
-    case "asking_questions":
+    case ActivityStatus.ASKING_QUESTIONS:
       if (isLeader) {
         return (
           <AskingQuestionsLeaderStatus
