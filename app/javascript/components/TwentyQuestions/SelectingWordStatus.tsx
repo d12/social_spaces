@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 
-import * as styles from "./TwentyQuestions.module.scss";
+import * as _styles from "./TwentyQuestions.module.scss";
 
 import { GameState, leader } from "./TwentyQuestions";
 

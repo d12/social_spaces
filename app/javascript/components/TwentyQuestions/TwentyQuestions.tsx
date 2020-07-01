@@ -26,16 +26,24 @@ export interface GameState {
   askerIndex: number;
   questionIndex: number;
   users: User[];
+  roundEndState: RoundEndState;
 }
 
 export enum ClientEvent {
   SELECT_WORD = "select_word",
   ASKED_QUESTION = "asked_question",
+  BEGIN_NEXT_ROUND = "begin_next_round",
 }
 
 export enum ActivityStatus {
   SELECTING_WORD = "selecting_word",
   ASKING_QUESTIONS = "asking_questions",
+  ROUND_END = "round_end",
+}
+
+export enum RoundEndState {
+  WIN = "win",
+  LOSE = "lose",
 }
 
 export function leader(gameState: GameState): User {
@@ -54,6 +62,29 @@ export default function TwentyQuestions({
 }: Props) {
   const [gameState, setGameState] = useState<GameState>(undefined);
   const [subscription, setSubscription] = useState(undefined);
+
+  function selectWordCallback(word: string): void {
+    subscription.send({
+      event: ClientEvent.SELECT_WORD,
+      userId: userId,
+      word: word,
+    });
+  }
+
+  function askedQuestionCallback(result: string): void {
+    subscription.send({
+      event: ClientEvent.ASKED_QUESTION,
+      userId: userId,
+      result: result,
+    });
+  }
+
+  function beginNextRoundCallback(): void {
+    subscription.send({
+      event: ClientEvent.BEGIN_NEXT_ROUND,
+      userId: userId,
+    });
+  }
 
   // A callback used by client-side components when we need to update state
   // or send requests to the server.
@@ -101,7 +132,9 @@ export default function TwentyQuestions({
         <Game
           gameState={gameState}
           userId={userId}
-          clientEventCallback={clientEvent}
+          beginNextRoundCallback={beginNextRoundCallback}
+          selectWordCallback={selectWordCallback}
+          askedQuestionCallback={askedQuestionCallback}
         />
       </>
     );

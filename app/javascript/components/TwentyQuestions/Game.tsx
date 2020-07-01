@@ -8,33 +8,26 @@ import AskingQuestionsLeaderStatus from "./Statuses/AskingQuestions/LeaderStatus
 import AskingQuestionsAskerStatus from "./Statuses/AskingQuestions/AskerStatus";
 import AskingQuestionsWaiterStatus from "./Statuses/AskingQuestions/WaiterStatus";
 
-import {
-  GameState,
-  ClientEvent,
-  ActivityStatus,
-  leader,
-  asker,
-} from "./TwentyQuestions";
+import RoundEndLeaderStatus from "./Statuses/RoundEnd/LeaderStatus";
+import RoundEndFollowerStatus from "./Statuses/RoundEnd/FollowerStatus";
+
+import { GameState, ActivityStatus, leader, asker } from "./TwentyQuestions";
 
 interface Props {
   gameState: GameState;
   userId: number;
-  clientEventCallback(event: ClientEvent, data: Object): void;
+  selectWordCallback(word: string): void;
+  askedQuestionCallback(result: string): void;
+  beginNextRoundCallback(): void;
 }
 
 export default function Game({
   gameState,
   userId,
-  clientEventCallback,
+  selectWordCallback,
+  askedQuestionCallback,
+  beginNextRoundCallback,
 }: Props) {
-  function selectWord(word: string) {
-    clientEventCallback(ClientEvent.SELECT_WORD, { word: word });
-  }
-
-  function askedQuestion(result: string) {
-    clientEventCallback(ClientEvent.ASKED_QUESTION, { result: result });
-  }
-
   const isLeader = userId === leader(gameState).id;
 
   switch (gameState.status) {
@@ -43,7 +36,7 @@ export default function Game({
         <SelectingWordStatus
           gameState={gameState}
           isLeader={isLeader}
-          selectWordCallback={selectWord}
+          selectWordCallback={selectWordCallback}
         />
       );
     case ActivityStatus.ASKING_QUESTIONS:
@@ -51,7 +44,7 @@ export default function Game({
         return (
           <AskingQuestionsLeaderStatus
             gameState={gameState}
-            askedQuestionCallback={askedQuestion}
+            askedQuestionCallback={askedQuestionCallback}
           />
         );
       }
@@ -62,6 +55,17 @@ export default function Game({
         return <AskingQuestionsAskerStatus gameState={gameState} />;
       } else {
         return <AskingQuestionsWaiterStatus gameState={gameState} />;
+      }
+    case ActivityStatus.ROUND_END:
+      if (isLeader) {
+        return (
+          <RoundEndLeaderStatus
+            gameState={gameState}
+            beginNextRoundCallback={beginNextRoundCallback}
+          />
+        );
+      } else {
+        return <RoundEndFollowerStatus gameState={gameState} />;
       }
 
     default:

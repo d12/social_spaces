@@ -2,11 +2,13 @@ class TwentyQuestions < ActivityInstance
   class Event
     SELECT_WORD = "select_word"
     ASKED_QUESTION = "asked_question"
+    BEGIN_NEXT_ROUND = "begin_next_round"
   end
 
   class Status
-    SELECTING_WORD = :selecting_word # The leader is selecting a word
+    SELECTING_WORD = :selecting_word     # The leader is selecting a word
     ASKING_QUESTIONS = :asking_questions # The others are asking yes/no questions
+    ROUND_END = :round_end               # Game-over transition state before next round
   end
 
   WORDS = %w[
@@ -36,6 +38,8 @@ class TwentyQuestions < ActivityInstance
       select_word_event(data)
     when Event::ASKED_QUESTION
       asked_question_event(data)
+    when Event::BEGIN_NEXT_ROUND
+      begin_next_round_event
     end
 
     save!
@@ -54,6 +58,8 @@ class TwentyQuestions < ActivityInstance
       storage.slice(:status, :leader_index, :word_options, :users)
     when Status::ASKING_QUESTIONS
       storage.slice(:status, :leader_index, :word, :asker_index, :question_index, :users)
+    when Status::ROUND_END
+      storage.slice(:status, :leader_index, :word, :users, :round_end_state)
     end
 
     # Transform keys to camelCase as JS will expect
@@ -76,7 +82,8 @@ class TwentyQuestions < ActivityInstance
       leader_index: 0,                     # The index of thecurrent leader in the users list
       users: users_array,                  # The users in the game
       asker_index: nil,                    # The current player asking a question
-      question_index: nil                  # Which question # are we asking now?
+      question_index: nil,                 # Which question # are we asking now?
+      round_end_state: nil                 # 'win' or 'lose', used at end of game
     }
   end
 
@@ -130,16 +137,16 @@ class TwentyQuestions < ActivityInstance
   end
 
   def process_correct_answer
-    # TELL PEOPLE THEY GOT THE CORRECT ANSWER
-    finish_game
+    storage[:round_end_state] = "win"
+    storage[:status] = Status::ROUND_END
   end
 
   def game_over
-    # TELL PEOPLE THEY GOT A GAME OVER, ASK THE LEADER TO TELL THE OTHERS WHAT THE WORD WAS
-    finish_game
+    storage[:round_end_state] = "lose"
+    storage[:status] = Status::ROUND_END
   end
 
-  def finish_game
+  def begin_next_round_event
     set_next_leader
     storage[:status] = Status::SELECTING_WORD
     storage[:word] = nil
