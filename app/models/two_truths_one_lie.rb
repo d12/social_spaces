@@ -120,11 +120,15 @@ class TwoTruthsOneLie < ActivityInstance
     user_id = data[:user_id]
     vote_index = data[:vote_index]
 
+    user_index = current_user_index(user_id)
+
     statements = storage[:users][storage[:whos_turn_index]][:statements]
     voted_statement = statements[vote_index]
 
-    return if voted_statement[:voters].include?(user_id)
+    return if storage[:users][user_id][:has_voted]
+
     voted_statement[:voters] << user_id
+    storage[:users][user_id][:has_voted] = true
 
     total_votes = statements.sum { |a| a[:voters].count }
     if total_votes == storage[:users].count
