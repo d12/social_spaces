@@ -28,7 +28,7 @@ class TwoTruthsOneLie < ActivityInstance
     when Event::ENTERED_STATEMENTS
       process_entered_statement(data)
     when Event::VOTED
-      # TODO
+      process_vote(data)
     when Event::INITATED_NEXT_TURN
       # TODO
     when Event::INITIATED_NEXT_ROUND
@@ -50,8 +50,7 @@ class TwoTruthsOneLie < ActivityInstance
     when Status::BRAINSTORMING
       storage.slice(:status, :leader_index, :users)
     when Status::VOTING
-      storage
-      # storage.slice(:status, :leader_index, :word, :asker_index, :question_index, :users)
+      storage.slice(:status, :leader_index, :users, :whos_turn_index)
     when Status::REVEAL
       storage
       # storage.slice(:status, :leader_index, :word, :users, :round_end_state)
@@ -115,5 +114,41 @@ class TwoTruthsOneLie < ActivityInstance
   def transition_to_voting
     storage[:status] = Status::VOTING
     storage[:whos_turn_index] = 0
+  end
+
+  def process_vote(data)
+    user_id = data[:user_id]
+    vote_index = data[:vote_index]
+
+    statements = storage[:users][storage[:whos_turn_index]][:statements]
+    voted_statement = statements[vote_index]
+
+    return if voted_statement[:voters].include?(user_id)
+    voted_statement[:voters] << user_id
+
+    total_votes = statements.sum { |a| a[:voters].count }
+    if total_votes == storage[:users].count
+      transition_to_reveal
+    end
+  end
+
+  def transition_to_reveal
+    storage[:status] = Status::REVEAL
+    add_points_for_round
+  end
+
+  def add_points_for_round
+    statements = storage[:users][storage[:whos_turn_index]][:statements]
+    statements.each do |statement|
+      is_lie = statement[:is_lie]
+      next unless is_lie
+
+      voters = statement[:voters]
+      voters.each do |voter_id|
+        # 5 points for guessing correctly
+        user_index = storage[:users].find_index{ |user| user[:id] == voter_id }
+        storage[:users][:score] += 5
+      end
+    end
   end
 end
