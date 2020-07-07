@@ -7,6 +7,7 @@ class ActivitiesController < ApplicationController
 
   ACTIVITIES = [
     TwentyQuestions,
+    TwoTruthsOneLie,
     Clicker
   ]
 
