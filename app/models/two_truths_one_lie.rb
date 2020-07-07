@@ -1,15 +1,17 @@
 class TwoTruthsOneLie < ActivityInstance
-  # class Event
-  #   SELECT_WORD = "select_word"
-  #   ASKED_QUESTION = "asked_question"
-  #   BEGIN_NEXT_ROUND = "begin_next_round"
-  # end
-  #
-  # class Status
-  #   SELECTING_WORD = :selecting_word     # The leader is selecting a word
-  #   ASKING_QUESTIONS = :asking_questions # The others are asking yes/no questions
-  #   ROUND_END = :round_end               # Game-over transition state before next round
-  # end
+  class Event
+    ENTERED_STATEMENTS = "entered_statements"
+    VOTED = "voted"
+    INITATED_NEXT_TURN = "initiated_next_turn"
+    INITIATED_NEXT_ROUND = "initated_next_round"
+  end
+
+  class Status
+    BRAINSTORMING = :brainstorming # Users are entering statements
+    VOTING = :voting               # Users are voting which statement they think is a lie
+    REVEAL = :reveal               # Transition state between voting rounds, shows which one was a lie, + score
+    SUMMARY = :summary             # End of round summary with scoreboard
+  end
 
   def self.display_name
     "Two Truths, One Lie"
@@ -20,19 +22,21 @@ class TwoTruthsOneLie < ActivityInstance
   end
 
   def process_message(data)
-    # puts "Got a message: #{data}"
-    #
-    # case data[:event]
-    # when Event::SELECT_WORD
-    #   select_word_event(data)
-    # when Event::ASKED_QUESTION
-    #   asked_question_event(data)
-    # when Event::BEGIN_NEXT_ROUND
-    #   begin_next_round_event
-    # end
-    #
-    # save!
-    # client_data
+    puts "Got a message: #{data}"
+
+    case data[:event]
+    when Event::ENTERED_STATEMENTS
+      process_entered_statement(data)
+    when Event::VOTED
+      # TODO
+    when Event::INITATED_NEXT_TURN
+      # TODO
+    when Event::INITIATED_NEXT_ROUND
+      # TODO
+    end
+
+    save!
+    client_data
   end
 
   def tick
@@ -42,37 +46,74 @@ class TwoTruthsOneLie < ActivityInstance
   # E.g. When a client joins midway, they need enough information
   # to render the current state of the game
   def client_data
-    # data = case storage[:status].to_sym
-    # when Status::SELECTING_WORD
-    #   storage.slice(:status, :leader_index, :word_options, :users)
-    # when Status::ASKING_QUESTIONS
-    #   storage.slice(:status, :leader_index, :word, :asker_index, :question_index, :users)
-    # when Status::ROUND_END
-    #   storage.slice(:status, :leader_index, :word, :users, :round_end_state)
-    # end
-    #
-    # # Transform keys to camelCase as JS will expect
-    # data.transform_keys{ |k| k.camelcase(:lower) }
+    data = case storage[:status].to_sym
+    when Status::BRAINSTORMING
+      storage.slice(:status, :leader_index, :users)
+    when Status::VOTING
+      storage
+      # storage.slice(:status, :leader_index, :word, :asker_index, :question_index, :users)
+    when Status::REVEAL
+      storage
+      # storage.slice(:status, :leader_index, :word, :users, :round_end_state)
+    when Status::SUMMARY
+      storage
+      #
+    end
+
+    # Transform keys to camelCase as JS will expect
+    data.deep_transform_keys{ |k| k.camelcase(:lower) }
   end
 
   # The initial value to use for a instances save state
   def initial_storage
-    # users_array = users.map do |user|
-    #   {
-    #     id: user.id,
-    #     name: user.name
-    #   }
-    # end
-    #
-    # {
-    #   status: Status::SELECTING_WORD,
-    #   word: nil,                           # The current word being guessed
-    #   word_options: WORDS.sample(3),       # The word options for the leader to pick from
-    #   leader_index: 0,                     # The index of thecurrent leader in the users list
-    #   users: users_array,                  # The users in the game
-    #   asker_index: nil,                    # The current player asking a question
-    #   question_index: nil,                 # Which question # are we asking now?
-    #   round_end_state: nil                 # 'win' or 'lose', used at end of game
-    # }
+    users_array = users.map do |user|
+      {
+        id: user.id,
+        name: user.name,
+        score: 0,
+        statements: nil,
+        has_voted: nil
+      }
+    end
+
+    {
+      status: Status::BRAINSTORMING,
+      leader_index: 0,               # The index of the leader in the users list
+      users: users_array,            # The users in the game
+      whos_turn_index: nil,          # The current player who's statements are being voted on
+    }
+  end
+
+  private
+
+  # Helper for finding the current user in the
+  def current_user_index(user_id)
+    @current_user_index ||= []
+    @current_user_index[user_id] ||= storage[:users].find_index do |user|
+      user[:id] == user_id
+    end
+  end
+
+  def process_entered_statement(data)
+    user_index = current_user_index(data[:user_id])
+
+    statements = [data[:truths], data[:lie]].flatten.shuffle
+
+    storage[:users][user_index][:statements] = statements.map do |statement|
+      {
+        content: statement,
+        is_lie: statement == data[:lie],
+        voters: []
+      }
+    end
+
+    if storage[:users].all? { |u| u[:statements] }
+      transition_to_voting
+    end
+  end
+
+  def transition_to_voting
+    storage[:status] = Status::VOTING
+    storage[:whos_turn_index] = 0
   end
 end
