@@ -86,28 +86,6 @@ export default function TwentyQuestions({
     });
   }
 
-  // A callback used by client-side components when we need to update state
-  // or send requests to the server.
-  function clientEvent(event: ClientEvent, data) {
-    switch (event) {
-      case ClientEvent.SELECT_WORD:
-        subscription.send({ event: event, userId: userId, word: data.word });
-        break;
-
-      case ClientEvent.ASKED_QUESTION:
-        subscription.send({
-          event: event,
-          userId: userId,
-          result: data.result,
-        });
-        break;
-
-      default:
-        console.log("Unknown event: " + event);
-        break;
-    }
-  }
-
   useEffect(() => {
     setSubscription(
       consumer.subscriptions.create(
