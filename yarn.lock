@@ -952,6 +952,31 @@
     webpack-cli "^3.3.10"
     webpack-sources "^1.4.3"
 
+"@shopify/predicates@^1.2.6":
+  version "1.2.6"
+  resolved "https://registry.yarnpkg.com/@shopify/predicates/-/predicates-1.2.6.tgz#f781800a021faec413370248be37ee0f2822482a"
+  integrity sha512-dZxr8Q5BtErhmP021dsROyXAn/R4aqiGs/l4RWmMYJxJOhZ3hi2drAYi7iKn+YxxUJ8esHCOnFiv5Xo8uZUBVg==
+
+"@shopify/react-form@^0.7.1":
+  version "0.7.1"
+  resolved "https://registry.yarnpkg.com/@shopify/react-form/-/react-form-0.7.1.tgz#6d6439a525b7d9aded2c7fadb9e7289686966311"
+  integrity sha512-/qDb81Jx3R5xKBHvqUTfckt2lBsB9YQUytmHRyE+PcSdK6wic6hfyQEdgQRRMnTcY5QfSu0EgXybCOqczepTyw==
+  dependencies:
+    "@shopify/predicates" "^1.2.6"
+    "@shopify/react-hooks" "^1.10.1"
+    fast-deep-equal "^2.0.1"
+    get-value "^3.0.1"
+
+"@shopify/react-hooks@^1.10.1":
+  version "1.10.1"
+  resolved "https://registry.yarnpkg.com/@shopify/react-hooks/-/react-hooks-1.10.1.tgz#b17d16beaddf9af7adad7c9c1a1e4d5ad408f732"
+  integrity sha512-xvYyTYGQHNff7MJDCwrNSQ9PxuU6Icp2sleaB73S+uDL+BvVVwEyhqYxVOMMJtX3mLgUAEAYDAm3Jxr3rmlINw==
+
+"@types/actioncable@^5.2.3":
+  version "5.2.3"
+  resolved "https://registry.yarnpkg.com/@types/actioncable/-/actioncable-5.2.3.tgz#215689835399a1be6e7271a2a9d8c8d476c0fd6a"
+  integrity sha512-RxPohXyK0PmC+xAnIrdrd/+0Rp5Pc3e0gMIw+Rc4EorbXApS+i8D00dDC6RxDCXNrmQaIBwiu5iCE7JurC38kA==
+
 "@types/events@*":
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/@types/events/-/events-3.0.0.tgz#2862f3f58a9a7f7c3e78d79f130dd4d71c25c2a7"
@@ -2967,6 +2992,11 @@ extsprintf@^1.2.0:
   resolved "https://registry.yarnpkg.com/extsprintf/-/extsprintf-1.4.0.tgz#e2689f8f356fad62cca65a3a91c5df5f9551692f"
   integrity sha1-4mifjzVvrWLMplo6kcXfX5VRaS8=
 
+fast-deep-equal@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/fast-deep-equal/-/fast-deep-equal-2.0.1.tgz#7b05218ddf9667bf7f370bf7fdb2cb15fdd0aa49"
+  integrity sha1-ewUhjd+WZ79/Nwv3/bLLFf3Qqkk=
+
 fast-deep-equal@^3.1.1:
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/fast-deep-equal/-/fast-deep-equal-3.1.1.tgz#545145077c501491e33b15ec408c294376e94ae4"
@@ -3263,6 +3293,13 @@ get-value@^2.0.3, get-value@^2.0.6:
   version "2.0.6"
   resolved "https://registry.yarnpkg.com/get-value/-/get-value-2.0.6.tgz#dc15ca1c672387ca76bd37ac0a395ba2042a2c28"
   integrity sha1-3BXKHGcjh8p2vTesCjlbogQqLCg=
+
+get-value@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/get-value/-/get-value-3.0.1.tgz#5efd2a157f1d6a516d7524e124ac52d0a39ef5a8"
+  integrity sha512-mKZj9JLQrwMBtj5wxi6MH8Z5eSKaERpAwjg43dPtlGI1ZVEgH/qC7T8/6R2OBSUA+zzHBZgICsVJaEIV2tKTDA==
+  dependencies:
+    isobject "^3.0.1"
 
 getpass@^0.1.1:
   version "0.1.7"

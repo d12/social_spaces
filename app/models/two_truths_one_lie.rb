@@ -125,13 +125,13 @@ class TwoTruthsOneLie < ActivityInstance
     statements = storage[:users][storage[:whos_turn_index]][:statements]
     voted_statement = statements[vote_index]
 
-    return if storage[:users][user_id][:has_voted]
+    return if storage[:users][user_index][:has_voted]
 
     voted_statement[:voters] << user_id
-    storage[:users][user_id][:has_voted] = true
+    storage[:users][user_index][:has_voted] = true
 
     total_votes = statements.sum { |a| a[:voters].count }
-    if total_votes == storage[:users].count
+    if total_votes == storage[:users].count - 1
       transition_to_reveal
     end
   end
@@ -151,7 +151,7 @@ class TwoTruthsOneLie < ActivityInstance
       voters.each do |voter_id|
         # 5 points for guessing correctly
         user_index = storage[:users].find_index{ |user| user[:id] == voter_id }
-        storage[:users][:score] += 5
+        storage[:users][user_index][:score] += 5
       end
     end
   end
