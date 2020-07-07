@@ -24,12 +24,12 @@ class ActivitiesController < ApplicationController
 
     unless @user == @group.host
       flash[:alert] = "Only the host can start a new game"
-      return redirect_back(fallback_location: root_path)
+      return redirect_back(fallback_location: activities_path)
     end
 
     if ActivityInstance.find_by(group: @group)
       flash[:alert] = "You must leave your current activity before joining a new one."
-      return redirect_back(fallback_location: root_path)
+      return redirect_back(fallback_location: activities_path)
     end
 
     @instance = ActivityInstance.create(
@@ -61,7 +61,7 @@ class ActivitiesController < ApplicationController
 
     unless @user == @group.host
       flash[:alert] = "Only the host can leave an activity"
-      return redirect_back(fallback_location: root_path)
+      return redirect_back(fallback_location: activities_path)
     end
 
     ActivityInstance.find_by(group: @group).destroy
@@ -86,7 +86,7 @@ class ActivitiesController < ApplicationController
   def ensure_current_activity
     unless current_activity
       flash[:error] = "You can't do this unless you're in an activity!"
-      redirect_back(fallback_location: root_path)
+      redirect_back(fallback_location: activities_path)
     end
   end
 

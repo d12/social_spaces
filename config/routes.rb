@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
   devise_for :users, :controllers => { :omniauth_callbacks => "users/omniauth_callbacks" }
-  root "groups#index"
+  root "home#index"
 
   resources :groups, only: [:index, :create]
   get "join/:group_key", to: "groups#join", as: "join_group" # TODO: This shouldn't be GET.

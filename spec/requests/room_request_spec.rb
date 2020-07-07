@@ -4,7 +4,7 @@ RSpec.describe "Activities", type: :request do
   describe "#index" do
     context "when the user is not logged in" do
       it "redirects to the Google oauth page" do
-        get root_path
+        get groups_path
         expect(response).to redirect_to(user_google_oauth2_omniauth_authorize_path)
       end
     end
@@ -17,7 +17,7 @@ RSpec.describe "Activities", type: :request do
       end
 
       it "renders the page" do
-        get(root_path)
+        get(groups_path)
         expect(response).to have_http_status(:ok)
       end
     end
