@@ -7,13 +7,13 @@ class Clicker < ActivityInstance
     8
   end
 
-  def message(data)
+  def process_message(data)
     return unless data["add"]
 
-    state[:count] += 1
+    storage[:count] += 1
     save!
 
-    {updatedCount: state[:count]}
+    {updatedCount: storage[:count]}
   end
 
   def tick
@@ -23,13 +23,13 @@ class Clicker < ActivityInstance
   # All the data required for a client to bootstrap itself
   # E.g. When a client joins midway, they need enough information
   # to render the current state of the game
-  def client_bootstrap_data
+  def client_data
     reload
-    {count: state[:count]}
+    {count: storage[:count]}
   end
 
   # The initial value to use for a instances save state
-  def initial_state
+  def initial_storage
     {count: 0}
   end
 end

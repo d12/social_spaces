@@ -6,45 +6,105 @@ import consumer from "../../channels/consumer";
 
 import Game from "./Game";
 
-interface BootstrapData {
-  status: string;
-  leader: number;
-  wordOptions: string[];
-}
-
 interface Props {
   groupId: string;
   instanceId: number;
   userId: number;
-  bootstrapData: BootstrapData;
+  bootstrapData: GameState;
 }
 
-export default function TwentyQuestions({ groupId, instanceId, userId, bootstrapData }: Props) {
-  const [status, setStatus] = useState(undefined);
-  const [leader, setLeader] = useState(undefined);
-  const [wordOptions, setWordOptions] = useState(undefined);
+interface User {
+  id: number;
+  name: string;
+}
+
+export interface GameState {
+  status: ActivityStatus;
+  leaderIndex: number;
+  wordOptions: string[];
+  word: string;
+  askerIndex: number;
+  questionIndex: number;
+  users: User[];
+  roundEndState: RoundEndState;
+}
+
+export enum ClientEvent {
+  SELECT_WORD = "select_word",
+  ASKED_QUESTION = "asked_question",
+  BEGIN_NEXT_ROUND = "begin_next_round",
+}
+
+export enum ActivityStatus {
+  SELECTING_WORD = "selecting_word",
+  ASKING_QUESTIONS = "asking_questions",
+  ROUND_END = "round_end",
+}
+
+export enum RoundEndState {
+  WIN = "win",
+  LOSE = "lose",
+}
+
+export function leader(gameState: GameState): User {
+  return gameState.users[gameState.leaderIndex];
+}
+
+export function asker(gameState: GameState): User {
+  return gameState.users[gameState.askerIndex];
+}
+
+export default function TwentyQuestions({
+  groupId,
+  instanceId,
+  userId,
+  bootstrapData,
+}: Props) {
+  const [gameState, setGameState] = useState<GameState>(undefined);
   const [subscription, setSubscription] = useState(undefined);
 
-  function acceptMessage(data){
-    console.log("Accepted message!")
-    console.log(data);
+  function selectWordCallback(word: string): void {
+    subscription.send({
+      event: ClientEvent.SELECT_WORD,
+      userId: userId,
+      word: word,
+    });
+  }
 
-    setStatus(data["status"])
-    setLeader(data["leader"])
-    setWordOptions(data["word_options"])
+  function askedQuestionCallback(result: string): void {
+    subscription.send({
+      event: ClientEvent.ASKED_QUESTION,
+      userId: userId,
+      result: result,
+    });
+  }
+
+  function beginNextRoundCallback(): void {
+    subscription.send({
+      event: ClientEvent.BEGIN_NEXT_ROUND,
+      userId: userId,
+    });
   }
 
   // A callback used by client-side components when we need to update state
   // or send requests to the server.
-  function clientEvent(event: String, data){
-    switch(event){
-      case "select_word":
-        subscription.send({ event: "select_word", userId: userId, word: data.word });
-        break
+  function clientEvent(event: ClientEvent, data) {
+    switch (event) {
+      case ClientEvent.SELECT_WORD:
+        subscription.send({ event: event, userId: userId, word: data.word });
+        break;
+
+      case ClientEvent.ASKED_QUESTION:
+        subscription.send({
+          event: event,
+          userId: userId,
+          result: data.result,
+        });
+        break;
 
       default:
-        console.log("Unknown event: " + event)
-        break
+        console.log("Unknown event: " + event);
+        break;
     }
   }
 
@@ -53,24 +113,30 @@ export default function TwentyQuestions({ groupId, instanceId, userId, bootstrap
       consumer.subscriptions.create(
         { channel: "ActivityChannel", activity_instance_id: instanceId },
         {
-          received: (data) => {
-            console.log("RECIEVED A MESSAGE");
+          received: (data: GameState) => {
+            setGameState(data);
           },
         }
       )
     );
 
-    acceptMessage(bootstrapData);
+    setGameState(bootstrapData);
   }, []);
 
-  return (
-    <>
-      <h1>Twenty Questions</h1>
-      <Game status={status}
-            leader={leader}
-            isLeader={userId === leader}
-            wordOptions={wordOptions}
-            clientEventCallback={clientEvent} />
-    </>
-  )
+  if (gameState === undefined) {
+    return <>Loading...</>;
+  } else {
+    return (
+      <>
+        <h1>Twenty Questions</h1>
+        <Game
+          gameState={gameState}
+          userId={userId}
+          beginNextRoundCallback={beginNextRoundCallback}
+          selectWordCallback={selectWordCallback}
+          askedQuestionCallback={askedQuestionCallback}
+        />
+      </>
+    );
+  }
 }

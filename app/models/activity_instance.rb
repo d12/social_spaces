@@ -7,7 +7,7 @@ class ActivityInstance < ApplicationRecord
 
   delegate :users, to: :group
 
-  serialize :state, IndifferentHashSerializer
+  serialize :storage, IndifferentHashSerializer
 
   enum status: { awaiting_activity_thread: 0, ongoing: 1, finished: 2 }
 
@@ -21,13 +21,13 @@ class ActivityInstance < ApplicationRecord
 
   # Called when a client sends a message to the game server.
   # Data is an arbitrary JSON hash.
-  def message(data)
+  def process_message(data)
     raise NotImplementedError
   end
 
   # When a client is loaded into an activity midway, they need
   # enough data to be able to properly bootstrap themselves. Return any necessary data here.
-  def client_bootstrap_data
+  def client_data
     raise NotImplementedError
   end
 
@@ -39,11 +39,11 @@ class ActivityInstance < ApplicationRecord
   private
 
   def initialize_storage
-    self.state = initial_state
+    self.storage = initial_storage
   end
 
   # The initial state stored in the database for a new activity instance.
-  def initial_state
+  def initial_storage
     raise NotImplementedError
   end
 end
