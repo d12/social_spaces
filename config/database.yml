@@ -1,3 +1,10 @@
+production:
+  adapter: postgresql
+  encoding: unicode
+  database: postgres_production
+  pool: 5
+  url: <%= ENV['DATABASE_URL'] %>
+
 development:
   adapter: postgresql
   host: localhost
