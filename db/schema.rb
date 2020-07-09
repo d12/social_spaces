@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_06_28_152752) do
+ActiveRecord::Schema.define(version: 2020_07_09_134204) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -45,6 +45,8 @@ ActiveRecord::Schema.define(version: 2020_06_28_152752) do
     t.boolean "expires"
     t.string "refresh_token"
     t.bigint "group_id"
+    t.text "token_ciphertext"
+    t.text "refresh_token_ciphertext"
     t.index ["group_id"], name: "index_users_on_group_id"
   end
 

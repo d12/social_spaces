@@ -52,3 +52,5 @@ gem "devise", "~> 4.7"
 gem "google-api-client", "~> 0.40.1"
 
 gem "pg", "~> 1.2"
+
+gem "lockbox", "~> 0.4.6"

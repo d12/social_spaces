@@ -3,6 +3,9 @@ class User < ApplicationRecord
 
   devise :omniauthable, :omniauth_providers => [:google_oauth2]
 
+  encrypts :token, migrating: true
+  encrypts :refresh_token, migrating: true
+
   def self.from_omniauth(auth)
     return unless auth
 
