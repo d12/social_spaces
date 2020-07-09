@@ -81,7 +81,7 @@ export default function GroupIndex() {
           autoFocus
           margin="dense"
           id="groupId"
-          label="Group ID"
+          label="Group code"
           fullWidth
           value={fields.groupId.value}
           onChange={fields.groupId.onChange as any}

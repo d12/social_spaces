@@ -21,6 +21,6 @@ class User < ApplicationRecord
   end
 
   def as_json(*)
-    super(only: [:id, :name])
+    super(only: [:id, :name, :email])
   end
 end
