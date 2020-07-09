@@ -9,7 +9,7 @@ You're in group: <%= @group.key %>
 <% # TODO: This should be react %>
 <% # TODO: This should be a button %>
 <% if @user == @group.host %>
-  <%= link_to "Leave activity", leave_activity_path, method: :delete %>
+  <%= link_to "End activity", leave_activity_path, method: :delete %>
 <% end %>
 
 <br>

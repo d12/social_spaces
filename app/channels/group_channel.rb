@@ -1,10 +1,10 @@
 class GroupChannel < ApplicationCable::Channel
   def self.broadcast_user_joined(group, user)
-    broadcast_to(group, { type: 'JOINED', user: user.as_json })
+    broadcast_to(group, { type: "JOINED", user: user.as_json })
   end
 
   def self.broadcast_user_left(group, user)
-    broadcast_to(group, { type: 'LEFT', user: user.as_json })
+    broadcast_to(group, { type: "LEFT", user: user.as_json })
   end
 
   def self.broadcast_activity_started(group)

@@ -3,6 +3,8 @@ class ActivityInstance < ApplicationRecord
 
   before_create :initialize_storage
 
+  before_destroy :broadcast_activity_end_message
+
   belongs_to :group
 
   delegate :users, to: :group
@@ -78,5 +80,9 @@ class ActivityInstance < ApplicationRecord
   # The initial state stored in the database for a new activity instance.
   def initial_storage
     raise NotImplementedError
+  end
+
+  def broadcast_activity_end_message
+    ActivityChannel.broadcast_activity_end_message(self)
   end
 end

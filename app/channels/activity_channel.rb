@@ -6,7 +6,7 @@ class ActivityChannel < ApplicationCable::Channel
   def receive(data)
     response = instance.reload.process_message(data.with_indifferent_access.transform_keys(&:underscore))
     if response
-      ActionCable.server.broadcast(broadcasting_key, response)
+      ActionCable.server.broadcast(broadcasting_key, {gameState: response})
     end
   end
 
@@ -14,6 +14,10 @@ class ActivityChannel < ApplicationCable::Channel
     puts "SOMEONE UNSUBSCRIBED AH SHIT"
     # Cleanup after someone unsubs
     # TODO: What triggers an unsub? What if they lose connectivity for a second? What if their laptop goes to sleep for a second?
+  end
+
+  def self.broadcast_activity_end_message(instance)
+    ActionCable.server.broadcast(broadcasting_key(instance.id), { event: "ACTIVITY_END" })
   end
 
   private

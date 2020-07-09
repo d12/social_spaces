@@ -28,6 +28,11 @@ interface User {
   name: string;
 }
 
+interface Message {
+  event: Event;
+  gameState: GameState;
+}
+
 export interface GameState {
   status: ActivityStatus;
   leaderIndex: number;
@@ -56,6 +61,10 @@ export enum RoundEndState {
   LOSE = "lose",
 }
 
+enum Event {
+  ACTIVITY_END = "ACTIVITY_END",
+}
+
 export function leader(gameState: GameState): User {
   return gameState.users[gameState.leaderIndex];
 }
@@ -65,7 +74,6 @@ export function asker(gameState: GameState): User {
 }
 
 export default function TwentyQuestions({
-  groupId,
   instanceId,
   userId,
   bootstrapData,
@@ -96,13 +104,26 @@ export default function TwentyQuestions({
     });
   }
 
+  function handleEvent(event: Event): void {
+    switch (event) {
+      case Event.ACTIVITY_END:
+        window.location.replace("/activities");
+        break;
+    }
+  }
+
   useEffect(() => {
     setSubscription(
       consumer.subscriptions.create(
         { channel: "ActivityChannel", activity_instance_id: instanceId },
         {
-          received: (data: GameState) => {
-            setGameState(data);
+          received: (data: Message) => {
+            console.log(data);
+            if (data.event) {
+              handleEvent(data.event);
+            } else {
+              setGameState(data.gameState);
+            }
           },
         }
       )
