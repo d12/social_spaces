@@ -1,3 +1,10 @@
+<%= react_component("ActivityIndex", {
+      userName: @user.name,
+      groupId: @group.key,
+      meetUrl: @group.meet_url,
+      activities: @activities,
+      users: @group.users }) %>
+
 <%= react_component("Greeting", { userName: @user.name }) %>
 
 You're in group: <%= @group.key %>

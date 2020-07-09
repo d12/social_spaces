@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "baseUrl": "./app/javascript",
     "allowSyntheticDefaultImports": true,
     "declaration": false,
     "emitDecoratorMetadata": true,

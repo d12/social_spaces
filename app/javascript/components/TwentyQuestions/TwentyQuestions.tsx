@@ -1,6 +1,16 @@
 import React, { useEffect, useState } from "react";
 
-import * as _styles from "./TwentyQuestions.module.scss";
+import { makeStyles } from "@material-ui/core/styles";
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  Button,
+  IconButton,
+} from "@material-ui/core";
+import { Menu } from "@material-ui/icons";
+
+import * as styles from "./TwentyQuestions.module.scss";
 
 import consumer from "../../channels/consumer";
 
@@ -106,6 +116,15 @@ export default function TwentyQuestions({
   } else {
     return (
       <>
+        <AppBar position="sticky">
+          <Toolbar>
+            <IconButton edge="start" color="inherit" aria-label="menu">
+              <Menu />
+            </IconButton>
+            <div className={styles.title}>Twenty Questions</div>
+            <Button color="inherit">Login</Button>
+          </Toolbar>
+        </AppBar>
         <h1>Twenty Questions</h1>
         <Game
           gameState={gameState}
