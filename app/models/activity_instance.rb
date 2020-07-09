@@ -29,10 +29,12 @@ class ActivityInstance < ApplicationRecord
     raise NotImplementedError
   end
 
-  # When a client is loaded into an activity midway, they need
-  # enough data to be able to properly bootstrap themselves. Return any necessary data here.
+  # All the data required for a client to set its local state
+  # E.g. When a client joins midway, they need enough information
+  # to render the current state of the game
   def client_data
-    raise NotImplementedError
+    # Transform keys to camelCase as JS will expect
+    storage.transform_keys{ |k| k.camelcase(:lower) }
   end
 
   # Used by the game loop. Not currently in use.
@@ -40,7 +42,34 @@ class ActivityInstance < ApplicationRecord
     raise NotImplementedError
   end
 
+  def process_message(data)
+    event = data.delete(:event)
+    handler = event_handlers[event]
+
+    unless handler
+      raise "#{self.name} does not implement a handler for event #{event}"
+    end
+
+    handler.new(instance: self).call(data)
+
+    save!
+    client_data
+  end
+
   private
+
+  def event_handlers
+    self.class.event_handlers
+  end
+
+  def self.event_handlers
+    @event_handlers
+  end
+
+  def self.register_event(key, handler)
+    @event_handlers ||= {}
+    @event_handlers[key] = handler
+  end
 
   def initialize_storage
     self.storage = initial_storage
