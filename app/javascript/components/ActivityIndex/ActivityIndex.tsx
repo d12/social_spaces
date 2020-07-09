@@ -70,16 +70,7 @@ export default function ActivityIndex({
 }: Props) {
   const classes = useStyles();
 
-  const fakeActivities = [
-    { displayName: "Something" },
-    { displayName: "Something" },
-    { displayName: "Something" },
-    { displayName: "Something" },
-    { displayName: "Something" },
-    { displayName: "Something" },
-    { displayName: "Something" },
-  ];
-  const activityMarkup = fakeActivities.map((activity) => (
+  const activityMarkup = activities.map((activity) => (
     <Grid item>
       <Grid
         container
