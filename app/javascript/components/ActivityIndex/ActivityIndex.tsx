@@ -31,6 +31,7 @@ interface Activity {
 interface User {
   id: number;
   name: string;
+  email: string;
 }
 
 const useStyles = makeStyles(
@@ -93,8 +94,14 @@ export default function ActivityIndex({
     </Grid>
   ));
 
+  const appFrameProps = {
+    users,
+    groupId,
+    meetUrl,
+  };
+
   return (
-    <AppFrame>
+    <AppFrame groupTabProps={appFrameProps}>
       <Toolbar />
       <Card className={classes.greetingCard}>
         <CardContent classes={{ root: classes.greetingCardContent }}>
