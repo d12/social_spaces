@@ -15,18 +15,23 @@ interface Props {
   bootstrapData: BootstrapData;
 }
 
-export default function Clicker({ groupId, instanceId, userId, bootstrapData }: Props) {
+export default function Clicker({
+  groupId,
+  instanceId,
+  userId,
+  bootstrapData,
+}: Props) {
   const [count, setCount] = useState<number>(0);
   const [subscription, setSubscription] = useState(undefined);
 
   function add() {
-    if(subscription !== undefined){
+    if (subscription !== undefined) {
       subscription.send({ add: true, userId: userId });
     }
   }
 
   function bootstrap(data: Object) {
-    setCount(data["count"])
+    setCount(data["count"]);
   }
 
   useEffect(() => {
@@ -36,7 +41,7 @@ export default function Clicker({ groupId, instanceId, userId, bootstrapData }: 
         {
           received: (data: Object) => {
             console.log("RECIEVED A MESSAGE");
-            setCount(data["updatedCount"]);
+            setCount(data["gameState"]["updatedCount"]);
           },
         }
       )

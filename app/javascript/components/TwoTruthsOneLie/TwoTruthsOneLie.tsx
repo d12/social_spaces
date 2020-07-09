@@ -21,6 +21,11 @@ interface User {
   hasVoted: boolean;
 }
 
+interface Message {
+  event: Event;
+  gameState: GameState;
+}
+
 interface Statement {
   isLie: boolean;
   content: string;
@@ -41,6 +46,18 @@ enum ActivityStatus {
   SUMMARY = "summary",
 }
 
+enum Event {
+  ACTIVITY_END = "ACTIVITY_END",
+}
+
+function handleEvent(event: Event): void {
+  switch (event) {
+    case Event.ACTIVITY_END:
+      window.location.replace("/activities");
+      break;
+  }
+}
+
 export default function TwentyQuestions({
   groupId,
   instanceId,
@@ -55,8 +72,12 @@ export default function TwentyQuestions({
       consumer.subscriptions.create(
         { channel: "ActivityChannel", activity_instance_id: instanceId },
         {
-          received: (data: GameState) => {
-            setGameState(data);
+          received: (data: Message) => {
+            if (data.event) {
+              handleEvent(data.event);
+            } else {
+              setGameState(data.gameState);
+            }
           },
         }
       )

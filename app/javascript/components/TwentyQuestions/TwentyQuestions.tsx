@@ -118,7 +118,6 @@ export default function TwentyQuestions({
         { channel: "ActivityChannel", activity_instance_id: instanceId },
         {
           received: (data: Message) => {
-            console.log(data);
             if (data.event) {
               handleEvent(data.event);
             } else {
