@@ -1,4 +1,7 @@
 require "devise"
+require "lockbox"
+
+Lockbox.master_key = "0000000000000000000000000000000000000000000000000000000000000000"
 
 RSpec.configure do |config|
   # rspec-expectations config goes here. You can use an alternate
