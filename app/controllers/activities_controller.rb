@@ -19,30 +19,20 @@ class ActivitiesController < ApplicationController
   end
 
   def join
-    @user = current_user
-    @group = current_group
-
-    unless @user == @group.host
-      flash[:alert] = "Only the host can start a new game"
-      return redirect_back(fallback_location: activities_path)
-    end
-
-    if ActivityInstance.find_by(group: @group)
-      flash[:alert] = "You must leave your current activity before joining a new one."
-      return redirect_back(fallback_location: activities_path)
-    end
-
-    @instance = ActivityInstance.create(
-      group: @group,
+    result = StartActivityService.new(
       activity: params[:activity],
-      status: :awaiting_activity_thread
-    )
+      group: current_group,
+      actor: current_user
+    ).call
 
-    @bootstrap_data = @instance.client_data
+    puts result.errors
 
-    GroupChannel.broadcast_activity_started(@group)
+    if result.errors
+      flash[:error] = result.errors.join(", ")
+      return redirect_to(activities_path)
+    end
 
-    redirect_to play_activity_path(params[:activity].underscore)
+    redirect_to show_activity_path(params[:activity].underscore)
   end
 
   def show

@@ -24,6 +24,10 @@ class TwentyQuestions < ActivityInstance
     "Twenty Questions"
   end
 
+  def self.min_users
+    2
+  end
+
   def self.max_users
     8
   end

@@ -15,6 +15,10 @@ class TwoTruthsOneLie < ActivityInstance
     "Two Truths, One Lie"
   end
 
+  def self.min_users
+    2
+  end
+
   def self.max_users
     8
   end

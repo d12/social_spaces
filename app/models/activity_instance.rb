@@ -21,6 +21,10 @@ class ActivityInstance < ApplicationRecord
     raise NotImplementedError
   end
 
+  def self.min_users
+    raise NotImplentedError
+  end
+
   def self.max_users
     raise NotImplementedError
   end

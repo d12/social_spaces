@@ -24,7 +24,7 @@ class ApplicationController < ActionController::Base
     return if request.path == "/play"
 
     if current_user && current_group && ActivityInstance.find_by(group: current_group)
-      redirect_to play_activity_path
+      redirect_to show_activity_path
     end
   end
 end

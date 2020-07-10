@@ -3,6 +3,10 @@ class Clicker < ActivityInstance
     "Clicker"
   end
 
+  def self.min_users
+    1
+  end
+
   def self.max_users
     8
   end
