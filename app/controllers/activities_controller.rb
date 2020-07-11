@@ -25,8 +25,6 @@ class ActivitiesController < ApplicationController
       actor: current_user
     ).call
 
-    puts result.errors
-
     if result.errors
       flash[:error] = result.errors.join(", ")
       return redirect_to(activities_path)
