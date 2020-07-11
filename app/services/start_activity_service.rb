@@ -5,13 +5,18 @@ class StartActivityService
     @actor = actor
 
     @errors = []
-    @instance = nil
+    @activity_instance = nil
   end
 
   def call
-    if validate
-      create_activity
+    validate
+    return self if @errors.any?
+
+    build_activity
+    if @activity_instance.save
       broadcast_activity_start
+    else
+      @errors += @activity_instance.errors.full_messages
     end
 
     self
@@ -26,7 +31,7 @@ class StartActivityService
   end
 
   def instance
-    @instance
+    @activity_instance
   end
 
   private
@@ -54,9 +59,8 @@ class StartActivityService
     GroupChannel.broadcast_activity_started(@group)
   end
 
-  # TODO: Any errors that happen in here should be added to @errors
-  def create_activity
-    @instance = ActivityInstance.create(
+  def build_activity
+    @activity_instance = ActivityInstance.new(
       group: @group,
       activity: @activity,
       status: :awaiting_activity_thread

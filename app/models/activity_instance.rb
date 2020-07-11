@@ -13,6 +13,9 @@ class ActivityInstance < ApplicationRecord
 
   enum status: { awaiting_activity_thread: 0, ongoing: 1, finished: 2 }
 
+  validate :ensure_minimum_players
+  validate :ensure_maximum_players
+
   def self.as_json(*)
     {displayName: display_name, maxUsers: max_users, name: name}
   end
@@ -63,6 +66,18 @@ class ActivityInstance < ApplicationRecord
   end
 
   private
+
+  def ensure_minimum_players
+    if users.count < self.class.min_users
+      errors.add(:activity, "cannot be played with less than #{self.class.min_users} users")
+    end
+  end
+
+  def ensure_maximum_players
+    if users.count > self.class.max_users
+      errors.add(:activity, "cannot be played with more than #{self.class.max_users} users")
+    end
+  end
 
   def event_handlers
     self.class.event_handlers

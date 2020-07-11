@@ -3,6 +3,8 @@ require "google_api"
 class Group < ApplicationRecord
   has_many :users
 
+  validates :users, :presence => true
+
   before_validation :generate_key_if_missing, :generate_hangout_link
   before_save :generate_hangout_link
 
@@ -31,7 +33,9 @@ class Group < ApplicationRecord
   end
 
   def generate_hangout_link
-    self.meet_url = GoogleAPI.generate_meet_url(users.first)
+    if users.any?
+      self.meet_url = GoogleAPI.generate_meet_url(users.first)
+    end
   end
 
   def generate_key_if_missing
