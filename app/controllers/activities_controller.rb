@@ -26,7 +26,7 @@ class ActivitiesController < ApplicationController
     ).call
 
     if result.errors
-      flash[:error] = result.errors.join(", ")
+      flash[:alert] = result.errors.join(", ")
       return redirect_to(activities_path)
     end
 
