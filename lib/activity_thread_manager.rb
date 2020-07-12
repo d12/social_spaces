@@ -30,7 +30,9 @@ class ActivityThreadManager
 
   def setup_activity_process(instance)
     logger.info("Setting up activity process for instance #{instance.id}")
-    instance.update(status: :ongoing)
+
+    instance.status = :ongoing
+    instance.save(validate: :false) # TODO: Ensure this saves successfully, otherwise we get infinite threads
     # TODO: More resiliency here eventually, an activity will get put in pending
     # and will freeze forever if the Thread fails to create.
 
