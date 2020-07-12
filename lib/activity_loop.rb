@@ -1,20 +1,27 @@
 require "logger"
 
 class ActivityLoop
+  TICK_FREQUENCY = 1.second
+
   def initialize(instance)
     @logger = Logger.new(STDOUT)
     @logger.level = Logger::INFO
     set_logger_format
 
     @instance = instance
+    @id = @instance.id
   end
 
+  # TODO: Handle exceptions.
+  # If we have an exception in `tick`, the whole activity loop is killed and the game is stuck.
   def run
     loop do
-      begin_time = Time.now
-      next_cycle_time = begin_time + 0.25.seconds
+      terminate_thread if activity_finished?
 
-      tick
+      begin_time = Time.now
+      next_cycle_time = begin_time + TICK_FREQUENCY
+
+      @instance.tick
 
       difference = next_cycle_time - Time.now
       if difference > 0
@@ -25,10 +32,16 @@ class ActivityLoop
 
   private
 
-  # Runs once per tick, all important game logic goes in here
-  def tick
-    # TODO: This should call to a tick method per-game
-    logger.info "Tick!"
+  def activity_finished?
+    @instance.reload
+    false
+  rescue ActiveRecord::RecordNotFound
+    true
+  end
+
+  def terminate_thread
+    puts "Activity instance #{@id} no longer exists - terminating activity loop!"
+    Thread.exit
   end
 
   def set_logger_format

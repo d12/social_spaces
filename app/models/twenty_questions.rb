@@ -32,6 +32,10 @@ class TwentyQuestions < ActivityInstance
     8
   end
 
+  def tick
+    puts "tock"
+  end
+
   # The initial value to use for a instances save state
   def initial_storage
     users_array = users.map do |user|

@@ -11,6 +11,10 @@ class Clicker < ActivityInstance
     8
   end
 
+  def tick
+    puts "tock"
+  end
+
   def process_message(data)
     return unless data["add"]
 
@@ -18,10 +22,6 @@ class Clicker < ActivityInstance
     save!
 
     {updatedCount: storage[:count]}
-  end
-
-  def tick
-
   end
 
   # All the data required for a client to bootstrap itself
