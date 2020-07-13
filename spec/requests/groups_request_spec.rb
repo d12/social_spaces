@@ -84,11 +84,11 @@ RSpec.describe "Groups", type: :request do
 
       context "when not in a group" do
         context "when group key is valid" do
-          let!(:group) { Group.create(key: "AAAAAA") }
+          let!(:group) { Group.create(key: "AAAAAA", users: [User.new(name: "name", email: "email")]) }
 
           it "adds user to the group" do
             get join_group_path("AAAAAA")
-            expect(group.reload.users.first).to eq(user)
+            expect(group.reload.users).to include(user)
           end
 
           it "redirects to the activities page" do
