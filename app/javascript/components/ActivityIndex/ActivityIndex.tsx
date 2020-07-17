@@ -9,6 +9,8 @@ import {
   Box,
 } from "@material-ui/core";
 
+import { info } from "images";
+
 import { theme } from "theme";
 import { AppFrame } from "../AppFrame";
 
@@ -58,6 +60,9 @@ const useStyles = makeStyles(
         paddingBottom: theme.spacing(1),
       },
     },
+    activityInfoIcon: {
+      height: "24px",
+    },
   }),
   { defaultTheme: theme }
 );
@@ -86,7 +91,14 @@ export default function ActivityIndex({
         <Grid item>
           <Card variant="outlined">
             <CardContent classes={{ root: classes.activityCardContent }}>
-              <Typography>{activity.displayName}</Typography>
+              <Box
+                display="flex"
+                justifyContent="space-between"
+                alignItems="center"
+              >
+                <Typography>{activity.displayName}</Typography>
+                <img src={info} className={classes.activityInfoIcon} />
+              </Box>
             </CardContent>
           </Card>
         </Grid>
