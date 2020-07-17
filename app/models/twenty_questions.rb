@@ -19,6 +19,7 @@ class TwentyQuestions < ActivityInstance
   register_event "select_word", TwentyQuestions::EventHandlers::SelectWord
   register_event "asked_question", TwentyQuestions::EventHandlers::AskedQuestion
   register_event "begin_next_round", TwentyQuestions::EventHandlers::BeginNextRound
+  register_event "user_disconnected", TwentyQuestions::EventHandlers::UserDisconnected
 
   def self.display_name
     "Twenty Questions"

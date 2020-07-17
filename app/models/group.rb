@@ -12,6 +12,10 @@ class Group < ApplicationRecord
 
   validates :key, presence: true, uniqueness: true
 
+  def activity
+    ActivityInstance.find_by(group_id: id)
+  end
+
   def host
     if self.host_id
       return User.find(self.host_id)

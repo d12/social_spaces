@@ -7,8 +7,6 @@ class GroupsController < ApplicationController
   def create
     @group = Group.create(users: [current_user])
 
-    session[:group_id] = @group.id
-
     redirect_to activities_path
   end
 
@@ -19,8 +17,6 @@ class GroupsController < ApplicationController
       redirect_to groups_path
       return
     end
-
-    session[:group_id] = @group.id
     current_user.update!(group: @group)
     GroupChannel.broadcast_user_joined(@group, current_user)
 
@@ -34,10 +30,11 @@ class GroupsController < ApplicationController
       return
     end
 
+    current_group.activity&.disconnect_user(current_user)
+    
     current_user.update!(group: nil)
-    GroupChannel.broadcast_user_left(current_group, current_user)
 
-    session[:group_id] = nil
+    GroupChannel.broadcast_user_left(current_group, current_user)
 
     redirect_to groups_path
   end

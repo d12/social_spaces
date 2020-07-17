@@ -1,5 +1,7 @@
 class ActivityChannel < ApplicationCable::Channel
   def subscribed
+    current_user.update(disconnected_at: nil)
+
     stream_from broadcasting_key
   end
 
@@ -11,13 +13,11 @@ class ActivityChannel < ApplicationCable::Channel
   end
 
   def unsubscribed
-    puts "SOMEONE UNSUBSCRIBED AH SHIT"
-    # Cleanup after someone unsubs
-    # TODO: What triggers an unsub? What if they lose connectivity for a second? What if their laptop goes to sleep for a second?
+    current_user.update(disconnected_at: Time.zone.now)
   end
 
-  def self.broadcast_activity_end_message(instance)
-    ActionCable.server.broadcast(broadcasting_key(instance.id), { event: "ACTIVITY_END" })
+  def self.broadcast_activity_end_message(instance, reason:)
+    ActionCable.server.broadcast(broadcasting_key(instance.id), { event: "ACTIVITY_END", message: reason })
   end
 
   private

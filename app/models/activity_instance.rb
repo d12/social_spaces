@@ -3,8 +3,6 @@ class ActivityInstance < ApplicationRecord
 
   before_create :initialize_storage
 
-  before_destroy :broadcast_activity_end_message
-
   belongs_to :group
 
   delegate :users, to: :group
@@ -65,6 +63,25 @@ class ActivityInstance < ApplicationRecord
     client_data
   end
 
+  def disconnect_user(user)
+    return unless users.include?(user)
+
+    user.update(group_id: nil)
+
+    # TODO: Make sure the error we get is "not enough players"
+    if save
+      process_message({event: "user_disconnected", user: user.id})
+    else
+      # TODO: Tell people why the game is being destroyed
+      self.end_activity(reason: :not_enough_players)
+    end
+  end
+
+  def end_activity(reason:)
+    broadcast_activity_end_message(reason: reason)
+    destroy
+  end
+
   private
 
   def ensure_minimum_players
@@ -101,7 +118,7 @@ class ActivityInstance < ApplicationRecord
     raise NotImplementedError
   end
 
-  def broadcast_activity_end_message
-    ActivityChannel.broadcast_activity_end_message(self)
+  def broadcast_activity_end_message(reason:)
+    ActivityChannel.broadcast_activity_end_message(self, reason: reason)
   end
 end

@@ -48,13 +48,11 @@ class ActivitiesController < ApplicationController
     @group = current_group
 
     unless @user == @group.host
-      flash[:alert] = "Only the host can leave an activity"
+      flash[:alert] = "Only the host can end an activity"
       return redirect_back(fallback_location: activities_path)
     end
 
-    ActivityInstance.find_by(group: @group).destroy
-
-    # TODO: Broadcast to group to send them back to the activities page
+    ActivityInstance.find_by(group: @group).end_activity(reason: :host_ended)
 
     redirect_to activities_path
   end

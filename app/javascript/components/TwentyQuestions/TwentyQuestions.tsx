@@ -30,6 +30,7 @@ interface User {
 
 interface Message {
   event: Event;
+  message: String;
   gameState: GameState;
 }
 
@@ -104,10 +105,10 @@ export default function TwentyQuestions({
     });
   }
 
-  function handleEvent(event: Event): void {
+  function handleEvent(event: Event, message: String): void {
     switch (event) {
       case Event.ACTIVITY_END:
-        window.location.replace("/activities");
+        window.location.replace(`/activities?reason=${message}`);
         break;
     }
   }
@@ -119,7 +120,7 @@ export default function TwentyQuestions({
         {
           received: (data: Message) => {
             if (data.event) {
-              handleEvent(data.event);
+              handleEvent(data.event, data.message);
             } else {
               setGameState(data.gameState);
             }
