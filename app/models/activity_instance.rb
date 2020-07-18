@@ -15,7 +15,11 @@ class ActivityInstance < ApplicationRecord
   validate :ensure_maximum_players
 
   def self.as_json(*)
-    {displayName: display_name, maxUsers: max_users, name: name}
+    {
+      displayName: display_name,
+      maxUsers: max_users,
+      name: name
+    }
   end
 
   def self.display_name
