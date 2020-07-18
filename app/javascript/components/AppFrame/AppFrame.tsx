@@ -66,6 +66,9 @@ const useStyles = makeStyles((_theme) => ({
     marginBottom: (drawerWidth - buttonWidth) / 2,
     marginTop: "auto",
   },
+  logoutWithDrawer: {
+    marginRight: drawerWidth,
+  },
 }));
 
 export function AppFrame({ children, groupTabProps }: Props) {
@@ -148,6 +151,7 @@ export function AppFrame({ children, groupTabProps }: Props) {
                 href="/logout"
                 underline="none"
                 color="textSecondary"
+                className={groupTabProps ? classes.logoutWithDrawer : ""}
               >
                 <Button color="inherit">Logout</Button>
               </Link>
