@@ -36,8 +36,9 @@ interface User {
 }
 
 const drawerWidth = 350;
+const buttonWidth = drawerWidth * 0.8;
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((_theme) => ({
   appTitle: {
     flexGrow: 1,
   },
@@ -54,6 +55,15 @@ const useStyles = makeStyles((theme) => ({
   },
   drawerPaper: {
     width: drawerWidth,
+  },
+  leaveGroupButton: {
+    width: buttonWidth,
+  },
+  leaveGroupLink: {
+    width: buttonWidth,
+    marginLeft: (drawerWidth - buttonWidth) / 2,
+    marginBottom: (drawerWidth - buttonWidth) / 2,
+    marginTop: "auto",
   },
 }));
 
@@ -102,6 +112,22 @@ export function AppFrame({ children, groupTabProps }: Props) {
             </ListItem>
           ))}
         </List>
+        <Link
+          rel="nofollow"
+          data-method="delete"
+          href="/leave_group"
+          underline="none"
+          color="textPrimary"
+          className={classes.leaveGroupLink}
+        >
+          <Button
+            variant="outlined"
+            color="secondary"
+            className={classes.leaveGroupButton}
+          >
+            Leave Group
+          </Button>
+        </Link>
       </Drawer>
     </Grid>
   );
