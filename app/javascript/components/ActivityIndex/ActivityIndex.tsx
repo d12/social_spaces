@@ -23,6 +23,8 @@ export interface Props {
   meetUrl: string;
   activities: Activity[];
   users: User[];
+  alertToast: string;
+  noticeToast: string;
 }
 
 interface Activity {
@@ -75,6 +77,8 @@ export default function ActivityIndex({
   meetUrl,
   activities,
   users,
+  alertToast,
+  noticeToast,
 }: Props) {
   const classes = useStyles();
 
@@ -131,7 +135,11 @@ export default function ActivityIndex({
   };
 
   return (
-    <AppFrame groupTabProps={appFrameProps}>
+    <AppFrame
+      groupTabProps={appFrameProps}
+      alertToast={alertToast}
+      noticeToast={noticeToast}
+    >
       <Toolbar />
       <Card className={classes.greetingCard}>
         <CardContent classes={{ root: classes.greetingCardContent }}>

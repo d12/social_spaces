@@ -42,7 +42,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function GroupIndex() {
+export interface Props {
+  alertToast: string;
+  noticeToast: string;
+}
+
+export default function GroupIndex({ alertToast, noticeToast }: Props) {
   const classes = useStyles();
   const [modalOpen, setModalOpen] = useState(false);
 
@@ -99,7 +104,7 @@ export default function GroupIndex() {
   );
 
   return (
-    <AppFrame>
+    <AppFrame alertToast={alertToast} noticeToast={noticeToast}>
       {modalMarkup}
       <Box className={classes.wrapper}>
         <Grid

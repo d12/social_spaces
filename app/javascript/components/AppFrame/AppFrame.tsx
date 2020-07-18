@@ -19,6 +19,7 @@ import {
 } from "@material-ui/core";
 import { ThemeProvider, makeStyles } from "@material-ui/core/styles";
 import { theme } from "theme";
+import Toast, { ToastSeverity } from "./Toast";
 
 export interface Props {
   children?: React.ReactNode;
@@ -27,6 +28,8 @@ export interface Props {
     groupId: string;
     meetUrl: string;
   };
+  alertToast: string;
+  noticeToast: string;
 }
 
 interface User {
@@ -71,7 +74,12 @@ const useStyles = makeStyles((_theme) => ({
   },
 }));
 
-export function AppFrame({ children, groupTabProps }: Props) {
+export function AppFrame({
+  children,
+  groupTabProps,
+  alertToast,
+  noticeToast,
+}: Props) {
   const classes = useStyles();
 
   const groupBarMarkup = groupTabProps && (
@@ -136,8 +144,17 @@ export function AppFrame({ children, groupTabProps }: Props) {
     </Grid>
   );
 
+  const alertMarkup = alertToast && (
+    <Toast message={alertToast} severity={ToastSeverity.ERROR} />
+  );
+  const noticeMarkup = noticeToast && (
+    <Toast message={noticeToast} severity={ToastSeverity.WARNING} />
+  );
+
   return (
     <ThemeProvider theme={theme}>
+      {alertMarkup}
+      {noticeMarkup}
       <Grid container>
         <Grid item className={classes.mainBody}>
           <AppBar color="transparent" variant="outlined">
