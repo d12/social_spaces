@@ -7,6 +7,7 @@ import {
   Paper,
   Toolbar,
   Box,
+  Link,
 } from "@material-ui/core";
 
 import { info } from "images";
@@ -86,21 +87,37 @@ export default function ActivityIndex({
         spacing={1}
       >
         <Grid item>
-          <Paper elevation={0} className={classes.activityImage} />
+          <Link
+            rel="nofollow"
+            data-method="post"
+            href={`/activities/join?activity=${activity.name}`}
+            underline="none"
+            color="textPrimary"
+          >
+            <Paper elevation={0} className={classes.activityImage} />
+          </Link>
         </Grid>
         <Grid item>
-          <Card variant="outlined">
-            <CardContent classes={{ root: classes.activityCardContent }}>
-              <Box
-                display="flex"
-                justifyContent="space-between"
-                alignItems="center"
-              >
-                <Typography>{activity.displayName}</Typography>
-                <img src={info} className={classes.activityInfoIcon} />
-              </Box>
-            </CardContent>
-          </Card>
+          <Link
+            rel="nofollow"
+            data-method="post"
+            href={`/activities/join?activity=${activity.name}`}
+            underline="none"
+            color="textPrimary"
+          >
+            <Card variant="outlined">
+              <CardContent classes={{ root: classes.activityCardContent }}>
+                <Box
+                  display="flex"
+                  justifyContent="space-between"
+                  alignItems="center"
+                >
+                  <Typography>{activity.displayName}</Typography>
+                  <img src={info} className={classes.activityInfoIcon} />
+                </Box>
+              </CardContent>
+            </Card>
+          </Link>
         </Grid>
       </Grid>
     </Grid>
