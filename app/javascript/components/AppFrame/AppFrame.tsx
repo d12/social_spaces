@@ -33,6 +33,7 @@ interface User {
   id: number;
   name: string;
   email: string;
+  gravatarUrl: string;
 }
 
 const drawerWidth = 350;
@@ -103,10 +104,10 @@ export function AppFrame({ children, groupTabProps }: Props) {
         </Box>
         <Divider variant="middle" />
         <List>
-          {groupTabProps.users.map(({ email, name }) => (
+          {groupTabProps.users.map(({ email, name, gravatarUrl }) => (
             <ListItem alignItems="center" key={email}>
               <ListItemAvatar>
-                <Avatar alt={name} />
+                <Avatar alt={name} src={gravatarUrl} />
               </ListItemAvatar>
               <ListItemText primary={name} />
             </ListItem>

@@ -35,6 +35,7 @@ interface User {
   id: number;
   name: string;
   email: string;
+  gravatarUrl: string;
 }
 
 const useStyles = makeStyles(

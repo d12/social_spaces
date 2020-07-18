@@ -21,6 +21,15 @@ class User < ApplicationRecord
   end
 
   def as_json(*)
-    super(only: [:id, :name, :email])
+    super(only: [:id, :name, :email]).merge({
+      gravatarUrl: gravatar_url
+    })
+  end
+
+  # See https://en.gravatar.com/site/implement/hash/
+  def gravatar_url
+    downcased_email = email.downcase
+    gravatar_hash = Digest::MD5.hexdigest(downcased_email)
+    "https://www.gravatar.com/avatar/#{gravatar_hash}"
   end
 end
