@@ -68,7 +68,6 @@ export default function GroupIndex({ alertToast, noticeToast }: Props) {
     },
   });
 
-  console.log(fields.groupId.error);
   const modalMarkup = (
     <Dialog
       open={modalOpen}

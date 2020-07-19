@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   AppBar,
   Toolbar,
@@ -20,6 +20,7 @@ import {
 import { ThemeProvider, makeStyles } from "@material-ui/core/styles";
 import { theme } from "theme";
 import Toast, { ToastSeverity } from "./Toast";
+import consumer from "../../channels/consumer";
 
 export interface Props {
   children?: React.ReactNode;
@@ -80,6 +81,38 @@ export function AppFrame({
   alertToast,
   noticeToast,
 }: Props) {
+  function navigateToActivity(): void {
+    window.location.replace("/play");
+  }
+
+  useEffect(() => {
+    groupTabProps &&
+      consumer.subscriptions.create(
+        { channel: "GroupChannel", group_id: groupTabProps.groupId },
+        {
+          received: ({ type, user }) => {
+            switch (type) {
+              case "JOINED":
+                // TODO
+                // addUser(user);
+                console.log("User joined but UI update not implemented yet");
+                break;
+              case "LEFT":
+                // TODO
+                // removeUser(user);
+                console.log("User left but UI update not implemented yet");
+                break;
+              case "ACTIVITY_START":
+                navigateToActivity();
+                break;
+              default:
+                console.error("Unexpected message");
+            }
+          },
+        }
+      );
+  }, []);
+
   const classes = useStyles();
 
   const groupBarMarkup = groupTabProps && (
