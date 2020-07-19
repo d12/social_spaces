@@ -177,11 +177,22 @@ export function AppFrame({
     </Grid>
   );
 
+  const navbar = window.location.search;
+  const params = new URLSearchParams(navbar);
+  const reason = params.get("reason");
+
+  noticeToast =
+    reason == "host_ended" ? "The host has ended the activity" : noticeToast;
+  noticeToast =
+    reason == "not_enough_players"
+      ? "The activity has ended because there are not enough players to play."
+      : noticeToast;
+
   const alertMarkup = alertToast && (
     <Toast message={alertToast} severity={ToastSeverity.ERROR} />
   );
   const noticeMarkup = noticeToast && (
-    <Toast message={noticeToast} severity={ToastSeverity.WARNING} />
+    <Toast message={noticeToast} severity={ToastSeverity.INFO} />
   );
 
   return (

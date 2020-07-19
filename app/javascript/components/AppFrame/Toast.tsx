@@ -1,5 +1,6 @@
 import React from "react";
 
+import { makeStyles } from "@material-ui/core/styles";
 import Snackbar from "@material-ui/core/Snackbar";
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
@@ -11,7 +12,7 @@ function Alert(props) {
 
 export enum ToastSeverity {
   ERROR = "error",
-  WARNING = "warning",
+  INFO = "info",
 }
 
 interface Props {
@@ -19,8 +20,16 @@ interface Props {
   severity: ToastSeverity;
 }
 
+const useStyles = makeStyles((_theme) => ({
+  alert: {
+    width: "400px",
+  },
+}));
+
 export default function Toast({ message, severity }: Props) {
   const [open, setOpen] = React.useState(true);
+
+  const classes = useStyles();
 
   function handleClose(_event: any) {
     setOpen(false);
@@ -40,6 +49,7 @@ export default function Toast({ message, severity }: Props) {
         varient="filled"
         onClose={handleClose}
         severity={severity}
+        className={classes.alert}
         action={
           <React.Fragment>
             <IconButton
