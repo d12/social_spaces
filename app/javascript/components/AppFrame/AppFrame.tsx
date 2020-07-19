@@ -186,8 +186,7 @@ export function AppFrame({
 
   return (
     <ThemeProvider theme={theme}>
-      {alertMarkup}
-      {noticeMarkup}
+      {alertMarkup || noticeMarkup}
       <Grid container>
         <Grid item className={classes.mainBody}>
           <AppBar color="transparent" variant="outlined">
