@@ -83,7 +83,7 @@ export default function ActivityIndex({
   const classes = useStyles();
 
   const activityMarkup = activities.map((activity) => (
-    <Grid item>
+    <Grid item key={activity.name}>
       <Grid
         container
         direction="column"
