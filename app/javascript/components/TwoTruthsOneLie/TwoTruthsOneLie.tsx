@@ -1,13 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { Cable } from "actioncable";
 
+import { Toolbar } from "@material-ui/core";
+
 import * as _styles from "./TwoTruthsOneLie.module.scss";
 
 import consumer from "../../channels/consumer";
 import { Brainstorming, Voting } from "./components";
+import { AppFrame } from "../AppFrame";
 
 interface Props {
   groupId: string;
+  meetUrl: string;
+  users: GroupUser[];
   instanceId: number;
   userId: number;
   bootstrapData: GameState;
@@ -19,6 +24,13 @@ interface User {
   score: number;
   statements: Statement[];
   hasVoted: boolean;
+}
+
+interface GroupUser {
+  id: number;
+  name: string;
+  email: string;
+  gravatarUrl: string;
 }
 
 interface Message {
@@ -58,11 +70,36 @@ function handleEvent(event: Event): void {
   }
 }
 
+function gameMarkup(gameState: GameState, userId: number, subscription: Cable) {
+  if (!subscription) {
+    return <p>Loading...</p>;
+  }
+
+  switch (gameState.status) {
+    case ActivityStatus.BRAINSTORMING:
+      return <Brainstorming userId={userId} subscription={subscription} />;
+    case ActivityStatus.VOTING:
+      return (
+        <Voting
+          userId={userId}
+          subscription={subscription}
+          gameState={gameState}
+        />
+      );
+    case ActivityStatus.REVEAL:
+      return <p>Something</p>;
+    case ActivityStatus.SUMMARY:
+      return <p>Something</p>;
+  }
+}
+
 export default function TwentyQuestions({
   groupId,
   instanceId,
   userId,
   bootstrapData,
+  users,
+  meetUrl,
 }: Props) {
   const [gameState, setGameState] = useState<GameState>(bootstrapData);
   const [subscription, setSubscription] = useState<Cable>();
@@ -84,24 +121,17 @@ export default function TwentyQuestions({
     );
   }, []);
 
-  if (!subscription) {
-    return <p>Loading...</p>;
-  }
+  const groupTabProps = {
+    users,
+    groupId,
+    meetUrl,
+  };
 
-  switch (gameState.status) {
-    case ActivityStatus.BRAINSTORMING:
-      return <Brainstorming userId={userId} subscription={subscription} />;
-    case ActivityStatus.VOTING:
-      return (
-        <Voting
-          userId={userId}
-          subscription={subscription}
-          gameState={gameState}
-        />
-      );
-    case ActivityStatus.REVEAL:
-      return <p>Something</p>;
-    case ActivityStatus.SUMMARY:
-      return <p>Something</p>;
-  }
+  const markup = gameMarkup(gameState, userId, subscription);
+  return (
+    <AppFrame alertToast="" noticeToast="" groupTabProps={groupTabProps}>
+      <Toolbar />
+      {markup}
+    </AppFrame>
+  );
 }

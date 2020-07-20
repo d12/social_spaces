@@ -42,7 +42,7 @@ export default function Toast({ message, severity }: Props) {
         horizontal: "left",
       }}
       open={open}
-      autoHideDuration={6000}
+      autoHideDuration={10000}
       onClose={handleClose}
     >
       <Alert
