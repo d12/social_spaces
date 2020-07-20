@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 import { makeStyles } from "@material-ui/core/styles";
-import { AppBar, Typography, Button, IconButton } from "@material-ui/core";
-import { Menu } from "@material-ui/icons";
+import { Typography, Card, Box } from "@material-ui/core";
 import { AppFrame } from "../AppFrame";
 
 import consumer from "../../channels/consumer";
@@ -76,6 +75,12 @@ export function asker(gameState: GameState): User {
   return gameState.users[gameState.askerIndex];
 }
 
+const useStyles = makeStyles((_theme) => ({
+  gameCard: {
+    height: "400px",
+  },
+}));
+
 export default function TwentyQuestions({
   instanceId,
   userId,
@@ -86,6 +91,8 @@ export default function TwentyQuestions({
 }: Props) {
   const [gameState, setGameState] = useState<GameState>(undefined);
   const [subscription, setSubscription] = useState(undefined);
+
+  const classes = useStyles();
 
   function selectWordCallback(word: string): void {
     subscription.send({
@@ -149,14 +156,22 @@ export default function TwentyQuestions({
     return (
       <>
         <AppFrame noticeToast="" alertToast="" groupTabProps={groupTabProps}>
-          <h1>Twenty Questions</h1>
-          <Game
-            gameState={gameState}
-            userId={userId}
-            beginNextRoundCallback={beginNextRoundCallback}
-            selectWordCallback={selectWordCallback}
-            askedQuestionCallback={askedQuestionCallback}
-          />
+          <Box mt={3}>
+            <Typography variant="h5">TWENTY QUESTIONS</Typography>
+            <Box mt={1}>
+              <Card className={classes.gameCard}>
+                <Box p={3}>
+                  <Game
+                    gameState={gameState}
+                    userId={userId}
+                    beginNextRoundCallback={beginNextRoundCallback}
+                    selectWordCallback={selectWordCallback}
+                    askedQuestionCallback={askedQuestionCallback}
+                  />
+                </Box>
+              </Card>
+            </Box>
+          </Box>
         </AppFrame>
       </>
     );

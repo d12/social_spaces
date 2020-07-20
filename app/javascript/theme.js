@@ -15,6 +15,10 @@ let theme = createMuiTheme({
       main: "#0B1624",
       contrastText: "#FFFFFF",
     },
+    secondary: {
+      main: "#44709D",
+      contrastText: "#FFFFFF",
+    },
   },
 });
 theme = responsiveFontSizes(theme);

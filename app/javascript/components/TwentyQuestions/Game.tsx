@@ -4,6 +4,9 @@ import * as _styles from "./TwentyQuestions.module.scss";
 
 import SelectingWordStatus from "./SelectingWordStatus";
 
+import SelectingWordLeaderStatus from "./Statuses/SelectingWord/LeaderStatus";
+import SelectingWordFollowerStatus from "./Statuses/SelectingWord/FollowerStatus";
+
 import AskingQuestionsLeaderStatus from "./Statuses/AskingQuestions/LeaderStatus";
 import AskingQuestionsAskerStatus from "./Statuses/AskingQuestions/AskerStatus";
 import AskingQuestionsWaiterStatus from "./Statuses/AskingQuestions/WaiterStatus";
@@ -32,13 +35,16 @@ export default function Game({
 
   switch (gameState.status) {
     case ActivityStatus.SELECTING_WORD:
-      return (
-        <SelectingWordStatus
-          gameState={gameState}
-          isLeader={isLeader}
-          selectWordCallback={selectWordCallback}
-        />
-      );
+      if (isLeader) {
+        return (
+          <SelectingWordLeaderStatus
+            gameState={gameState}
+            selectWordCallback={selectWordCallback}
+          />
+        );
+      } else {
+        return <SelectingWordFollowerStatus gameState={gameState} />;
+      }
     case ActivityStatus.ASKING_QUESTIONS:
       if (isLeader) {
         return (

@@ -1,8 +1,8 @@
 import React from "react";
 
-import * as _styles from "../../TwentyQuestions.module.scss";
-
 import { GameState, asker } from "../../TwentyQuestions";
+
+import { Typography, Box, Button } from "@material-ui/core";
 
 interface Props {
   gameState: GameState;
@@ -14,19 +14,52 @@ export default function AskingQuestionsLeaderStatus({
   askedQuestionCallback,
 }: Props) {
   return (
-    <>
-      <h3>You're the leader!</h3>
-      <h4>Question {gameState.questionIndex}</h4>
-      <p>It's {asker(gameState).name}'s turn to ask you a yes/no question.</p>
-      <p>Once they've asked you a question, select an answer from below:</p>
-      <button onClick={() => askedQuestionCallback("yes")}>Yes</button>
-      <button onClick={() => askedQuestionCallback("no")}>No</button>
-      <button onClick={() => askedQuestionCallback("correctanswer")}>
-        You guessed the word!
-      </button>
-      <p>
-        Remember, your word is <strong>{gameState.word}</strong>.
-      </p>
-    </>
+    <Box>
+      <Box display="flex" justifyContent="space-between" alignItems="center">
+        <Typography>
+          It's {asker(gameState).name}'s turn to ask you a yes/no question.
+        </Typography>
+        <Typography variant="h5">Question {gameState.questionIndex}</Typography>
+      </Box>
+      <Box mt={2}>
+        <Typography>
+          Once they've asked you a question, select an answer from below:
+        </Typography>
+      </Box>
+      <Box display="flex" mt={2}>
+        <Box mr={1}>
+          <Button
+            color="secondary"
+            variant="contained"
+            onClick={() => askedQuestionCallback("yes")}
+          >
+            Yes
+          </Button>
+        </Box>
+        <Box mr={1}>
+          <Button
+            color="secondary"
+            variant="contained"
+            onClick={() => askedQuestionCallback("no")}
+          >
+            No
+          </Button>
+        </Box>
+        <Box mr={1}>
+          <Button
+            color="secondary"
+            variant="contained"
+            onClick={() => askedQuestionCallback("correctanswer")}
+          >
+            You guessed the word!
+          </Button>
+        </Box>
+      </Box>
+      <Box mt={2}>
+        <Typography>
+          Remember, your word is <strong>{gameState.word}</strong>.
+        </Typography>
+      </Box>
+    </Box>
   );
 }

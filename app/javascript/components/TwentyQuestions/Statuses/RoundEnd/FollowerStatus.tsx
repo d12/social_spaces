@@ -4,26 +4,26 @@ import * as _styles from "../../TwentyQuestions.module.scss";
 
 import { GameState, RoundEndState } from "../../TwentyQuestions";
 
+import { Typography } from "@material-ui/core";
+
 interface Props {
   gameState: GameState;
 }
 
 export default function RoundEndLeaderStatus({ gameState }: Props) {
-  if (gameState.roundEndState === RoundEndState.WIN) {
-    return (
-      <>
-        <h3>The word was guessed!</h3>
-        <h4>The word was: {gameState.word}</h4>
-        <p>Please wait for the leader to begin the next round...</p>
-      </>
-    );
-  } else {
-    return (
-      <>
-        <h3>The word wasn't guessed!</h3>
-        <h4>The word was: {gameState.word}</h4>
-        <p>Please wait for the leader to begin the next round...</p>
-      </>
-    );
-  }
+  const wordGuessedMarkup =
+    gameState.roundEndState === RoundEndState.WIN
+      ? "The word was guessed!"
+      : "The word was not guessed!";
+  return (
+    <>
+      <Typography paragraph>{wordGuessedMarkup}</Typography>
+      <Typography paragraph>
+        The word was: <strong>{gameState.word}</strong>
+      </Typography>
+      <Typography>
+        Please wait for the leader to begin the next round...
+      </Typography>
+    </>
+  );
 }

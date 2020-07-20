@@ -4,6 +4,8 @@ import * as _styles from "../../TwentyQuestions.module.scss";
 
 import { GameState, RoundEndState } from "../../TwentyQuestions";
 
+import { Typography, Button } from "@material-ui/core";
+
 interface Props {
   gameState: GameState;
   beginNextRoundCallback(): void;
@@ -13,21 +15,22 @@ export default function RoundEndLeaderStatus({
   gameState,
   beginNextRoundCallback,
 }: Props) {
-  if (gameState.roundEndState === RoundEndState.WIN) {
-    return (
-      <>
-        <h3>The word was guessed!</h3>
-        <h4>The word was: {gameState.word}</h4>
-        <button onClick={beginNextRoundCallback}>Begin next round</button>
-      </>
-    );
-  } else {
-    return (
-      <>
-        <h3>The word was not guessed!</h3>
-        <h4>The word was: {gameState.word}</h4>
-        <button onClick={beginNextRoundCallback}>Begin next round</button>
-      </>
-    );
-  }
+  const wordGuessedMarkup =
+    gameState.roundEndState === RoundEndState.WIN
+      ? "The word was guessed!"
+      : "The word was not guessed!";
+
+  return (
+    <>
+      <Typography paragraph>{wordGuessedMarkup}</Typography>
+      <Typography paragraph>The word was: {gameState.word}</Typography>
+      <Button
+        variant="contained"
+        color="secondary"
+        onClick={beginNextRoundCallback}
+      >
+        Begin next round
+      </Button>
+    </>
+  );
 }
