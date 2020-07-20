@@ -1,22 +1,17 @@
 import React, { useEffect, useState } from "react";
 
 import { makeStyles } from "@material-ui/core/styles";
-import {
-  AppBar,
-  Toolbar,
-  Typography,
-  Button,
-  IconButton,
-} from "@material-ui/core";
+import { AppBar, Typography, Button, IconButton } from "@material-ui/core";
 import { Menu } from "@material-ui/icons";
-
-import * as styles from "./TwentyQuestions.module.scss";
+import { AppFrame } from "../AppFrame";
 
 import consumer from "../../channels/consumer";
 
 import Game from "./Game";
 
 interface Props {
+  meetUrl: string;
+  users: GroupUser[];
   groupId: string;
   instanceId: number;
   userId: number;
@@ -26,6 +21,13 @@ interface Props {
 interface User {
   id: number;
   name: string;
+}
+
+interface GroupUser {
+  id: number;
+  name: string;
+  email: string;
+  gravatarUrl: string;
 }
 
 interface Message {
@@ -78,6 +80,9 @@ export default function TwentyQuestions({
   instanceId,
   userId,
   bootstrapData,
+  users,
+  meetUrl,
+  groupId,
 }: Props) {
   const [gameState, setGameState] = useState<GameState>(undefined);
   const [subscription, setSubscription] = useState(undefined);
@@ -132,28 +137,27 @@ export default function TwentyQuestions({
     setGameState(bootstrapData);
   }, []);
 
+  const groupTabProps = {
+    users,
+    groupId,
+    meetUrl,
+  };
+
   if (gameState === undefined) {
     return <>Loading...</>;
   } else {
     return (
       <>
-        <AppBar position="sticky">
-          <Toolbar>
-            <IconButton edge="start" color="inherit" aria-label="menu">
-              <Menu />
-            </IconButton>
-            <div className={styles.title}>Twenty Questions</div>
-            <Button color="inherit">Login</Button>
-          </Toolbar>
-        </AppBar>
-        <h1>Twenty Questions</h1>
-        <Game
-          gameState={gameState}
-          userId={userId}
-          beginNextRoundCallback={beginNextRoundCallback}
-          selectWordCallback={selectWordCallback}
-          askedQuestionCallback={askedQuestionCallback}
-        />
+        <AppFrame noticeToast="" alertToast="" groupTabProps={groupTabProps}>
+          <h1>Twenty Questions</h1>
+          <Game
+            gameState={gameState}
+            userId={userId}
+            beginNextRoundCallback={beginNextRoundCallback}
+            selectWordCallback={selectWordCallback}
+            askedQuestionCallback={askedQuestionCallback}
+          />
+        </AppFrame>
       </>
     );
   }

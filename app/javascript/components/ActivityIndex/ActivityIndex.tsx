@@ -5,7 +5,6 @@ import {
   Card,
   CardContent,
   Paper,
-  Toolbar,
   Box,
   Link,
 } from "@material-ui/core";
@@ -140,7 +139,6 @@ export default function ActivityIndex({
       alertToast={alertToast}
       noticeToast={noticeToast}
     >
-      <Toolbar />
       <Card className={classes.greetingCard}>
         <CardContent classes={{ root: classes.greetingCardContent }}>
           <Typography variant="h5">Welcome, {userName}!</Typography>

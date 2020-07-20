@@ -1,1 +1,5 @@
-<%= react_component("TwoTruthsOneLie", { groupKey: @group.key, instanceId: @instance.id, userId: @user.id, bootstrapData: @bootstrap_data, meetUrl: @group.meet_url, users: @group.users }) %>
+<%= react_component("TwoTruthsOneLie", { groupId: @group.key, instanceId: @instance.id, userId: @user.id, bootstrapData: @bootstrap_data, meetUrl: @group.meet_url, users: @group.users }) %>
+<br><br>
+<% if @user == @group.host %>
+  <%= link_to "End activity", leave_activity_path, method: :delete %>
+<% end %>

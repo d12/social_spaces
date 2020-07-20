@@ -4,11 +4,22 @@ import * as _styles from "./Clicker.module.scss";
 
 import consumer from "../../channels/consumer";
 
+import { AppFrame } from "../AppFrame";
+
 interface BootstrapData {
   count: number;
 }
 
+interface GroupUser {
+  id: number;
+  name: string;
+  email: string;
+  gravatarUrl: string;
+}
+
 interface Props {
+  meetUrl: string;
+  users: GroupUser[];
   groupId: string;
   instanceId: number;
   userId: number;
@@ -16,6 +27,8 @@ interface Props {
 }
 
 export default function Clicker({
+  users,
+  meetUrl,
   groupId,
   instanceId,
   userId,
@@ -50,11 +63,19 @@ export default function Clicker({
     bootstrap(bootstrapData);
   }, []);
 
+  const groupTabProps = {
+    users,
+    meetUrl,
+    groupId,
+  };
+
   return (
     <>
-      <p>Clicker</p>
-      <button onClick={add}>Click me!</button>
-      <p>I've been pressed {count} times.</p>
+      <AppFrame noticeToast="" alertToast="" groupTabProps={groupTabProps}>
+        <p>Clicker</p>
+        <button onClick={add}>Click me!</button>
+        <p>I've been pressed {count} times.</p>
+      </AppFrame>
     </>
   );
 }

@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Cable } from "actioncable";
 
-import { Toolbar } from "@material-ui/core";
-
 import * as _styles from "./TwoTruthsOneLie.module.scss";
 
 import consumer from "../../channels/consumer";
@@ -130,7 +128,6 @@ export default function TwentyQuestions({
   const markup = gameMarkup(gameState, userId, subscription);
   return (
     <AppFrame alertToast="" noticeToast="" groupTabProps={groupTabProps}>
-      <Toolbar />
       {markup}
     </AppFrame>
   );

@@ -217,6 +217,7 @@ export function AppFrame({
               </Link>
             </Toolbar>
           </AppBar>
+          <Toolbar />
           <Container maxWidth="lg">{children}</Container>
         </Grid>
         {groupBarMarkup}
