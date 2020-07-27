@@ -129,7 +129,7 @@ export function PlayingCard({
       minHeight: cardHeightPx,
       maxWidth: cardWidthPx,
       minWidth: cardWidthPx,
-      perspective: "0px",
+      perspective: "600px",
     },
     animationCard: {
       maxHeight: cardHeightPx,
