@@ -58,9 +58,9 @@ export default function Experimental({
 
     setGameState(bootstrapData);
     setCards([
-      { number: "10", suit: CardSuit.Heart, faceDown: true },
-      { number: "J", suit: CardSuit.Diamond, faceDown: true },
-      { number: "Q", suit: CardSuit.Spade, faceDown: true },
+      { number: "10", suit: CardSuit.Heart },
+      { number: "J", suit: CardSuit.Diamond },
+      { number: "Q", suit: CardSuit.Spade },
       { number: "K", suit: CardSuit.Heart, faceDown: true },
       { number: "A", suit: CardSuit.Heart, faceDown: true },
     ]);
@@ -79,13 +79,13 @@ export default function Experimental({
         { number: "J", suit: CardSuit.Diamond },
         { number: "Q", suit: CardSuit.Spade },
         { number: "K", suit: CardSuit.Heart },
-        { number: "A", suit: CardSuit.Heart },
+        { number: "A", suit: CardSuit.Heart, faceDown: true },
       ]);
     } else {
       setCards([
-        { number: "10", suit: CardSuit.Heart, faceDown: true },
-        { number: "J", suit: CardSuit.Diamond, faceDown: true },
-        { number: "Q", suit: CardSuit.Spade, faceDown: true },
+        { number: "10", suit: CardSuit.Heart },
+        { number: "J", suit: CardSuit.Diamond },
+        { number: "Q", suit: CardSuit.Spade },
         { number: "K", suit: CardSuit.Heart, faceDown: true },
         { number: "A", suit: CardSuit.Heart, faceDown: true },
       ]);
