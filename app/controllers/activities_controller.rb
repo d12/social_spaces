@@ -8,7 +8,8 @@ class ActivitiesController < ApplicationController
   ACTIVITIES = [
     TwentyQuestions,
     TwoTruthsOneLie,
-    Clicker
+    Clicker,
+    Experimental
   ]
 
   def index
