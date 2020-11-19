@@ -34,6 +34,7 @@ export interface Props {
   };
   alertToast: string;
   noticeToast: string;
+  jitsiJwt: string;
 }
 
 interface User {
@@ -94,6 +95,7 @@ export function AppFrame({
   groupTabProps,
   alertToast,
   noticeToast,
+  jitsiJwt,
 }: Props) {
   function navigateToActivity(): void {
     window.location.replace("/play");
@@ -159,11 +161,12 @@ export function AppFrame({
             VERTICAL_FILMSTRIP: true,
             VIDEO_QUALITY_LABEL_DISABLED: true
           },
-          jwt: "eyJhbGciOiJSUzI1NiIsImtpZCI6InZwYWFzLW1hZ2ljLWNvb2tpZS1jYjVmODQ2ZDUwZDU0ZjRlYjNlY2ZiZGZjMzg3NWI5NC9kMjUwZmMiLCJ0eXAiOiJKV1QifQ.eyJhdWQiOiJqaXRzaSIsImNvbnRleHQiOnsidXNlciI6eyJpZCI6IjEiLCJuYW1lIjoiTmF0aGFuaWVsIFdvb2R0aG9ycGUiLCJhdmF0YXIiOiJodHRwczovL2F2YXRhcnMwLmdpdGh1YnVzZXJjb250ZW50LmNvbS91LzMwOTIwMjE2IiwiZW1haWwiOiJuandvb2R0aG9ycGVAZ21haWwuY29tIiwibW9kZXJhdG9yIjoidHJ1ZSJ9LCJmZWF0dXJlcyI6eyJsaXZlc3RyZWFtaW5nIjoidHJ1ZSIsInJlY29yZGluZyI6ImZhbHNlIn19LCJleHAiOjE2MDU0OTk3ODIsImlzcyI6ImNoYXQiLCJuYmYiOjE2MDU0OTYwODIsInJvb20iOiIqIiwic3ViIjoidnBhYXMtbWFnaWMtY29va2llLWNiNWY4NDZkNTBkNTRmNGViM2VjZmJkZmMzODc1Yjk0In0.Pf_R2dJSU5MLb0lQ2jtoYxqLQJO9mwC6p6bhvTzO5Azvu_Dw9DBNeah0VuROAhu3SvJH40YAIyClFnaKfytrQlc91mZLK5sPDSlLXpW6--uWfXVn7k7dvYzRENa82YtU6N61O6s3XXDYfhVVaurrmPT1D8_hdJilcsGbOPjqKrDpzrgAmyR_6kTDgJxEwumyTNa6D8MSrJoPgGFWa1n97u3vy_OQg8QpdYwLqNUPWnh-i2VhZlrx0VX-JwGDqgaxDvw9_-eAMArXTcID5WPCy3x9Q8uYX5IAZgWgYTzMHUU6ZJ3kkIkfY7NLwQ6S2ZvHKOQsIQtudhq5isoREQiMF3289-phTsNlBVmh1zfMfh_ogi8di21GmAnWbBHdSar-SWhQ69ANkaADhMmY4uT1m9995Z6FIyrNZzeEODETT1m5oLPFoZh3TF-TSYf6cOZXhfGqGLvoT89oVKvxIHtKQDAS1-lGljr38woi7R4I8tJeC9g7IKNoK7y0Dd9RhB6ABdnGVnO-NLdT9MZOeCdEKVPNKcJuFTjJpxvLFx4ibynkIdBrYfdalrZEpah08bX8MMCwkh9MbfaLCeTQOj8185ofFyJ5MQdPuYPpu-WrFJauRsV4LSFFvkm7TR-vjMgnR-XddOExCOUkPHCw2AsDfr6_Ht0cUul9omTikV8Sydg",
+          jwt: jitsiJwt,
           parentNode: document.querySelector('#video-container')
       };
 
-      const api = new JitsiMeetExternalAPI(domain, options);
+      if(jitsiJwt != null)
+        new JitsiMeetExternalAPI(domain, options);
   }, []);
 
   const classes = useStyles();

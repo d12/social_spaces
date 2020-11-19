@@ -103,7 +103,7 @@ export default function GroupIndex({ alertToast, noticeToast }: Props) {
   );
 
   return (
-    <AppFrame alertToast={alertToast} noticeToast={noticeToast}>
+    <AppFrame alertToast={alertToast} noticeToast={noticeToast} jitsiJwt={null}>
       {modalMarkup}
       <Box className={classes.wrapper}>
         <Grid

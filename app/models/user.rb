@@ -1,3 +1,5 @@
+require "jwt"
+
 class User < ApplicationRecord
   belongs_to :group, optional: true
 
@@ -31,5 +33,39 @@ class User < ApplicationRecord
     downcased_email = email.downcase
     gravatar_hash = Digest::MD5.hexdigest(downcased_email)
     "https://www.gravatar.com/avatar/#{gravatar_hash}"
+  end
+
+  def jitsi_jwt
+    pem = OpenSSL::PKey::RSA.new(ENV["JITSI_PEM"])
+
+    payload = {
+      aud: "jitsi",
+      context: {
+        user: {
+          id: id,
+          name: name,
+          avatar: gravatar_url,
+          email: email,
+          moderator: false,
+        },
+        features: {
+          livestreaming: "false",
+          recording: "false",
+        },
+      },
+      exp: Time.now.to_i + (6 * 60 * 60), # 6 hours
+      iss: "chat",
+      nbf: Time.now.to_i - (2 * 60), # 2 minutes leeway in case of clock drift
+      room: "*",
+      sub: "vpaas-magic-cookie-cb5f846d50d54f4eb3ecfbdfc3875b94" # tenant ID
+    }
+
+    headers = {
+      alg: "RS256",
+      kid: "vpaas-magic-cookie-cb5f846d50d54f4eb3ecfbdfc3875b94/d250fc", # Key ID
+      typ: "JWT",
+    }
+
+    JWT.encode(payload, pem, 'RS256', headers)
   end
 end

@@ -24,6 +24,7 @@ export interface Props {
   users: User[];
   alertToast: string;
   noticeToast: string;
+  jitsiJwt: string;
 }
 
 interface Activity {
@@ -78,6 +79,7 @@ export default function ActivityIndex({
   users,
   alertToast,
   noticeToast,
+  jitsiJwt,
 }: Props) {
   const classes = useStyles();
 
@@ -138,6 +140,7 @@ export default function ActivityIndex({
       groupTabProps={appFrameProps}
       alertToast={alertToast}
       noticeToast={noticeToast}
+      jitsiJwt={jitsiJwt}
     >
       <Card className={classes.greetingCard}>
         <CardContent classes={{ root: classes.greetingCardContent }}>

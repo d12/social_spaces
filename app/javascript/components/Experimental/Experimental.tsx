@@ -28,6 +28,7 @@ interface Props {
   instanceId: number;
   userId: number;
   bootstrapData: GameState;
+  jitsiJwt: string;
 }
 
 export default function Experimental({
@@ -37,6 +38,7 @@ export default function Experimental({
   instanceId,
   userId,
   bootstrapData,
+  jitsiJwt,
 }: Props) {
   const [subscription, setSubscription] = useState(undefined);
   const [gameState, setGameState] = useState<GameState>(undefined);
@@ -95,7 +97,7 @@ export default function Experimental({
   }
 
   return (
-    <AppFrame noticeToast="" alertToast="" groupTabProps={groupTabProps}>
+    <AppFrame noticeToast="" alertToast="" groupTabProps={groupTabProps} jitsiJwt={jitsiJwt}>
       <PlayingCardHand cards={cards} size={CardSize.Medium} />
       <button onClick={buttonFunction}>Click me</button>
     </AppFrame>

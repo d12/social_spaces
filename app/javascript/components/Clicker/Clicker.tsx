@@ -24,6 +24,7 @@ interface Props {
   instanceId: number;
   userId: number;
   bootstrapData: BootstrapData;
+  jitsiJwt: string;
 }
 
 export default function Clicker({
@@ -33,6 +34,7 @@ export default function Clicker({
   instanceId,
   userId,
   bootstrapData,
+  jitsiJwt,
 }: Props) {
   const [count, setCount] = useState<number>(0);
   const [subscription, setSubscription] = useState(undefined);
@@ -71,7 +73,7 @@ export default function Clicker({
 
   return (
     <>
-      <AppFrame noticeToast="" alertToast="" groupTabProps={groupTabProps}>
+      <AppFrame noticeToast="" alertToast="" groupTabProps={groupTabProps} jitsiJwt={jitsiJwt}>
         <p>Clicker</p>
         <button onClick={add}>Click me!</button>
         <p>I've been pressed {count} times.</p>

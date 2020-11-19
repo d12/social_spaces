@@ -14,6 +14,7 @@ interface Props {
   instanceId: number;
   userId: number;
   bootstrapData: GameState;
+  jitsiJwt: string;
 }
 
 interface User {
@@ -98,6 +99,7 @@ export default function TwentyQuestions({
   bootstrapData,
   users,
   meetUrl,
+  jitsiJwt,
 }: Props) {
   const [gameState, setGameState] = useState<GameState>(bootstrapData);
   const [subscription, setSubscription] = useState<Cable>();
@@ -127,7 +129,7 @@ export default function TwentyQuestions({
 
   const markup = gameMarkup(gameState, userId, subscription);
   return (
-    <AppFrame alertToast="" noticeToast="" groupTabProps={groupTabProps}>
+    <AppFrame alertToast="" noticeToast="" groupTabProps={groupTabProps} jitsiJwt={jitsiJwt}>
       {markup}
     </AppFrame>
   );

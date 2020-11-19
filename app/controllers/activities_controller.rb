@@ -38,6 +38,7 @@ class ActivitiesController < ApplicationController
     @user = current_user
     @group = current_group
     @instance = current_activity
+    @jitsi_pem = @user.jitsi_pem
 
     @bootstrap_data = @instance.client_data
 

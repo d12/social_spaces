@@ -1,5 +1,4 @@
-<% # TODO: This user_id should be encrypted or something, it's too easy to spoof someone else %>
-<%= react_component("TwentyQuestions", { groupId: @group.key, instanceId: @instance.id, userId: @user.id, bootstrapData: @bootstrap_data, users: @group.users, meetUrl: @group.meet_url }) %>
+<%= react_component("TwentyQuestions", { groupId: @group.key, instanceId: @instance.id, userId: @user.id, bootstrapData: @bootstrap_data, users: @group.users, meetUrl: @group.meet_url, jitsi_jwt: @user.jitsi_jwt }) %>
 <br><br>
 <% if @user == @group.host %>
   <%= link_to "End activity", leave_activity_path, method: :delete %>
