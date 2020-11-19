@@ -128,9 +128,9 @@ export function AppFrame({
         }
       );
 
-      const domain = '8x8.vc';
+      const domain = 'meet.jit.si';
       const options = {
-          roomName: 'vpaas-magic-cookie-cb5f846d50d54f4eb3ecfbdfc3875b94/Testing',
+          roomName: "vpaas-magic-cookie-cb5f846d50d54f4eb3ecfbdfc3875b94/" + groupTabProps.groupId,
           interfaceConfigOverwrite: {
             TILE_VIEW_MAX_COLUMNS: 1,
             DISPLAY_WELCOME_FOOTER: false,
@@ -161,7 +161,9 @@ export function AppFrame({
             VERTICAL_FILMSTRIP: true,
             VIDEO_QUALITY_LABEL_DISABLED: true
           },
-          jwt: jitsiJwt,
+          configOverwrite: {
+            enableInsecureRoomNameWarning: false,
+          },
           parentNode: document.querySelector('#video-container')
       };
 
