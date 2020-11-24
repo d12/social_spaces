@@ -155,27 +155,28 @@ export default function TwentyQuestions({
   if (gameState === undefined) {
     return <>Loading...</>;
   } else {
-    return (
-      <>
-        <AppFrame noticeToast="" alertToast="" groupTabProps={groupTabProps} jitsiJwt={jitsiJwt}>
-          <Box mt={3}>
-            <Typography variant="h5">TWENTY QUESTIONS</Typography>
-            <Box mt={1}>
-              <Card className={classes.gameCard}>
-                <Box p={3}>
-                  <Game
-                    gameState={gameState}
-                    userId={userId}
-                    beginNextRoundCallback={beginNextRoundCallback}
-                    selectWordCallback={selectWordCallback}
-                    askedQuestionCallback={askedQuestionCallback}
-                  />
-                </Box>
-              </Card>
-            </Box>
-          </Box>
-        </AppFrame>
-      </>
-    );
+    // return (
+    //   <>
+    //     <AppFrame noticeToast="" alertToast="" groupTabProps={groupTabProps} jitsiJwt={jitsiJwt}>
+    //       <Box mt={3}>
+    //         <Typography variant="h5">TWENTY QUESTIONS</Typography>
+    //         <Box mt={1}>
+    //           <Card className={classes.gameCard}>
+    //             <Box p={3}>
+    //               <Game
+    //                 gameState={gameState}
+    //                 userId={userId}
+    //                 beginNextRoundCallback={beginNextRoundCallback}
+    //                 selectWordCallback={selectWordCallback}
+    //                 askedQuestionCallback={askedQuestionCallback}
+    //               />
+    //             </Box>
+    //           </Card>
+    //         </Box>
+    //       </Box>
+    //     </AppFrame>
+    //   </>
+    // );
+    return;
   }
 }

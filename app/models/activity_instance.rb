@@ -14,12 +14,26 @@ class ActivityInstance < ApplicationRecord
   validate :ensure_minimum_players
   validate :ensure_maximum_players
 
+  def as_json(*)
+    self.class.as_json.merge({
+      id: id
+    })
+  end
+
+  def to_h
+    as_json.to_h
+  end
+
   def self.as_json(*)
     {
       displayName: display_name,
       maxUsers: max_users,
-      name: name
+      name: name,
     }
+  end
+
+  def self.to_h
+    as_json.to_h
   end
 
   def self.display_name

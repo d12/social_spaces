@@ -96,10 +96,11 @@ export default function Experimental({
     setFlipped(!flipped);
   }
 
-  return (
-    <AppFrame noticeToast="" alertToast="" groupTabProps={groupTabProps} jitsiJwt={jitsiJwt}>
-      <PlayingCardHand cards={cards} size={CardSize.Medium} />
-      <button onClick={buttonFunction}>Click me</button>
-    </AppFrame>
-  );
+  // return (
+  //   <AppFrame noticeToast="" alertToast="" groupTabProps={groupTabProps} jitsiJwt={jitsiJwt}>
+  //     <PlayingCardHand cards={cards} size={CardSize.Medium} />
+  //     <button onClick={buttonFunction}>Click me</button>
+  //   </AppFrame>
+  // );
+  return;
 }

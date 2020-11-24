@@ -25,6 +25,8 @@ import {
 
 import { yam } from "images";
 import { AppFrame } from "../AppFrame";
+import { User, Group } from "../ApplicationRoot";
+import { CreateGroup, ApiRoutes } from "../modules/API";
 
 const useStyles = makeStyles((theme) => ({
   wrapper: {
@@ -43,11 +45,13 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export interface Props {
-  alertToast: string;
-  noticeToast: string;
+  alertToast?: string;
+  noticeToast?: string;
+  user: User;
+  setGroupCallback(group: Group): void;
 }
 
-export default function GroupIndex({ alertToast, noticeToast }: Props) {
+export default function GroupIndex({ alertToast, noticeToast, setGroupCallback, user }: Props) {
   const classes = useStyles();
   const [modalOpen, setModalOpen] = useState(false);
 
@@ -103,7 +107,7 @@ export default function GroupIndex({ alertToast, noticeToast }: Props) {
   );
 
   return (
-    <AppFrame alertToast={alertToast} noticeToast={noticeToast} jitsiJwt={null}>
+    <AppFrame alertToast={alertToast} noticeToast={noticeToast} user={user} group={null}>
       {modalMarkup}
       <Box className={classes.wrapper}>
         <Grid
@@ -146,9 +150,7 @@ export default function GroupIndex({ alertToast, noticeToast }: Props) {
               </Grid>
               <Grid item>
                 <Link
-                  rel="nofollow"
-                  data-method="post"
-                  href="/groups"
+                  onClick={createGroup}
                   underline="none"
                   color="textPrimary"
                 >
@@ -185,5 +187,15 @@ export default function GroupIndex({ alertToast, noticeToast }: Props) {
 
   function handleModalClose() {
     setModalOpen(false);
+  }
+
+  async function createGroup() {
+    const response = await CreateGroup();
+    console.log(response["errors"]);
+    if(response["errors"] === undefined) {
+      setGroupCallback(response);
+    } else {
+      console.log(response);
+    }
   }
 }

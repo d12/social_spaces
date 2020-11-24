@@ -28,6 +28,13 @@ class User < ApplicationRecord
     })
   end
 
+  def to_h(authenticated: false)
+    json = as_json
+    json["jitsiJwt"] = jitsi_jwt if authenticated
+
+    json
+  end
+
   # See https://en.gravatar.com/site/implement/hash/
   def gravatar_url
     downcased_email = email.downcase
@@ -36,17 +43,19 @@ class User < ApplicationRecord
   end
 
   def jitsi_jwt
+    return unless group
+    
     pem = OpenSSL::PKey::RSA.new(ENV["JITSI_PEM"])
 
     payload = {
       aud: "jitsi",
       context: {
         user: {
-          id: id,
+          id: id.to_s,
           name: name,
           avatar: gravatar_url,
           email: email,
-          moderator: false,
+          moderator: "false",
         },
         features: {
           livestreaming: "false",

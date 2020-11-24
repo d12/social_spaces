@@ -71,13 +71,14 @@ export default function Clicker({
     groupId,
   };
 
-  return (
-    <>
-      <AppFrame noticeToast="" alertToast="" groupTabProps={groupTabProps} jitsiJwt={jitsiJwt}>
-        <p>Clicker</p>
-        <button onClick={add}>Click me!</button>
-        <p>I've been pressed {count} times.</p>
-      </AppFrame>
-    </>
-  );
+  // return (
+  //   <>
+  //     <AppFrame noticeToast="" alertToast="" groupTabProps={groupTabProps} jitsiJwt={jitsiJwt}>
+  //       <p>Clicker</p>
+  //       <button onClick={add}>Click me!</button>
+  //       <p>I've been pressed {count} times.</p>
+  //     </AppFrame>
+  //   </>
+  // );
+  return;
 }

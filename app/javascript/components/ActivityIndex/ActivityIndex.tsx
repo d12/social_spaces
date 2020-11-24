@@ -13,31 +13,18 @@ import { info } from "images";
 
 import { theme } from "theme";
 import { AppFrame } from "../AppFrame";
+import { User, Group, Activity } from "../ApplicationRoot";
+import { StartActivity, ApiRoutes } from "../modules/API"
 
 import { makeStyles } from "@material-ui/core/styles";
 
 export interface Props {
-  userName: string;
-  groupId: string;
-  meetUrl: string;
+  user: User;
+  group: Group;
   activities: Activity[];
-  users: User[];
-  alertToast: string;
-  noticeToast: string;
-  jitsiJwt: string;
-}
-
-interface Activity {
-  displayName: string;
-  maxUsers: string;
-  name: number;
-}
-
-interface User {
-  id: number;
-  name: string;
-  email: string;
-  gravatarUrl: string;
+  setActivityCallback(Activity): void;
+  alertToast?: string;
+  noticeToast?: string;
 }
 
 const useStyles = makeStyles(
@@ -67,19 +54,20 @@ const useStyles = makeStyles(
     activityInfoIcon: {
       height: "24px",
     },
+    clickable: {
+      cursor: "pointer",
+    }
   }),
   { defaultTheme: theme }
 );
 
 export default function ActivityIndex({
-  userName,
-  groupId,
-  meetUrl,
+  user,
+  group,
   activities,
-  users,
+  setActivityCallback,
   alertToast,
   noticeToast,
-  jitsiJwt,
 }: Props) {
   const classes = useStyles();
 
@@ -95,10 +83,10 @@ export default function ActivityIndex({
         <Grid item>
           <Link
             rel="nofollow"
-            data-method="post"
-            href={`/activities/join?activity=${activity.name}`}
+            onClick={() => JoinActivity(activity.name)}
             underline="none"
             color="textPrimary"
+            className={classes.clickable}
           >
             <Paper elevation={0} className={classes.activityImage} />
           </Link>
@@ -106,10 +94,10 @@ export default function ActivityIndex({
         <Grid item>
           <Link
             rel="nofollow"
-            data-method="post"
-            href={`/activities/join?activity=${activity.name}`}
+            onClick={() => JoinActivity(activity.name)}
             underline="none"
             color="textPrimary"
+            className={classes.clickable}
           >
             <Card variant="outlined">
               <CardContent classes={{ root: classes.activityCardContent }}>
@@ -130,21 +118,21 @@ export default function ActivityIndex({
   ));
 
   const appFrameProps = {
-    users,
-    groupId,
-    meetUrl,
+    users: group.users,
+    groupId: group.key,
+    meetUrl: "",
   };
 
   return (
     <AppFrame
-      groupTabProps={appFrameProps}
+      user={user}
+      group={group}
       alertToast={alertToast}
       noticeToast={noticeToast}
-      jitsiJwt={jitsiJwt}
     >
       <Card className={classes.greetingCard}>
         <CardContent classes={{ root: classes.greetingCardContent }}>
-          <Typography variant="h5">Welcome, {userName}!</Typography>
+          <Typography variant="h5">Welcome, {user.name}!</Typography>
           <Typography>Find a game for you and your team to play.</Typography>
         </CardContent>
       </Card>
@@ -168,4 +156,14 @@ export default function ActivityIndex({
       </Box>
     </AppFrame>
   );
+
+  async function JoinActivity(activity) {
+    const response = await StartActivity(activity);
+
+    if(response["errors"].length === 0) {
+      setActivityCallback(response);
+    } else {
+      console.log(response);
+    }
+  }
 }

@@ -128,9 +128,10 @@ export default function TwentyQuestions({
   };
 
   const markup = gameMarkup(gameState, userId, subscription);
-  return (
-    <AppFrame alertToast="" noticeToast="" groupTabProps={groupTabProps} jitsiJwt={jitsiJwt}>
-      {markup}
-    </AppFrame>
-  );
+  // return (
+  //   <AppFrame alertToast="" noticeToast="" groupTabProps={groupTabProps} jitsiJwt={jitsiJwt}>
+  //     {markup}
+  //   </AppFrame>
+  // );
+  return;
 }

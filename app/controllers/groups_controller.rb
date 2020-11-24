@@ -31,6 +31,9 @@ class GroupsController < ApplicationController
     end
 
     current_group.activity&.disconnect_user(current_user)
+
+    current_group.update(host_id: nil)
+    current_group.host
     
     current_user.update!(group: nil)
 

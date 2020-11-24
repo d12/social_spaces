@@ -23,25 +23,16 @@ import { theme } from "theme";
 import Toast, { ToastSeverity } from "./Toast";
 import consumer from "../../channels/consumer";
 
+import { User, Group } from "../ApplicationRoot";
+
 declare var JitsiMeetExternalAPI: any;
 
 export interface Props {
   children?: React.ReactNode;
-  groupTabProps?: {
-    users: User[];
-    groupId: string;
-    meetUrl: string;
-  };
-  alertToast: string;
-  noticeToast: string;
-  jitsiJwt: string;
-}
-
-interface User {
-  id: number;
-  name: string;
-  email: string;
-  gravatarUrl: string;
+  user: User;
+  group?: Group;
+  alertToast?: string;
+  noticeToast?: string;
 }
 
 const drawerWidth = 350;
@@ -81,8 +72,9 @@ const useStyles = makeStyles((_theme) => ({
     height: "100%",
     flexDirection: "column"
   },
-  foo: {
+  video: {
     width: "800px",
+    backgroundColor: "grey",
   },
   headerBox: {
     flexDirection: "row",
@@ -92,19 +84,19 @@ const useStyles = makeStyles((_theme) => ({
 
 export function AppFrame({
   children,
-  groupTabProps,
+  user,
+  group,
   alertToast,
   noticeToast,
-  jitsiJwt,
 }: Props) {
   function navigateToActivity(): void {
     window.location.replace("/play");
   }
 
   useEffect(() => {
-    groupTabProps &&
+    group &&
       consumer.subscriptions.create(
-        { channel: "GroupChannel", group_id: groupTabProps.groupId },
+        { channel: "GroupChannel", group_id: group.key },
         {
           received: ({ type, user }) => {
             switch (type) {
@@ -119,7 +111,8 @@ export function AppFrame({
                 console.log("User left but UI update not implemented yet");
                 break;
               case "ACTIVITY_START":
-                navigateToActivity();
+                // navigateToActivity();
+                // TODO: Needs to fetch latest activity info
                 break;
               default:
                 console.error("Unexpected message");
@@ -128,9 +121,9 @@ export function AppFrame({
         }
       );
 
-      const domain = 'meet.jit.si';
+      const domain = '8x8.vc';
       const options = {
-          roomName: "vpaas-magic-cookie-cb5f846d50d54f4eb3ecfbdfc3875b94/" + groupTabProps.groupId,
+          roomName: "vpaas-magic-cookie-cb5f846d50d54f4eb3ecfbdfc3875b94/" +  (group && group.key),
           interfaceConfigOverwrite: {
             TILE_VIEW_MAX_COLUMNS: 1,
             DISPLAY_WELCOME_FOOTER: false,
@@ -161,19 +154,22 @@ export function AppFrame({
             VERTICAL_FILMSTRIP: true,
             VIDEO_QUALITY_LABEL_DISABLED: true
           },
+          jwt: user.jitsiJwt,
           configOverwrite: {
             enableInsecureRoomNameWarning: false,
           },
           parentNode: document.querySelector('#video-container')
       };
 
-      if(jitsiJwt != null)
-        new JitsiMeetExternalAPI(domain, options);
+      console.log(user.jitsiJwt);
+
+      // if(jitsiJwt != null)
+      //   new JitsiMeetExternalAPI(domain, options);
   }, []);
 
   const classes = useStyles();
 
-  const groupBarMarkup = groupTabProps && (
+  const groupBarMarkup = group && (
     <Grid item>
       <Paper
         className={classes.drawerPaper}
@@ -189,7 +185,7 @@ export function AppFrame({
               InputProps={{
                 readOnly: true,
               }}
-              value={groupTabProps.meetUrl}
+              value={""}
               fullWidth
               margin="dense"
             />
@@ -198,13 +194,13 @@ export function AppFrame({
               InputProps={{
                 readOnly: true,
               }}
-              value={groupTabProps.groupId}
+              value={group.key}
               fullWidth
               margin="dense"
             />
           </Box>
           <List>
-            {groupTabProps.users.map(({ email, name, gravatarUrl }) => (
+            {group.users.map(({ email, name, gravatarUrl }) => (
               <ListItem alignItems="center" key={email}>
                 <ListItemAvatar>
                   <Avatar alt={name} src={gravatarUrl} />
@@ -276,7 +272,7 @@ export function AppFrame({
                 href="/logout"
                 underline="none"
                 color="textSecondary"
-                className={groupTabProps ? classes.logoutWithDrawer : ""}
+                className={group ? classes.logoutWithDrawer : ""}
               >
                 <Button color="inherit">Logout</Button>
               </Link>
@@ -285,7 +281,7 @@ export function AppFrame({
           <Container maxWidth="lg">{children}</Container>
         </Grid>
         {groupBarMarkup}
-        <Box className={classes.foo} id="video-container">
+        <Box className={classes.video} id="video-container">
         </Box>
       </Grid>
     </ThemeProvider>

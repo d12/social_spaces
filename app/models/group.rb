@@ -5,16 +5,14 @@ class Group < ApplicationRecord
 
   validates :users, :presence => true
 
-  before_validation :generate_key_if_missing, :generate_hangout_link
-  before_save :generate_hangout_link
+  before_validation :generate_key_if_missing
 
   before_create :set_host
 
   validates :key, presence: true, uniqueness: true
 
-  def activity
-    ActivityInstance.find_by(group_id: id)
-  end
+  has_one :activity_instance
+  alias_attribute :activity, :activity_instance
 
   def host
     if self.host_id
@@ -28,17 +26,21 @@ class Group < ApplicationRecord
     new_host
   end
 
+  def as_json(*)
+    super(only: [:key, :host_id]).merge({
+      users: users.map(&:to_h)
+    }).transform_keys{ |key| key.to_s.camelcase(:lower) }
+  end
+
+  def to_h
+    as_json.to_h
+  end
+
   private
 
   def set_host
     if users.any?
       self.host_id = users.first.id
-    end
-  end
-
-  def generate_hangout_link
-    if users.any?
-      self.meet_url = GoogleAPI.generate_meet_url(users.first)
     end
   end
 

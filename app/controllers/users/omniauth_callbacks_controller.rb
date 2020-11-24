@@ -9,6 +9,6 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     else
       raise "Ah fuck, this shouldn't happen"
     end
-    redirect_to root_path
+    redirect_to react_path
   end
 end
