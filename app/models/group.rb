@@ -27,9 +27,13 @@ class Group < ApplicationRecord
   end
 
   def as_json(*)
-    super(only: [:key, :host_id]).merge({
-      users: users.map(&:to_h)
-    }).transform_keys{ |key| key.to_s.camelcase(:lower) }
+    obj = super(only: [:key, :host_id]).merge({
+      users: users.map(&:to_h),
+    })
+
+    obj[:activity] = activity.as_json if activity
+
+    obj.deep_transform_keys{ |key| key.to_s.camelcase(:lower) }
   end
 
   def to_h

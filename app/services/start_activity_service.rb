@@ -27,7 +27,7 @@ class StartActivityService
   end
 
   def succeeded?
-    @errors.any?
+    @errors.empty?
   end
 
   def instance

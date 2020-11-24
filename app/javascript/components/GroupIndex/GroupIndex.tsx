@@ -26,7 +26,7 @@ import {
 import { yam } from "images";
 import { AppFrame } from "../AppFrame";
 import { User, Group } from "../ApplicationRoot";
-import { CreateGroup, ApiRoutes } from "../modules/API";
+import { CreateGroup, JoinGroup } from "../modules/API";
 
 const useStyles = makeStyles((theme) => ({
   wrapper: {
@@ -64,12 +64,7 @@ export default function GroupIndex({ alertToast, noticeToast, setGroupCallback, 
   const { fields, submit } = useForm({
     fields: {
       groupId: useField<string>({ value: "", validates: required }),
-    },
-    onSubmit: async ({ groupId }) => {
-      window.location.href = `/join/${groupId}`;
-      handleModalClose();
-      return submitSuccess();
-    },
+    }
   });
 
   const modalMarkup = (
@@ -99,7 +94,7 @@ export default function GroupIndex({ alertToast, noticeToast, setGroupCallback, 
         <Button onClick={handleModalClose} color="primary">
           Cancel
         </Button>
-        <Button onClick={submit} color="primary">
+        <Button onClick={() => joinGroup(fields.groupId.value)} color="primary">
           Join
         </Button>
       </DialogActions>
@@ -107,7 +102,7 @@ export default function GroupIndex({ alertToast, noticeToast, setGroupCallback, 
   );
 
   return (
-    <AppFrame alertToast={alertToast} noticeToast={noticeToast} user={user} group={null}>
+    <AppFrame alertToast={alertToast} noticeToast={noticeToast} user={user} group={null} setGroupCallback={setGroupCallback}>
       {modalMarkup}
       <Box className={classes.wrapper}>
         <Grid
@@ -191,8 +186,18 @@ export default function GroupIndex({ alertToast, noticeToast, setGroupCallback, 
 
   async function createGroup() {
     const response = await CreateGroup();
-    console.log(response["errors"]);
-    if(response["errors"] === undefined) {
+
+    if (response["errors"] === undefined) {
+      setGroupCallback(response);
+    } else {
+      console.log(response);
+    }
+  }
+
+  async function joinGroup(groupKey: string) {
+    const response = await JoinGroup(groupKey);
+
+    if (response["errors"] === undefined) {
       setGroupCallback(response);
     } else {
       console.log(response);

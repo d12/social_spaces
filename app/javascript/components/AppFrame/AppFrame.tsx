@@ -24,6 +24,7 @@ import Toast, { ToastSeverity } from "./Toast";
 import consumer from "../../channels/consumer";
 
 import { User, Group } from "../ApplicationRoot";
+import { LeaveGroup, GetGroup } from "../modules/API";
 
 declare var JitsiMeetExternalAPI: any;
 
@@ -31,6 +32,7 @@ export interface Props {
   children?: React.ReactNode;
   user: User;
   group?: Group;
+  setGroupCallback(group: Group): void;
   alertToast?: string;
   noticeToast?: string;
 }
@@ -73,7 +75,7 @@ const useStyles = makeStyles((_theme) => ({
     flexDirection: "column"
   },
   video: {
-    width: "800px",
+    width: "400px",
     backgroundColor: "grey",
   },
   headerBox: {
@@ -86,6 +88,7 @@ export function AppFrame({
   children,
   user,
   group,
+  setGroupCallback,
   alertToast,
   noticeToast,
 }: Props) {
@@ -101,19 +104,19 @@ export function AppFrame({
           received: ({ type, user }) => {
             switch (type) {
               case "JOINED":
-                // TODO
-                // addUser(user);
-                console.log("User joined but UI update not implemented yet");
+                GetGroupAndSet();
                 break;
               case "LEFT":
-                // TODO
-                // removeUser(user);
-                console.log("User left but UI update not implemented yet");
+                GetGroupAndSet();
                 break;
               case "ACTIVITY_START":
-                // navigateToActivity();
-                // TODO: Needs to fetch latest activity info
+                GetGroupAndSet();
                 break;
+
+              case "ACTIVITY_END":
+                GetGroupAndSet();
+                break;
+
               default:
                 console.error("Unexpected message");
             }
@@ -160,8 +163,6 @@ export function AppFrame({
           },
           parentNode: document.querySelector('#video-container')
       };
-
-      console.log(user.jitsiJwt);
 
       // if(jitsiJwt != null)
       //   new JitsiMeetExternalAPI(domain, options);
@@ -211,8 +212,7 @@ export function AppFrame({
           </List>
           <Link
             rel="nofollow"
-            data-method="delete"
-            href="/leave_group"
+            onClick={LeaveGroupAndReload}
             underline="none"
             color="textPrimary"
             className={classes.leaveGroupLink}
@@ -247,8 +247,6 @@ export function AppFrame({
   const noticeMarkup = noticeToast && (
     <Toast message={noticeToast} severity={ToastSeverity.INFO} />
   );
-
-
 
   return (
     <ThemeProvider theme={theme}>
@@ -286,4 +284,15 @@ export function AppFrame({
       </Grid>
     </ThemeProvider>
   );
+
+  async function GetGroupAndSet() {
+    const response = await GetGroup(group.key);
+    setGroupCallback(response);
+  }
+
+  // Reload, since we need to kill the video. This is lazy, fix it later.
+  async function LeaveGroupAndReload() {
+    await LeaveGroup();
+    location.reload();
+  }
 }

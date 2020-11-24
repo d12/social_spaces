@@ -3,6 +3,14 @@ import React , { useState } from "react";
 import GroupIndex from "../GroupIndex";
 import ActivityIndex from "../ActivityIndex";
 
+import { AppFrame } from "../AppFrame";
+
+import Clicker from "../Clicker";
+
+const ACTIVITIES = {
+  "Clicker": Clicker
+}
+
 export interface User {
   id: number;
   name: string;
@@ -15,39 +23,47 @@ export interface Group {
   key: string;
   hostId: number;
   users: User[];
+  activity?: Activity;
 }
 
 export interface Activity {
   displayName: string;
   maxUsers: number;
   name: string;
+  id?: number;
 }
 
 interface Props {
   user: User;
   group: Group;
-  activity: Activity;
   allActivities: Activity[];
 }
 
 export default function ApplicationRoot(props: Props) {
   const [group, setGroup] = useState<Group>(props.group);
-  const [user, setUser] = useState<User>(props.user);
-  const [activity, setActivity] = useState<Activity>(props.activity);
+  const [user] = useState<User>(props.user);
 
-  if(group === null) {
+  function withAppFrame(markup: JSX.Element) {
+    return (
+      <AppFrame user={user} group={group} setGroupCallback={setGroup}>
+        {markup}
+      </AppFrame>
+    );
+  }
+
+  if(group === undefined || group === null) {
     return <GroupIndex setGroupCallback={setGroup} user={user} />
   }
 
-  console.log(activity);
-
-  if(activity === null) {
-    return <ActivityIndex user={user} group={group} activities={props.allActivities} setActivityCallback={setActivity} />
+  if(group.activity === undefined || group.activity === null) {
+    return withAppFrame(<ActivityIndex user={user} activities={props.allActivities} setGroupCallback={setGroup} />);
   }
 
-  return (
-    <>
+  switch(group.activity.name) {
+    case "Clicker":
+      return withAppFrame(<Clicker user={user} group={group} />);
 
-    </>
-  );
+    default:
+      return `No activity markup for ${name}`;
+  }
 }

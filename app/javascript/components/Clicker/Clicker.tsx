@@ -4,81 +4,55 @@ import * as _styles from "./Clicker.module.scss";
 
 import consumer from "../../channels/consumer";
 
-import { AppFrame } from "../AppFrame";
+import { User, Group } from "../ApplicationRoot";
 
-interface BootstrapData {
-  count: number;
-}
-
-interface GroupUser {
-  id: number;
-  name: string;
-  email: string;
-  gravatarUrl: string;
-}
+import { EndActivity } from "../modules/API";
 
 interface Props {
-  meetUrl: string;
-  users: GroupUser[];
-  groupId: string;
-  instanceId: number;
-  userId: number;
-  bootstrapData: BootstrapData;
-  jitsiJwt: string;
+  user: User;
+  group: Group;
 }
 
 export default function Clicker({
-  users,
-  meetUrl,
-  groupId,
-  instanceId,
-  userId,
-  bootstrapData,
-  jitsiJwt,
+  user,
+  group
 }: Props) {
   const [count, setCount] = useState<number>(0);
   const [subscription, setSubscription] = useState(undefined);
 
   function add() {
     if (subscription !== undefined) {
-      subscription.send({ add: true, userId: userId });
+      subscription.send({ add: true, userId: user.id });
     }
-  }
-
-  function bootstrap(data: Object) {
-    setCount(data["count"]);
   }
 
   useEffect(() => {
     setSubscription(
       consumer.subscriptions.create(
-        { channel: "ActivityChannel", activity_instance_id: instanceId },
+        { channel: "ActivityChannel", activity_instance_id: group.activity.id },
         {
           received: (data: Object) => {
-            console.log("RECIEVED A MESSAGE");
-            setCount(data["gameState"]["updatedCount"]);
+            setCount(data["gameState"]["count"]);
           },
         }
       )
     );
-
-    bootstrap(bootstrapData);
   }, []);
 
-  const groupTabProps = {
-    users,
-    meetUrl,
-    groupId,
-  };
+  const leaveMarkup = user.id === group.hostId ? (<><button onClick={end}>End Activity</button></>) : null;
 
-  // return (
-  //   <>
-  //     <AppFrame noticeToast="" alertToast="" groupTabProps={groupTabProps} jitsiJwt={jitsiJwt}>
-  //       <p>Clicker</p>
-  //       <button onClick={add}>Click me!</button>
-  //       <p>I've been pressed {count} times.</p>
-  //     </AppFrame>
-  //   </>
-  // );
-  return;
+  return (
+    <>
+      <p>Clicker</p>
+      <button onClick={add}>Click me!</button>
+      <p>I've been pressed {count} times.</p>
+      <br></br>
+      {leaveMarkup}
+    </>
+  );
+
+  async function end() {
+    await EndActivity(group.key);
+    console.log("Ended activity.");
+  }
 }

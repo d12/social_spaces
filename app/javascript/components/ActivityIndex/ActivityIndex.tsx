@@ -12,17 +12,15 @@ import {
 import { info } from "images";
 
 import { theme } from "theme";
-import { AppFrame } from "../AppFrame";
 import { User, Group, Activity } from "../ApplicationRoot";
-import { StartActivity, ApiRoutes } from "../modules/API"
+import { StartActivity } from "../modules/API"
 
 import { makeStyles } from "@material-ui/core/styles";
 
 export interface Props {
   user: User;
-  group: Group;
   activities: Activity[];
-  setActivityCallback(Activity): void;
+  setGroupCallback(group: Group): void;
   alertToast?: string;
   noticeToast?: string;
 }
@@ -63,9 +61,8 @@ const useStyles = makeStyles(
 
 export default function ActivityIndex({
   user,
-  group,
   activities,
-  setActivityCallback,
+  setGroupCallback,
   alertToast,
   noticeToast,
 }: Props) {
@@ -117,19 +114,8 @@ export default function ActivityIndex({
     </Grid>
   ));
 
-  const appFrameProps = {
-    users: group.users,
-    groupId: group.key,
-    meetUrl: "",
-  };
-
   return (
-    <AppFrame
-      user={user}
-      group={group}
-      alertToast={alertToast}
-      noticeToast={noticeToast}
-    >
+    <>
       <Card className={classes.greetingCard}>
         <CardContent classes={{ root: classes.greetingCardContent }}>
           <Typography variant="h5">Welcome, {user.name}!</Typography>
@@ -154,14 +140,14 @@ export default function ActivityIndex({
           </Card>
         </Box>
       </Box>
-    </AppFrame>
+    </>
   );
 
-  async function JoinActivity(activity) {
+  async function JoinActivity(activity: string) {
     const response = await StartActivity(activity);
 
-    if(response["errors"].length === 0) {
-      setActivityCallback(response);
+    if(response["errors"] === undefined) {
+      setGroupCallback(response);
     } else {
       console.log(response);
     }

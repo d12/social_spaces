@@ -18,7 +18,6 @@ class ReactController < ApplicationController
     @context = {
       user: current_user.to_h(authenticated: true),
       group: current_group&.to_h,
-      current_activity: current_group&.activity&.to_h,
       all_activities: ACTIVITIES.map(&:to_h),
     }
   end

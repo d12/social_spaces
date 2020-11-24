@@ -4,8 +4,12 @@ Rails.application.routes.draw do
   get "/", to: "react#show", as: "react"
 
   namespace :api do
+    get "/groups/:key", to: "groups#show"
     post "/groups/create", to: "groups#create"
+    post "/groups/join", to: "groups#join"
+    post "/groups/leave", to: "groups#leave" # todo, this shouldn be a delete
     post "/activities/start", to: "activities#start"
+    post "/activities/end", to: "activities#end"
   end
 
   scope :legacy do

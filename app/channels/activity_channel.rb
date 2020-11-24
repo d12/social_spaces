@@ -3,6 +3,8 @@ class ActivityChannel < ApplicationCable::Channel
     current_user.update(disconnected_at: nil)
 
     stream_from broadcasting_key
+
+    ActionCable.server.broadcast(broadcasting_key, {gameState: instance.client_data})
   end
 
   def receive(data)
@@ -14,10 +16,6 @@ class ActivityChannel < ApplicationCable::Channel
 
   def unsubscribed
     current_user.update(disconnected_at: Time.zone.now)
-  end
-
-  def self.broadcast_activity_end_message(instance, reason:)
-    ActionCable.server.broadcast(broadcasting_key(instance.id), { event: "ACTIVITY_END", message: reason })
   end
 
   private

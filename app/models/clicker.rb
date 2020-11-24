@@ -21,7 +21,7 @@ class Clicker < ActivityInstance
     storage[:count] += 1
     save!
 
-    {updatedCount: storage[:count]}
+    client_data
   end
 
   # All the data required for a client to bootstrap itself

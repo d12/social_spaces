@@ -137,6 +137,7 @@ class ActivityInstance < ApplicationRecord
   end
 
   def broadcast_activity_end_message(reason:)
-    ActivityChannel.broadcast_activity_end_message(self, reason: reason)
+    puts "BROADCASTING..."
+    GroupChannel.broadcast_activity_end_message(group, reason: reason)
   end
 end
