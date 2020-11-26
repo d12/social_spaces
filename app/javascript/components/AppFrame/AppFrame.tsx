@@ -35,6 +35,7 @@ export interface Props {
   setGroupCallback(group: Group): void;
   alertToast?: string;
   noticeToast?: string;
+  toasts?: Array<string>;
 }
 
 const drawerWidth = 350;
@@ -91,6 +92,7 @@ export function AppFrame({
   setGroupCallback,
   alertToast,
   noticeToast,
+  toasts,
 }: Props) {
   function navigateToActivity(): void {
     window.location.replace("/play");
@@ -101,7 +103,8 @@ export function AppFrame({
       consumer.subscriptions.create(
         { channel: "GroupChannel", group_id: group.key },
         {
-          received: ({ type, user }) => {
+          received: ({ type }) => {
+            console.log(type);
             switch (type) {
               case "JOINED":
                 GetGroupAndSet();
@@ -164,7 +167,7 @@ export function AppFrame({
           parentNode: document.querySelector('#video-container')
       };
 
-      // if(jitsiJwt != null)
+      // if(user.jitsiJwt != null)
       //   new JitsiMeetExternalAPI(domain, options);
   }, []);
 

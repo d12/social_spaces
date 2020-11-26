@@ -33,11 +33,18 @@ module Api
       end
 
       current_user.update(group_id: group.id)
+      GroupChannel.broadcast_user_joined(group)
 
       render json: group.to_h, status: 200
     end
 
     def leave
+      unless group = current_user.group
+        render json: { errors: ["You're not in a group!"] }, status: 400
+        return
+      end
+
+      GroupChannel.broadcast_user_left(group)
       current_user.update!(group_id: nil)
 
       render json: {}, status: 200

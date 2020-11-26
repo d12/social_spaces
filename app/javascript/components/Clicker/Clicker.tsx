@@ -15,7 +15,7 @@ interface Props {
 
 export default function Clicker({
   user,
-  group
+  group,
 }: Props) {
   const [count, setCount] = useState<number>(0);
   const [subscription, setSubscription] = useState(undefined);
@@ -39,14 +39,13 @@ export default function Clicker({
     );
   }, []);
 
-  const leaveMarkup = user.id === group.hostId ? (<><button onClick={end}>End Activity</button></>) : null;
+  const leaveMarkup = user.id === group.hostId ? (<><br></br><button onClick={end}>End Activity</button></>) : null;
 
   return (
     <>
       <p>Clicker</p>
       <button onClick={add}>Click me!</button>
       <p>I've been pressed {count} times.</p>
-      <br></br>
       {leaveMarkup}
     </>
   );

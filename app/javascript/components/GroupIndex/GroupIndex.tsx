@@ -188,7 +188,8 @@ export default function GroupIndex({ alertToast, noticeToast, setGroupCallback, 
     const response = await CreateGroup();
 
     if (response["errors"] === undefined) {
-      setGroupCallback(response);
+      // This should just setGroupCallback(response);, but we need to force the video to load in. And I haven't done that yet.
+      location.reload();
     } else {
       console.log(response);
     }
@@ -198,7 +199,7 @@ export default function GroupIndex({ alertToast, noticeToast, setGroupCallback, 
     const response = await JoinGroup(groupKey);
 
     if (response["errors"] === undefined) {
-      setGroupCallback(response);
+      location.reload();
     } else {
       console.log(response);
     }

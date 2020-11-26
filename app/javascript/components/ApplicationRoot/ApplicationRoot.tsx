@@ -7,10 +7,6 @@ import { AppFrame } from "../AppFrame";
 
 import Clicker from "../Clicker";
 
-const ACTIVITIES = {
-  "Clicker": Clicker
-}
-
 export interface User {
   id: number;
   name: string;

@@ -18,7 +18,7 @@ class GroupsController < ApplicationController
       return
     end
     current_user.update!(group: @group)
-    GroupChannel.broadcast_user_joined(@group, current_user)
+    GroupChannel.broadcast_user_joined(@group)
 
     redirect_to activities_path
   end
@@ -34,7 +34,7 @@ class GroupsController < ApplicationController
 
     current_group.update(host_id: nil)
     current_group.host
-    
+
     current_user.update!(group: nil)
 
     GroupChannel.broadcast_user_left(current_group, current_user)
