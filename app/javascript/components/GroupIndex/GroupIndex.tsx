@@ -191,7 +191,7 @@ export default function GroupIndex({ alertToast, noticeToast, setGroupCallback, 
       // This should just setGroupCallback(response);, but we need to force the video to load in. And I haven't done that yet.
       location.reload();
     } else {
-      console.log(response);
+      alert(response["errors"]);
     }
   }
 
@@ -201,7 +201,7 @@ export default function GroupIndex({ alertToast, noticeToast, setGroupCallback, 
     if (response["errors"] === undefined) {
       location.reload();
     } else {
-      console.log(response);
+      alert(response["errors"]);
     }
   }
 }

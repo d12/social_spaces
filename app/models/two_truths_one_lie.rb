@@ -29,7 +29,11 @@ class TwoTruthsOneLie < ActivityInstance
 
   # The initial value to use for a instances save state
   def initial_storage
-    users_array = users.map do |user|
+    leader_index = 0
+
+    users_array = users.each_with_index.map do |user, index|
+      leader_index = index if user.id == group.host_id
+
       {
         id: user.id,
         name: user.name,
@@ -41,7 +45,7 @@ class TwoTruthsOneLie < ActivityInstance
 
     {
       status: Status::BRAINSTORMING,
-      leader_index: 0,               # The index of the leader in the users list
+      leader_index: leader_index,    # The index of the leader in the users list
       users: users_array,            # The users in the game
       whos_turn_index: nil,          # The current player who's statements are being voted on
       round_count: 1

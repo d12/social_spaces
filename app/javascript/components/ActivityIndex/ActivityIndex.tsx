@@ -149,7 +149,7 @@ export default function ActivityIndex({
     if(response["errors"] === undefined) {
       setGroupCallback(response);
     } else {
-      console.log(response);
+      alert(response["errors"]);
     }
   }
 }
