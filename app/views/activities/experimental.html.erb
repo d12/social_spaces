@@ -1,8 +1,0 @@
-
-<%= react_component("Experimental", { groupId: @group.key, instanceId: @instance.id, userId: @user.id, bootstrapData: @bootstrap_data, users: @group.users, meetUrl: @group.meet_url, jitsiJwt: @user.jitsi_jwt }) %>
-
-<br/><br/>
-
-<% if @user == @group.host %>
-  <%= link_to "End activity", leave_activity_path, method: :delete %>
-<% end %>
