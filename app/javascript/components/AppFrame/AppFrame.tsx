@@ -251,7 +251,7 @@ export function AppFrame({
     <Toast message={noticeToast} severity={ToastSeverity.INFO} />
   );
 
-  const endActivityMarkup = group.activity && (user.id == group.hostId) && (
+  const endActivityMarkup = group && group.activity && (user.id == group.hostId) && (
     <>
       <br />
       <br />
