@@ -1,5 +1,4 @@
 class ReactController < ApplicationController
-  skip_before_action :redirect_to_activity_if_in_progress
   before_action :set_context
 
   ACTIVITIES = [
@@ -9,8 +8,7 @@ class ReactController < ApplicationController
     Experimental
   ]
 
-  def show
-  end
+  def show; end
 
   private
 
