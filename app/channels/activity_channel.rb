@@ -8,7 +8,7 @@ class ActivityChannel < ApplicationCable::Channel
   end
 
   def receive(data)
-    response = instance.reload.process_message(data.with_indifferent_access.transform_keys(&:underscore))
+    response = instance.reload.process_message(data.deep_transform_keys(&:underscore).with_indifferent_access)
     if response
       ActionCable.server.broadcast(broadcasting_key, {gameState: response})
     end

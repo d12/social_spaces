@@ -1,1 +1,1 @@
-export { default, CreateGroup, JoinGroup, StartActivity, EndActivity, LeaveGroup, GetGroup } from "./API";
+export { default as API } from "./API";

@@ -44,6 +44,7 @@ class TwoTruthsOneLie < ActivityInstance
       leader_index: 0,               # The index of the leader in the users list
       users: users_array,            # The users in the game
       whos_turn_index: nil,          # The current player who's statements are being voted on
+      round_count: 1
     }
   end
 

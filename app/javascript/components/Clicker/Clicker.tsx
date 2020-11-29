@@ -6,7 +6,7 @@ import consumer from "../../channels/consumer";
 
 import { User, Group } from "../ApplicationRoot";
 
-import { EndActivity } from "../modules/API";
+import { API } from "../modules/API";
 
 interface Props {
   user: User;
@@ -51,7 +51,7 @@ export default function Clicker({
   );
 
   async function end() {
-    await EndActivity(group.key);
+    await API.endActivity(group.key);
     console.log("Ended activity.");
   }
 }

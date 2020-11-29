@@ -13,7 +13,7 @@ import { info } from "images";
 
 import { theme } from "theme";
 import { User, Group, Activity } from "../ApplicationRoot";
-import { StartActivity } from "../modules/API"
+import { API } from "../modules/API"
 
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -144,7 +144,7 @@ export default function ActivityIndex({
   );
 
   async function JoinActivity(activity: string) {
-    const response = await StartActivity(activity);
+    const response = await API.startActivity(activity);
 
     if(response["errors"] === undefined) {
       setGroupCallback(response);

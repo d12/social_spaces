@@ -26,7 +26,7 @@ import {
 import { yam } from "images";
 import { AppFrame } from "../AppFrame";
 import { User, Group } from "../ApplicationRoot";
-import { CreateGroup, JoinGroup } from "../modules/API";
+import { API } from "../modules/API";
 
 const useStyles = makeStyles((theme) => ({
   wrapper: {
@@ -185,7 +185,7 @@ export default function GroupIndex({ alertToast, noticeToast, setGroupCallback, 
   }
 
   async function createGroup() {
-    const response = await CreateGroup();
+    const response = await API.createGroup();
 
     if (response["errors"] === undefined) {
       // This should just setGroupCallback(response);, but we need to force the video to load in. And I haven't done that yet.
@@ -196,7 +196,7 @@ export default function GroupIndex({ alertToast, noticeToast, setGroupCallback, 
   }
 
   async function joinGroup(groupKey: string) {
-    const response = await JoinGroup(groupKey);
+    const response = await API.joinGroup(groupKey);
 
     if (response["errors"] === undefined) {
       location.reload();

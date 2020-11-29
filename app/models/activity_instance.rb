@@ -48,18 +48,12 @@ class ActivityInstance < ApplicationRecord
     raise NotImplementedError
   end
 
-  # Called when a client sends a message to the game server.
-  # Data is an arbitrary JSON hash.
-  def process_message(data)
-    raise NotImplementedError
-  end
-
   # All the data required for a client to set its local state
   # E.g. When a client joins midway, they need enough information
   # to render the current state of the game
   def client_data
     # Transform keys to camelCase as JS will expect
-    storage.transform_keys{ |k| k.camelcase(:lower) }
+    storage.deep_transform_keys{ |k| k.camelcase(:lower) }
   end
 
   # Used by the game loop. Not currently in use.
@@ -72,7 +66,7 @@ class ActivityInstance < ApplicationRecord
     handler = event_handlers[event]
 
     unless handler
-      raise "#{self.name} does not implement a handler for event #{event}"
+      raise "#{self.class.name} does not implement a handler for event #{event}"
     end
 
     handler.new(instance: self).call(data)

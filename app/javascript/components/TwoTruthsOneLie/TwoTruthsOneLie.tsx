@@ -1,35 +1,24 @@
 import React, { useEffect, useState } from "react";
 import { Cable } from "actioncable";
 
+import { User, Group } from "../ApplicationRoot";
+
 import * as _styles from "./TwoTruthsOneLie.module.scss";
 
 import consumer from "../../channels/consumer";
-import { Brainstorming, Voting } from "./components";
-import { AppFrame } from "../AppFrame";
+import { Brainstorming, Voting, Reveal, Summary } from "./components";
 
 interface Props {
-  groupId: string;
-  meetUrl: string;
-  users: GroupUser[];
-  instanceId: number;
-  userId: number;
-  bootstrapData: GameState;
-  jitsiJwt: string;
+  user: User;
+  group: Group;
 }
 
-interface User {
+export interface ActivityUser {
   id: number;
   name: string;
   score: number;
   statements: Statement[];
   hasVoted: boolean;
-}
-
-interface GroupUser {
-  id: number;
-  name: string;
-  email: string;
-  gravatarUrl: string;
 }
 
 interface Message {
@@ -47,7 +36,7 @@ export interface GameState {
   status: ActivityStatus;
   leaderIndex: number;
   whosTurnIndex: number;
-  users: User[];
+  users: ActivityUser[];
 }
 
 enum ActivityStatus {
@@ -61,77 +50,70 @@ enum Event {
   ACTIVITY_END = "ACTIVITY_END",
 }
 
-function handleEvent(event: Event): void {
-  switch (event) {
-    case Event.ACTIVITY_END:
-      window.location.replace("/activities");
-      break;
-  }
-}
-
-function gameMarkup(gameState: GameState, userId: number, subscription: Cable) {
-  if (!subscription) {
-    return <p>Loading...</p>;
-  }
-
-  switch (gameState.status) {
-    case ActivityStatus.BRAINSTORMING:
-      return <Brainstorming userId={userId} subscription={subscription} />;
-    case ActivityStatus.VOTING:
-      return (
-        <Voting
-          userId={userId}
-          subscription={subscription}
-          gameState={gameState}
-        />
-      );
-    case ActivityStatus.REVEAL:
-      return <p>Something</p>;
-    case ActivityStatus.SUMMARY:
-      return <p>Something</p>;
-  }
+export function CurrentUserData(gameState: GameState, id: number): ActivityUser {
+  return gameState.users.filter(function(u) { return u.id == id})[0];
 }
 
 export default function TwentyQuestions({
-  groupId,
-  instanceId,
-  userId,
-  bootstrapData,
-  users,
-  meetUrl,
-  jitsiJwt,
+  user,
+  group,
 }: Props) {
-  const [gameState, setGameState] = useState<GameState>(bootstrapData);
+  const [gameState, setGameState] = useState<GameState>();
   const [subscription, setSubscription] = useState<Cable>();
 
   useEffect(() => {
     setSubscription(
       consumer.subscriptions.create(
-        { channel: "ActivityChannel", activity_instance_id: instanceId },
+        { channel: "ActivityChannel", activity_instance_id: group.activity.id },
         {
           received: (data: Message) => {
-            if (data.event) {
-              handleEvent(data.event);
-            } else {
-              setGameState(data.gameState);
-            }
+            setGameState(data.gameState);
           },
         }
       )
     );
   }, []);
 
-  const groupTabProps = {
-    users,
-    groupId,
-    meetUrl,
-  };
+  if (!subscription || !gameState) {
+    return <p>Loading...</p>;
+  }
 
-  const markup = gameMarkup(gameState, userId, subscription);
-  // return (
-  //   <AppFrame alertToast="" noticeToast="" groupTabProps={groupTabProps} jitsiJwt={jitsiJwt}>
-  //     {markup}
-  //   </AppFrame>
-  // );
-  return;
+  const currentUserData: ActivityUser = gameState.users.filter(function(u) { return u.id == user.id})[0];
+
+  switch (gameState.status) {
+    case ActivityStatus.BRAINSTORMING:
+      return (
+        <Brainstorming
+          userId={user.id}
+          subscription={subscription}
+          gameState={gameState}
+          currentUserData={currentUserData}
+        />
+      );
+    case ActivityStatus.VOTING:
+      return (
+        <Voting
+          userId={user.id}
+          subscription={subscription}
+          gameState={gameState}
+          currentUserData={currentUserData}
+        />
+      );
+    case ActivityStatus.REVEAL:
+      return (
+        <Reveal
+          userId={user.id}
+          subscription={subscription}
+          gameState={gameState}
+        />
+      );
+    case ActivityStatus.SUMMARY:
+      return (
+        <Summary
+          userId={user.id}
+          subscription={subscription}
+          gameState={gameState}
+        />
+      );
+  }
 }

@@ -4,13 +4,25 @@ class TwoTruthsOneLie::EventHandlers::InitiatedNextTurn
   end
 
   def call(data)
-    puts "INITIATED NEXT TURN"
+    clear_user_round_data
+
+    storage[:whos_turn_index] = (storage[:whos_turn_index] + 1) % storage[:users].count
+
+    storage[:status] = if storage[:whos_turn_index] == 0
+      TwoTruthsOneLie::Status::SUMMARY
+    else
+      TwoTruthsOneLie::Status::VOTING
+    end
   end
 
   private
 
-  def instance
-    @instance
+  attr_reader :instance
+
+  def clear_user_round_data
+    storage[:users].each do |user|
+      user[:has_voted] = nil
+    end
   end
 
   def storage

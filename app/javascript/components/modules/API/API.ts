@@ -1,8 +1,4 @@
-export default function def() {
-  console.log("Why do I need a default");
-}
-
-export enum ApiRoutes {
+enum ApiRoutes {
   CREATE_GROUP = "/api/groups/create",
   START_ACTIVITY = "/api/activities/start",
   END_ACTIVITY = "/api/activities/end",
@@ -11,29 +7,40 @@ export enum ApiRoutes {
   GET_GROUP = "/api/groups/",
 }
 
-export function CreateGroup() {
+export function createGroup() {
   return Post(ApiRoutes.CREATE_GROUP);
 }
 
-export function JoinGroup(groupKey: string) {
+export function joinGroup(groupKey: string) {
   return Post(ApiRoutes.JOIN_GROUP, {groupKey: groupKey});
 }
 
-export function LeaveGroup() {
+export function leaveGroup() {
   return Post(ApiRoutes.LEAVE_GROUP);
 }
 
-export function StartActivity(activity: string) {
+export function startActivity(activity: string) {
   return Post(ApiRoutes.START_ACTIVITY, {activity: activity});
 }
 
-export function EndActivity(groupKey: string) {
+export function endActivity(groupKey: string) {
   return Post(ApiRoutes.END_ACTIVITY, {groupKey: groupKey})
 }
 
-export function GetGroup(groupKey: string) {
+export function getGroup(groupKey: string) {
   return Get(ApiRoutes.GET_GROUP + groupKey);
 }
+
+const APIWrapper = {
+  createGroup: createGroup,
+  joinGroup: joinGroup,
+  leaveGroup: leaveGroup,
+  startActivity: startActivity,
+  endActivity: endActivity,
+  getGroup: getGroup,
+}
+
+export default APIWrapper;
 
 function Get(route: string) {
   return fetch(route, {

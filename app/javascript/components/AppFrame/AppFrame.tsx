@@ -24,7 +24,7 @@ import Toast, { ToastSeverity } from "./Toast";
 import consumer from "../../channels/consumer";
 
 import { User, Group } from "../ApplicationRoot";
-import { LeaveGroup, GetGroup } from "../modules/API";
+import { API } from "../modules/API";
 
 declare var JitsiMeetExternalAPI: any;
 
@@ -251,6 +251,14 @@ export function AppFrame({
     <Toast message={noticeToast} severity={ToastSeverity.INFO} />
   );
 
+  const endActivityMarkup = group.activity && (user.id == group.hostId) && (
+    <>
+      <br />
+      <br />
+      <button onClick={EndActivity}>End Activity</button>
+    </>
+  );
+
   return (
     <ThemeProvider theme={theme}>
       {alertMarkup || noticeMarkup}
@@ -279,7 +287,7 @@ export function AppFrame({
               </Link>
             </Toolbar>
           </AppBar>
-          <Container maxWidth="lg">{children}</Container>
+          <Container maxWidth="lg">{children} {endActivityMarkup}</Container>
         </Grid>
         {groupBarMarkup}
         <Box className={classes.video} id="video-container">
@@ -288,14 +296,18 @@ export function AppFrame({
     </ThemeProvider>
   );
 
+  function EndActivity() {
+    API.endActivity(group.key);
+  }
+
   async function GetGroupAndSet() {
-    const response = await GetGroup(group.key);
+    const response = await API.getGroup(group.key);
     setGroupCallback(response);
   }
 
   // Reload, since we need to kill the video. This is lazy, fix it later.
   async function LeaveGroupAndReload() {
-    await LeaveGroup();
+    await API.leaveGroup();
     location.reload();
   }
 }
