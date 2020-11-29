@@ -1,5 +1,3 @@
-require "google_api"
-
 class Group < ApplicationRecord
   has_many :users
 
