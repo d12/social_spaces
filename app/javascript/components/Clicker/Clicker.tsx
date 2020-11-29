@@ -39,19 +39,11 @@ export default function Clicker({
     );
   }, []);
 
-  const leaveMarkup = user.id === group.hostId ? (<><br></br><button onClick={end}>End Activity</button></>) : null;
-
   return (
     <>
-      <p>Clicker</p>
-      <button onClick={add}>Click me!</button>
-      <p>I've been pressed {count} times.</p>
-      {leaveMarkup}
+      <h2>Clicker</h2>
+      <br />
+      <button onClick={add}>{count} clicks</button>
     </>
   );
-
-  async function end() {
-    await API.endActivity(group.key);
-    console.log("Ended activity.");
-  }
 }
