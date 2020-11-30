@@ -26,10 +26,12 @@ class ReactController < ApplicationController
   end
 
   def add_user_to_group_after_auth
+    key = session[:join_group_after_auth] || group_key
+
     if !current_group &&
       current_user &&
-      session[:join_group_after_auth] &&
-      group = Group.find_by(key: session[:join_group_after_auth])
+      key &&
+      group = Group.find_by(key: key)
 
       group.add_user(current_user)
     end
