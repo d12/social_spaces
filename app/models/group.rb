@@ -18,7 +18,11 @@ class Group < ApplicationRecord
       set_host
     end
 
-    GroupChannel.broadcast_user_left(self)
+    if users.reload.any?
+      GroupChannel.broadcast_user_left(self)
+    else
+      destroy
+    end
   end
 
   def host

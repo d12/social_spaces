@@ -121,7 +121,7 @@ export function AppFrame({
                 break;
 
               default:
-                console.error("Unexpected message");
+                console.error("Unexpected message: " + type);
             }
           },
         }
