@@ -5,7 +5,7 @@ class Group < ApplicationRecord
 
   before_validation :generate_key_if_missing
 
-  before_create :set_host
+  before_create :initialize_host
 
   validates :key, presence: true, uniqueness: true
 
@@ -15,7 +15,7 @@ class Group < ApplicationRecord
   def remove_user(user)
     user.update(group_id: nil)
     if host_id == user.id
-      set_host
+      set_new_host
     end
 
     if users.reload.any?
@@ -45,9 +45,13 @@ class Group < ApplicationRecord
 
   private
 
-  def set_host
-    if users.reload.any?
-      update!(host_id: users.first.id)
+  def initialize_host
+    self.host_id = users.first.id
+  end
+
+  def set_new_host
+    if users.any?
+      update(host_id: users.first.id)
     end
   end
 
