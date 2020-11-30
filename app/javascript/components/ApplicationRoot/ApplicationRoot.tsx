@@ -1,5 +1,7 @@
 import React , { useState } from "react";
 
+import SplashPage from "../SplashPage";
+
 import GroupIndex from "../GroupIndex";
 import ActivityIndex from "../ActivityIndex";
 
@@ -46,6 +48,10 @@ export default function ApplicationRoot(props: Props) {
         {markup}
       </AppFrame>
     );
+  }
+
+  if(user === undefined || user === null) {
+    return <SplashPage />
   }
 
   if(group === undefined || group === null) {

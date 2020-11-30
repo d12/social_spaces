@@ -14,7 +14,7 @@ class ReactController < ApplicationController
 
   def set_context
     @context = {
-      user: current_user.to_h(authenticated: true),
+      user: current_user&.to_h(authenticated: true),
       group: current_group&.to_h,
       all_activities: ACTIVITIES.map(&:to_h),
     }

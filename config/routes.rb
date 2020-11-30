@@ -2,7 +2,9 @@ Rails.application.routes.draw do
   devise_for :users, :controllers => { :omniauth_callbacks => "users/omniauth_callbacks" }
   mount ActionCable.server => '/cable'
 
-  get "/", to: "react#show", as: "react"
+  root to: "react#show", as: "react"
+
+  get "/login/google", to: "sessions#redirect_to_google_oauth"
 
   delete "/logout", to: "sessions#destroy"
 

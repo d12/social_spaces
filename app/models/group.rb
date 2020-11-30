@@ -17,6 +17,8 @@ class Group < ApplicationRecord
     if host_id == user.id
       set_host
     end
+
+    GroupChannel.broadcast_user_left(self)
   end
 
   def host
