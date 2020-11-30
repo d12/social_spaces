@@ -70,6 +70,7 @@ const useStyles = makeStyles((_theme) => ({
   },
   container: {
     flexWrap: "nowrap",
+    height: "100vh",
   },
   drawerFlexBox: {
     height: "100%",
