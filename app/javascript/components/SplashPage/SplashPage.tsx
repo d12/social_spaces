@@ -1,11 +1,17 @@
 import React from "react";
 
-export default function SplashPage() {
+interface Props {
+  groupKey?: string;
+}
+
+export default function SplashPage({ groupKey } : Props) {
+  const loginUrl = groupKey ? `/login/google/join/${groupKey}` : "/login/google";
+
   return (
     <>
       <h2>Welcome to SocialSpaces.</h2>
       <br />
-      <a href="/login/google">Login with Google</a>
+      <a href={loginUrl}>Login with Google</a>
     </>
   );
 }

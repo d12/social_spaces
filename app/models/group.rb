@@ -25,6 +25,12 @@ class Group < ApplicationRecord
     end
   end
 
+  def add_user(user)
+    user.update(group_id: id)
+
+    GroupChannel.broadcast_user_joined(self)
+  end
+
   def host
     User.find_by(id: host_id)
   end

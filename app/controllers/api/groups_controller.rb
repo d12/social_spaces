@@ -32,8 +32,7 @@ module Api
         return
       end
 
-      current_user.update(group_id: group.id)
-      GroupChannel.broadcast_user_joined(group)
+      group.add_user(current_user)
 
       render json: group.to_h, status: 200
     end
