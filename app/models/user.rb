@@ -44,7 +44,7 @@ class User < ApplicationRecord
 
   def jitsi_jwt
     return unless group
-    
+
     pem = OpenSSL::PKey::RSA.new(ENV["JITSI_PEM"])
 
     payload = {

@@ -44,8 +44,8 @@ module Api
         return
       end
 
+      group.remove_user(current_user)
       GroupChannel.broadcast_user_left(group)
-      current_user.update!(group_id: nil)
 
       render json: {}, status: 200
     end

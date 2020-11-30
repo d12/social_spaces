@@ -78,7 +78,7 @@ class ActivityInstance < ApplicationRecord
   def disconnect_user(user)
     return unless users.include?(user)
 
-    user.update(group_id: nil)
+    group.remove_user(user)
 
     # TODO: Make sure the error we get is "not enough players"
     if save

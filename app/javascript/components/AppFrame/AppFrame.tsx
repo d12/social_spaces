@@ -173,6 +173,10 @@ export function AppFrame({
 
   const classes = useStyles();
 
+  // TODO: Break all the group panel stuff into it's own component
+
+  const hostId = group && group.hostId;
+
   const groupBarMarkup = group && (
     <Grid item>
       <Paper
@@ -204,12 +208,13 @@ export function AppFrame({
             />
           </Box>
           <List>
-            {group.users.map(({ email, name, gravatarUrl }) => (
+            {group.users.map(({ email, name, gravatarUrl, id }) => (
               <ListItem alignItems="center" key={email}>
                 <ListItemAvatar>
                   <Avatar alt={name} src={gravatarUrl} />
                 </ListItemAvatar>
                 <ListItemText primary={name} />
+                {hostId == id ? "⭐️" : null}
               </ListItem>
             ))}
           </List>

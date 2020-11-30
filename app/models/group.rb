@@ -12,16 +12,15 @@ class Group < ApplicationRecord
   has_one :activity_instance
   alias_attribute :activity, :activity_instance
 
-  def host
-    if self.host_id
-      return User.find(self.host_id)
+  def remove_user(user)
+    user.update(group_id: nil)
+    if host_id == user.id
+      set_host
     end
+  end
 
-    new_host = users.first
-    return unless new_host
-
-    update!(host_id: new_host.id)
-    new_host
+  def host
+    User.find_by(id: host_id)
   end
 
   def as_json(*)
@@ -41,8 +40,8 @@ class Group < ApplicationRecord
   private
 
   def set_host
-    if users.any?
-      self.host_id = users.first.id
+    if users.reload.any?
+      update!(host_id: users.first.id)
     end
   end
 
