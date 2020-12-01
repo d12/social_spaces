@@ -3,6 +3,10 @@ class Experimental < ActivityInstance
     "Experimental Activity"
   end
 
+  def self.description
+    "A whole bunch of jank in here."
+  end
+
   def self.min_users
     1
   end

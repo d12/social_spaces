@@ -27,6 +27,7 @@ export interface Group {
 
 export interface Activity {
   displayName: string;
+  description: string;
   maxUsers: number;
   name: string;
   id?: number;

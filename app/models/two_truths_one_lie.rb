@@ -15,6 +15,10 @@ class TwoTruthsOneLie < ActivityInstance
     "Two Truths, One Lie"
   end
 
+  def self.description
+    "Players put together two truths and one lie about themselves. For each player, the group works together to guess which statement is a lie."
+  end
+
   def self.min_users
     2
   end

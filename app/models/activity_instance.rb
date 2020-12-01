@@ -27,6 +27,7 @@ class ActivityInstance < ApplicationRecord
   def self.as_json(*)
     {
       displayName: display_name,
+      description: description,
       maxUsers: max_users,
       name: name,
     }
@@ -37,6 +38,10 @@ class ActivityInstance < ApplicationRecord
   end
 
   def self.display_name
+    raise NotImplementedError
+  end
+
+  def self.description
     raise NotImplementedError
   end
 

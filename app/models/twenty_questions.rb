@@ -25,6 +25,10 @@ class TwentyQuestions < ActivityInstance
     "Twenty Questions"
   end
 
+  def self.description
+    "One user selects a noun, and the rest of the group has to deduce the word through 20 yes/no questions."
+  end
+
   def self.min_users
     2
   end

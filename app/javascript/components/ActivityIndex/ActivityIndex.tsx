@@ -7,6 +7,12 @@ import {
   Paper,
   Box,
   Link,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Button
 } from "@material-ui/core";
 
 import { info } from "images";
@@ -39,9 +45,22 @@ const useStyles = makeStyles(
       },
     },
     activityImage: {
-      height: "200px",
+      height: "165px",
       width: "275px",
       backgroundColor: "#FFEEE1",
+    },
+    activityDescription: {
+      paddingLeft: "15px",
+      paddingRight: "15px",
+    },
+    dialogActivityImage: {
+      height: "300px",
+      width: "550px",
+      backgroundColor: "#FFEEE1",
+      marginBottom: "20px",
+      display: "block",
+      marginLeft: "auto",
+      marginRight: "auto",
     },
     activityCardContent: {
       padding: theme.spacing(1),
@@ -54,6 +73,10 @@ const useStyles = makeStyles(
     },
     clickable: {
       cursor: "pointer",
+    },
+    dialog: {
+      paddingLeft: "15px",
+      paddingRight: "15px"
     }
   }),
   { defaultTheme: theme }
@@ -68,8 +91,10 @@ export default function ActivityIndex({
 }: Props) {
   const classes = useStyles();
 
-  const activityMarkup = activities.map((activity) => (
-    <Grid item key={activity.name}>
+  const [openDialog, setOpenDialog] = React.useState(null);
+
+  const activityMarkup = activities.map((activity, index) => (
+    <Grid item key={"activity-"+ activity.name}>
       <Grid
         container
         direction="column"
@@ -80,7 +105,7 @@ export default function ActivityIndex({
         <Grid item>
           <Link
             rel="nofollow"
-            onClick={() => JoinActivity(activity.name)}
+            onClick={() => previewActivity(index)}
             underline="none"
             color="textPrimary"
             className={classes.clickable}
@@ -91,7 +116,7 @@ export default function ActivityIndex({
         <Grid item>
           <Link
             rel="nofollow"
-            onClick={() => JoinActivity(activity.name)}
+            onClick={() => previewActivity(index)}
             underline="none"
             color="textPrimary"
             className={classes.clickable}
@@ -111,6 +136,28 @@ export default function ActivityIndex({
           </Link>
         </Grid>
       </Grid>
+      <Dialog
+        open={openDialog === index}
+        onClose={handleCloseDialog}
+      >
+        <DialogTitle id="alert-dialog-title"><strong>{activity.displayName}</strong></DialogTitle>
+        <DialogContent>
+          <Paper elevation={0} className={classes.dialogActivityImage} />
+          <DialogContentText id="alert-dialog-description">
+            <Box className={classes.activityDescription}>
+              {activity.description}
+            </Box>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog} color="primary">
+            Back
+          </Button>
+          <Button onClick={() => joinActivity(index)} color="primary">
+            Play
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Grid>
   ));
 
@@ -143,8 +190,16 @@ export default function ActivityIndex({
     </>
   );
 
-  async function JoinActivity(activity: string) {
-    const response = await API.startActivity(activity);
+  function handleCloseDialog() {
+    setOpenDialog(null);
+  }
+
+  function previewActivity(activityIndex: number) {
+    setOpenDialog(activityIndex);
+  }
+
+  async function joinActivity(activityIndex: number) {
+    const response = await API.startActivity(activities[activityIndex].name);
 
     if(response["errors"] === undefined) {
       setGroupCallback(response);
