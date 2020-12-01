@@ -1,9 +1,7 @@
 class ReactController < ApplicationController
   ACTIVITIES = [
-    TwentyQuestions,
     TwoTruthsOneLie,
     Clicker,
-    Experimental
   ]
 
   def show
