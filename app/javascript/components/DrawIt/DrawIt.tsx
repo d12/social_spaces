@@ -13,8 +13,9 @@ interface Props {
 }
 
 interface Message {
-  event: Event;
+  event?: Event;
   gameState?: GameState;
+  data: any;
 }
 
 export interface GameState {
@@ -26,7 +27,6 @@ enum ActivityStatus {
 }
 
 enum Event {
-  GAMESTATE_UPDATE = "GAMESTATE_UPDATE",
   DRAW = "DRAW",
 }
 
@@ -35,10 +35,11 @@ export default function DrawIt({
   group,
 }: Props) {
   const [gameState, setGameState] = useState<GameState>();
-  const [subscription, setSubscription] = useState<Cable>();
+  const [activitySubscription, setActivitySubscription] = useState<Cable>();
+  const [userSubscription, setUserSubscription] = useState<Cable>();
 
   useEffect(() => {
-    setSubscription(
+    setActivitySubscription(
       consumer.subscriptions.create(
         { channel: "ActivityChannel", activity_instance_id: group.activity.id },
         {
@@ -49,14 +50,25 @@ export default function DrawIt({
         }
       )
     );
+
+    setUserSubscription(
+      consumer.subscriptions.create(
+        { channel: "UserChannel", user_id: user.id },
+        {
+          received: (message: Message) => {
+            console.log(message);
+          }
+        },
+      )
+    );
   }, []);
 
-  if (!subscription || !gameState) {
+  if (!activitySubscription || !gameState) {
     return <p>Loading...</p>;
   }
 
   switch (gameState.status) {
     case ActivityStatus.DRAWING:
-      return <Drawing user={user} subscription={subscription} gameState={gameState} />;
+      return <Drawing user={user} subscription={activitySubscription} gameState={gameState} />;
   }
 }

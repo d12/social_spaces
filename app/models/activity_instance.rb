@@ -100,7 +100,7 @@ class ActivityInstance < ApplicationRecord
   end
 
   def send_activity_channel_message(message)
-    ActionCable.server.broadcast(ActivityChannel.broadcasting_key(self.id), message)
+    ActionCable.server.broadcast(websocket_key, message)
   end
 
   def websocket_key

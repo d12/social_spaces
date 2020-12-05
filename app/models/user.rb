@@ -77,4 +77,12 @@ class User < ApplicationRecord
 
     JWT.encode(payload, pem, 'RS256', headers)
   end
+
+  def send_user_channel_message(message)
+    ActionCable.server.broadcast(websocket_key, message)
+  end
+
+  def websocket_key
+    UserChannel.broadcasting_key(self.id)
+  end
 end

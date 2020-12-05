@@ -1,4 +1,6 @@
 class DrawIt < ActivityInstance
+  register_event "user_joined", DrawIt::EventHandlers::UserJoined
+
   class Status
     DRAWING = :drawing
   end
@@ -23,6 +25,10 @@ class DrawIt < ActivityInstance
     puts "tock"
   end
 
+  def client_data
+    storage.slice(:users, :status).deep_transform_keys{ |k| k.camelcase(:lower) }
+  end
+
   # The initial value to use for a instances save state
   def initial_storage
     users_array = users.map do |user|
@@ -34,6 +40,9 @@ class DrawIt < ActivityInstance
 
     {
       status: Status::DRAWING,
+      draw_events: []
     }
   end
 end
+
+# [stroke_type, stroke_color, size, x1, y1, x2, y2]
