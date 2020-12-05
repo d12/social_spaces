@@ -1,4 +1,6 @@
-class TwoTruthsOneLie::EventHandlers::InitiatedNextTurn
+class TwoTruthsOneLie::EventHandlers::InitiatedNextTurn < EventHandler
+  attr_reader :instance
+
   def initialize(instance:)
     @instance = instance
   end
@@ -13,11 +15,11 @@ class TwoTruthsOneLie::EventHandlers::InitiatedNextTurn
     else
       TwoTruthsOneLie::Status::VOTING
     end
+
+    send_gamestate_to_all(instance)
   end
 
   private
-
-  attr_reader :instance
 
   def clear_user_round_data
     storage[:users].each do |user|

@@ -9,9 +9,6 @@ class ActivityChannel < ApplicationCable::Channel
 
   def receive(data)
     response = instance.reload.process_message(data.deep_transform_keys(&:underscore).with_indifferent_access)
-    if response
-      ActionCable.server.broadcast(broadcasting_key, {gameState: response})
-    end
   end
 
   def unsubscribed

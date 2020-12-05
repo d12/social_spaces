@@ -77,7 +77,7 @@ class ActivityInstance < ApplicationRecord
     handler.new(instance: self).call(data)
 
     save!
-    client_data
+    send_activity_channel_message({ gameState: client_data })
   end
 
   def disconnect_user(user)
@@ -97,6 +97,14 @@ class ActivityInstance < ApplicationRecord
   def end_activity(reason:)
     broadcast_activity_end_message(reason: reason)
     destroy
+  end
+
+  def send_activity_channel_message(message)
+    ActionCable.server.broadcast(ActivityChannel.broadcasting_key(self.id), message)
+  end
+
+  def websocket_key
+    ActivityChannel.broadcasting_key(self.id)
   end
 
   private
@@ -136,7 +144,6 @@ class ActivityInstance < ApplicationRecord
   end
 
   def broadcast_activity_end_message(reason:)
-    puts "BROADCASTING..."
     GroupChannel.broadcast_activity_end_message(group, reason: reason)
   end
 end

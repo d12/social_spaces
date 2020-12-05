@@ -2,6 +2,7 @@ class ReactController < ApplicationController
   ACTIVITIES = [
     TwoTruthsOneLie,
     Clicker,
+    DrawIt,
   ]
 
   def show

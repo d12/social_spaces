@@ -1,4 +1,4 @@
-class TwoTruthsOneLie::EventHandlers::InitiatedNextRound
+class TwoTruthsOneLie::EventHandlers::InitiatedNextRound < EventHandler
   def initialize(instance:)
     @instance = instance
   end
@@ -8,6 +8,8 @@ class TwoTruthsOneLie::EventHandlers::InitiatedNextRound
     storage[:whos_turn_index] = nil
     storage[:round_count] += 1
     storage[:status] = TwoTruthsOneLie::Status::BRAINSTORMING
+
+    send_gamestate_to_all(instance)
   end
 
   private

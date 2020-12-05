@@ -1,4 +1,6 @@
-class TwoTruthsOneLie::EventHandlers::Voted
+class TwoTruthsOneLie::EventHandlers::Voted < EventHandler
+  attr_reader :instance
+
   def initialize(instance:)
     @instance = instance
   end
@@ -19,6 +21,8 @@ class TwoTruthsOneLie::EventHandlers::Voted
       add_points_for_round
       transition_to_reveal
     end
+
+    send_gamestate_to_all(instance)
   end
 
   private
@@ -39,10 +43,6 @@ class TwoTruthsOneLie::EventHandlers::Voted
         instance.user_by_id(voter_id)[:score] += 5
       end
     end
-  end
-
-  def instance
-    @instance
   end
 
   def storage

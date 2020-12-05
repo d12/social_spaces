@@ -9,6 +9,7 @@ import { AppFrame } from "../AppFrame";
 
 import Clicker from "../Clicker";
 import TwoTruthsOneLie from "../TwoTruthsOneLie";
+import DrawIt from "../DrawIt";
 
 export interface User {
   id: number;
@@ -70,6 +71,9 @@ export default function ApplicationRoot(props: Props) {
 
     case "TwoTruthsOneLie":
       return withAppFrame(<TwoTruthsOneLie user={user} group={group} />);
+
+    case "DrawIt":
+      return withAppFrame(<DrawIt user={user} group={group} />);
 
     default:
       return `No activity markup for ${name}`;

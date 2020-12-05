@@ -1,4 +1,6 @@
-class TwoTruthsOneLie::EventHandlers::EnteredStatements
+class TwoTruthsOneLie::EventHandlers::EnteredStatements < EventHandler
+  attr_reader :instance
+
   def initialize(instance:)
     @instance = instance
   end
@@ -17,6 +19,8 @@ class TwoTruthsOneLie::EventHandlers::EnteredStatements
     if storage[:users].all? { |u| u[:statements] }
       transition_to_voting
     end
+
+    send_gamestate_to_all(instance)
   end
 
   private
@@ -24,10 +28,6 @@ class TwoTruthsOneLie::EventHandlers::EnteredStatements
   def transition_to_voting
     storage[:status] = TwoTruthsOneLie::Status::VOTING
     storage[:whos_turn_index] = 0
-  end
-
-  def instance
-    @instance
   end
 
   def storage
