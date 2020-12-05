@@ -12,7 +12,7 @@ class DrawIt < ActivityInstance
   end
 
   def self.min_users
-    2
+    1
   end
 
   def self.max_users
