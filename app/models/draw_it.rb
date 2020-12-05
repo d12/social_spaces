@@ -1,4 +1,5 @@
 class DrawIt < ActivityInstance
+  register_event "draw", DrawIt::EventHandlers::Draw
   register_event "user_joined", DrawIt::EventHandlers::UserJoined
 
   class Status
