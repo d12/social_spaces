@@ -20,8 +20,6 @@ export interface Props {
 }
 
 export function Brainstorming({ userId, subscription, gameState, currentUserData }: Props) {
-  const [submitted, setSubmitted] = useState(false);
-
   const requiredErrorMessage = "This field is required";
   const required = [
     notEmpty(requiredErrorMessage),

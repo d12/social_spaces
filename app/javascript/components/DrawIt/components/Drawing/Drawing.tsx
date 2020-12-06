@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState, forwardRef, useImperativeHandle } f
 import { Cable } from "actioncable";
 
 import { User } from "../../../ApplicationRoot";
-import { GameState } from "../../DrawIt";
+import { GameState, DrawEvent, StrokeType, StrokeColor } from "../../DrawIt";
 
 import * as styles from "./Drawing.module.scss";
 
@@ -10,6 +10,7 @@ export interface Props {
   user: User;
   subscription: Cable;
   gameState: GameState;
+  drawEvents: React.MutableRefObject<Array<DrawEvent>>;
 }
 
 interface Coordinates {
@@ -21,26 +22,6 @@ interface PenState {
   isPenDown: boolean;
   previousCoords: Coordinates;
   currentCoords: Coordinates;
-}
-
-enum StrokeType {
-  PAINT = 0,
-  ERASE = 1,
-  FILL = 2,
-}
-
-enum StrokeColor {
-  BLACK = 0,
-}
-
-interface DrawEvent {
-  strokeType: StrokeType;
-  strokeColor: StrokeColor;
-  strokeWidth: number;
-  x1: number;
-  y1: number;
-  x2: number;
-  y2: number;
 }
 
 function draw(
@@ -57,40 +38,51 @@ function draw(
   ctx.stroke();
 }
 
-const Drawing = forwardRef(({ user, subscription, gameState }: Props, ref) => {
+export default function Drawing({ user, subscription, gameState, drawEvents }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const isDrawer = gameState.users[gameState.drawingUserIndex].id == user.id;
 
-  // TODO: drawEvents will get pretty big. Make sure we empty it occasionally, maybe at the end of each round?
-  let drawEvents: Array<DrawEvent> = [];
+  // What index have we drawn up to
+  let drawIndexPtr: number = 0;
 
   // What index have we sent up to
   let sendIndexPtr: number = 0;
 
-  async function drawFromDrawEvents(events: Array<DrawEvent>) {
-    if(events.length === 0)
+  let haveDrawn = false;
+
+  function drawFromDrawEvents() {
+    const len = drawEvents.current.length;
+
+    if(len === drawIndexPtr)
       return;
 
     const canvasContext = canvasRef.current.getContext("2d");
 
-    events.forEach((e: DrawEvent) => {
+    drawEvents.current.slice(drawIndexPtr, len).forEach((e: DrawEvent) => {
       const from: Coordinates = { x: e.x1, y: e.y1 };
       const to: Coordinates = { x: e.x2, y: e.y2 };
       draw(canvasContext, from, to, e.strokeWidth);
     });
+
+    drawIndexPtr = len;
   }
 
   async function sendDrawEvents() {
     if(!isDrawer)
       return;
 
-    const len: number = drawEvents.length;
+    const len: number = drawEvents.current.length;
+
+    if(!haveDrawn){
+      sendIndexPtr = len;
+      return;
+    }
 
     if(len === sendIndexPtr)
       return;
 
-    const eventsToSend: Array<DrawEvent> = drawEvents.slice(sendIndexPtr, len);
+    const eventsToSend: Array<DrawEvent> = drawEvents.current.slice(sendIndexPtr, len);
     const serializedEvents: Array<Array<number>> = eventsToSend.map(e => serializeDrawEvent(e) );
 
     subscription.send({
@@ -115,25 +107,6 @@ const Drawing = forwardRef(({ user, subscription, gameState }: Props, ref) => {
     ];
   }
 
-  function deserializeDrawEvent(input: Array<number>) : DrawEvent {
-    return {
-      strokeType: input[0],
-      strokeColor: input[1],
-      strokeWidth: input[2],
-      x1: input[3],
-      y1: input[4],
-      x2: input[5],
-      y2: input[6],
-    };
-  }
-
-  useImperativeHandle(ref, () => ({
-    receiveDrawEvents(newDrawEvents: Array<Array<number>>) {
-      const deserializedEvents: Array<DrawEvent> = newDrawEvents.map(e => deserializeDrawEvent(e));
-      drawFromDrawEvents(deserializedEvents);
-    }
-  }));
-
   function createDrawEvent(
     from: Coordinates,
     to: Coordinates,
@@ -148,8 +121,7 @@ const Drawing = forwardRef(({ user, subscription, gameState }: Props, ref) => {
       y2: to.y,
     }
 
-    drawEvents = [...drawEvents, event];
-    drawFromDrawEvents([event]);
+    drawEvents.current = [...drawEvents.current, event];
   }
 
   const penRef = useRef<PenState>({
@@ -173,6 +145,8 @@ const Drawing = forwardRef(({ user, subscription, gameState }: Props, ref) => {
 
     if(isDrawer){
       canvas.addEventListener("mousedown", (e) => {
+        haveDrawn = true;
+
         const x = e.clientX - canvas.offsetLeft;
         const y = e.clientY - canvas.offsetTop;
 
@@ -228,9 +202,11 @@ const Drawing = forwardRef(({ user, subscription, gameState }: Props, ref) => {
   }, [canvasRef]);
 
   useEffect(() => {
+    const drawInterval = window.setInterval(drawFromDrawEvents, 50);
     const sendEventsInterval = window.setInterval(sendDrawEvents, 50);
 
     return () => {
+      clearInterval(drawInterval);
       clearInterval(sendEventsInterval);
     }
   }, []);
@@ -250,6 +226,4 @@ const Drawing = forwardRef(({ user, subscription, gameState }: Props, ref) => {
       />
     </div>
   );
-});
-
-export default Drawing;
+};
