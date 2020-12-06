@@ -27,7 +27,7 @@ class DrawIt < ActivityInstance
   end
 
   def client_data
-    storage.slice(:users, :status).deep_transform_keys{ |k| k.camelcase(:lower) }
+    storage.slice(:users, :status, :drawing_user_index).deep_transform_keys{ |k| k.camelcase(:lower) }
   end
 
   # The initial value to use for a instances save state
@@ -41,9 +41,9 @@ class DrawIt < ActivityInstance
 
     {
       status: Status::DRAWING,
-      draw_events: []
+      draw_events: [],
+      drawing_user_index: 0,
+      users: users_array,
     }
   end
 end
-
-# [stroke_type, stroke_color, size, x1, y1, x2, y2]
