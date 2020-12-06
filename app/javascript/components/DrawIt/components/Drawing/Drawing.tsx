@@ -64,7 +64,7 @@ export default function Drawing({ user, subscription, gameState }: Props) {
       const y = e.clientY - canvas.offsetTop;
 
       penRef.current = {
-        ...penRef.current,
+        previousCoords: { x, y },
         currentCoords: { x, y },
         isPenDown: true,
       };
@@ -91,11 +91,24 @@ export default function Drawing({ user, subscription, gameState }: Props) {
       draw(canvas.getContext("2d"), from, to, 4);
     });
 
+    // TODO: Refactor so mouseup and mouseout don't repeat each other
     canvas.addEventListener("mouseup", () => {
+      const pen = penRef.current;
+      if (!pen.isPenDown) {
+        return;
+      }
+      const { previousCoords: from, currentCoords: to } = penRef.current;
+      draw(canvas.getContext("2d"), from, to, 4);
       penRef.current.isPenDown = false;
     });
 
     canvas.addEventListener("mouseout", (e) => {
+      const pen = penRef.current;
+      if (!pen.isPenDown) {
+        return;
+      }
+      const { previousCoords: from, currentCoords: to } = penRef.current;
+      draw(canvas.getContext("2d"), from, to, 4);
       penRef.current.isPenDown = false;
     });
   }, [canvasRef]);
