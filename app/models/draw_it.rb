@@ -2,6 +2,8 @@ class DrawIt < ActivityInstance
   register_event "draw", DrawIt::EventHandlers::Draw
   register_event "user_joined", DrawIt::EventHandlers::UserJoined
 
+  has_many :draw_events, class_name: "DrawIt::DrawEvent", foreign_key: "activity_instance_id"
+
   class Status
     DRAWING = :drawing
   end
@@ -41,7 +43,6 @@ class DrawIt < ActivityInstance
 
     {
       status: Status::DRAWING,
-      draw_events: [],
       drawing_user_index: 0,
       users: users_array,
     }

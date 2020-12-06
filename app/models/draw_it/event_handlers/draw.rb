@@ -6,7 +6,10 @@ class DrawIt::EventHandlers::Draw < EventHandler
   end
 
   def call(data)
-    storage[:draw_events] += data["draw_events"]
+    data["draw_events"].each do |event|
+      DrawIt::DrawEvent.create(activity_instance: instance, draw_data: event)
+    end
+
     send_websocket_message(instance, { drawEvents: data["draw_events"], authorId: data["user_id"] })
   end
 
