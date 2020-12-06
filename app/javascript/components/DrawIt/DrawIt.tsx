@@ -16,6 +16,7 @@ interface Message {
   event?: Event;
   gameState?: GameState;
   drawEvents: Array<Array<number>>;
+  authorId?: number;
 }
 
 interface ActivityUser {
@@ -78,8 +79,6 @@ export default function DrawIt({
   const [userSubscription, setUserSubscription] = useState<Cable>();
   const drawEvents = useRef<Array<DrawEvent>>([]);
 
-  const isDrawer = useRef(false);
-
   useEffect(() => {
     setActivitySubscription(
       consumer.subscriptions.create(
@@ -88,10 +87,9 @@ export default function DrawIt({
           received: (message: Message) => {
             if(message.gameState){
               setGameState(message.gameState);
-              isDrawer.current = message.gameState.users[message.gameState.drawingUserIndex].id == user.id
             }
 
-            if(message.drawEvents && !isDrawer){
+            if(message.drawEvents && message.authorId !== user.id){
               drawEvents.current = [...drawEvents.current, ...message.drawEvents.map(e => deserializeDrawEvent(e))];
             }
           },

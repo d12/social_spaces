@@ -7,7 +7,7 @@ class DrawIt::EventHandlers::Draw < EventHandler
 
   def call(data)
     storage[:draw_events] += data["draw_events"]
-    send_websocket_message(instance, { drawEvents: data["draw_events"] })
+    send_websocket_message(instance, { drawEvents: data["draw_events"], authorId: data["user_id"] })
   end
 
   private
