@@ -15,7 +15,7 @@ interface Props {
 interface Message {
   event?: Event;
   gameState?: GameState;
-  data: any;
+  drawEvents: Array<Array<number>>;
 }
 
 export interface GameState {
@@ -46,6 +46,9 @@ export default function DrawIt({
           received: (message: Message) => {
             if(message.gameState)
               setGameState(message.gameState);
+
+            if(message.drawEvents)
+              console.log("Got event: " + message.drawEvents);
           },
         }
       )
