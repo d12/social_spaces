@@ -105,7 +105,6 @@ export function AppFrame({
         { channel: "GroupChannel", group_id: group.key },
         {
           received: ({ type }) => {
-            console.log(type);
             switch (type) {
               case "JOINED":
                 GetGroupAndSet();
