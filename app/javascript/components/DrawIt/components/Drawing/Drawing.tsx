@@ -6,6 +6,11 @@ import { GameState, DrawEvent, StrokeType, StrokeColor } from "../../DrawIt";
 
 import * as styles from "./Drawing.module.scss";
 
+import {
+  Box,
+  Grid,
+} from "@material-ui/core";
+
 export interface Props {
   user: User;
   subscription: Cable;
@@ -28,11 +33,13 @@ function draw(
   ctx: CanvasRenderingContext2D,
   from: Coordinates,
   to: Coordinates,
-  width: number
+  width: number,
+  color: string,
 ) {
   ctx.beginPath();
   ctx.moveTo(from.x, from.y);
   ctx.lineTo(to.x, to.y);
+  ctx.strokeStyle = color;
   ctx.lineWidth = width;
   ctx.lineCap = "round";
   ctx.stroke();
@@ -40,6 +47,8 @@ function draw(
 
 export default function Drawing({ user, subscription, gameState, drawEvents }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [selectedColor, setSelectedColor] = useState<number>(0);
+  const selectedColorRef = useRef<number>(0);
 
   const isDrawer = gameState.users[gameState.drawingUserIndex].id == user.id;
 
@@ -50,6 +59,13 @@ export default function Drawing({ user, subscription, gameState, drawEvents }: P
   let sendIndexPtr: number = 0;
 
   let haveDrawn = false;
+
+  const colors = [
+    "#000000",
+    "#FF0000",
+    "#00FF00",
+    "#0000FF",
+  ]
 
   function drawFromDrawEvents() {
     const len = drawEvents.current.length;
@@ -62,7 +78,7 @@ export default function Drawing({ user, subscription, gameState, drawEvents }: P
     drawEvents.current.slice(drawIndexPtr, len).forEach((e: DrawEvent) => {
       const from: Coordinates = { x: e.x1, y: e.y1 };
       const to: Coordinates = { x: e.x2, y: e.y2 };
-      draw(canvasContext, from, to, e.strokeWidth);
+      draw(canvasContext, from, to, e.strokeWidth, colors[e.strokeColor]);
     });
 
     drawIndexPtr = len;
@@ -113,7 +129,7 @@ export default function Drawing({ user, subscription, gameState, drawEvents }: P
   ) {
     const event: DrawEvent = {
       strokeType: StrokeType.PAINT,
-      strokeColor: StrokeColor.BLACK,
+      strokeColor: selectedColorRef.current,
       strokeWidth: 4,
       x1: from.x,
       y1: from.y,
@@ -215,6 +231,27 @@ export default function Drawing({ user, subscription, gameState, drawEvents }: P
     "You're drawing!" :
     "You're not drawing :(";
 
+  function controlsMarkup() {
+    if(!isDrawer)
+      return null
+
+    const colorsMarkup = colors.map((e, index) => {
+      return <Box
+        className={styles.colorSelector}
+        style={{ backgroundColor: e, border: index == selectedColor ? "2px solid black" : "" }}
+        key={"color-" + index}
+        onClick={() => { setSelectedColor(index); selectedColorRef.current = index }}
+        />
+    });
+
+    return (<Grid
+      container
+      className={styles.controls}
+    >
+      {colorsMarkup}
+    </Grid>);
+  }
+
   return (
     <div>
       <h2>{title}</h2>
@@ -224,6 +261,8 @@ export default function Drawing({ user, subscription, gameState, drawEvents }: P
         height="400"
         width="600"
       />
+
+      {controlsMarkup()}
     </div>
   );
 };
