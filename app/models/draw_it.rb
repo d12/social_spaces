@@ -2,7 +2,7 @@ class DrawIt < ActivityInstance
   register_event "draw", DrawIt::EventHandlers::Draw
   register_event "user_joined", DrawIt::EventHandlers::UserJoined
 
-  has_many :draw_events, class_name: "DrawIt::DrawEvent", foreign_key: "activity_instance_id", dependent: :destroy
+  has_many :draw_event_batches, class_name: "DrawIt::DrawEventBatch", foreign_key: "activity_instance_id", dependent: :destroy
 
   class Status
     DRAWING = :drawing

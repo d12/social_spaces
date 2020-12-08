@@ -13,7 +13,7 @@ class DrawIt::EventHandlers::UserJoined < EventHandler
   private
 
   def draw_events
-    instance.draw_events.order(:created_at).pluck(:draw_data)
+    instance.draw_event_batches.order(:created_at).pluck(:draw_data).flatten(1)
   end
 
   def storage
