@@ -1,6 +1,7 @@
 class DrawIt < ActivityInstance
   register_event "draw", DrawIt::EventHandlers::Draw
   register_event "user_joined", DrawIt::EventHandlers::UserJoined
+  register_event "erase", DrawIt::EventHandlers::Erase
 
   # Note we're delete_all'ing here for perf. This skips callbacks, so be careful there.
   has_many :draw_event_batches, class_name: "DrawIt::DrawEventBatch", foreign_key: "activity_instance_id", dependent: :delete_all

@@ -13,10 +13,10 @@ interface Props {
 }
 
 interface Message {
-  event?: Event;
   gameState?: GameState;
   drawEvents: Array<Array<number>>;
   authorId?: number;
+  erase?: boolean;
 }
 
 interface ActivityUser {
@@ -54,8 +54,9 @@ enum ActivityStatus {
   DRAWING = "drawing",
 }
 
-enum Event {
-  DRAW = "DRAW",
+export interface Event {
+  type: string; // Make this "draw" | "erase"
+  data?: any;
 }
 
 function deserializeDrawEvent(input: Array<number>) : DrawEvent {
@@ -77,7 +78,7 @@ export default function DrawIt({
   const [gameState, setGameState] = useState<GameState>();
   const [activitySubscription, setActivitySubscription] = useState<Cable>();
   const [userSubscription, setUserSubscription] = useState<Cable>();
-  const drawEvents = useRef<Array<DrawEvent>>([]);
+  const events = useRef<Array<Event>>([]);
 
   useEffect(() => {
     setActivitySubscription(
@@ -89,8 +90,17 @@ export default function DrawIt({
               setGameState(message.gameState);
             }
 
-            if(message.drawEvents && message.authorId !== user.id){
-              drawEvents.current = [...drawEvents.current, ...message.drawEvents.map(e => deserializeDrawEvent(e))];
+            if(message.authorId == user.id)
+              return;
+
+            if(message.drawEvents){
+              events.current = [...events.current, ...message.drawEvents.map(e => {
+                return { type: "draw", data: deserializeDrawEvent(e) }
+              })];
+            }
+
+            if(message.erase === true) {
+              events.current = [...events.current, { type: "erase" }]
             }
           },
         }
@@ -102,8 +112,10 @@ export default function DrawIt({
         { channel: "UserChannel", user_id: user.id },
         {
           received: (message: Message) => {
-            if(message.drawEvents) {
-              drawEvents.current = [...drawEvents.current, ...(message.drawEvents.map(e => deserializeDrawEvent(e)))];
+            if(message.drawEvents && message.authorId !== user.id){
+              events.current = [...events.current, ...message.drawEvents.map(e => {
+                return {type: "draw", data: deserializeDrawEvent(e)}
+              })];
             }
           }
         },
@@ -117,6 +129,6 @@ export default function DrawIt({
 
   switch (gameState.status) {
     case ActivityStatus.DRAWING:
-      return <Drawing user={user} subscription={activitySubscription} gameState={gameState} drawEvents={drawEvents} />;
+      return <Drawing user={user} subscription={activitySubscription} gameState={gameState} events={events} />;
   }
 }

@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState, forwardRef, useImperativeHandle } f
 import { Cable } from "actioncable";
 
 import { User } from "../../../ApplicationRoot";
-import { GameState, DrawEvent, StrokeType, StrokeColor } from "../../DrawIt";
+import { GameState, DrawEvent, StrokeType, StrokeColor, Event } from "../../DrawIt";
 
 import * as styles from "./Drawing.module.scss";
 
@@ -15,7 +15,7 @@ export interface Props {
   user: User;
   subscription: Cable;
   gameState: GameState;
-  drawEvents: React.MutableRefObject<Array<DrawEvent>>;
+  events: React.MutableRefObject<Array<Event>>;
 }
 
 interface Coordinates {
@@ -45,15 +45,18 @@ function draw(
   ctx.stroke();
 }
 
-export default function Drawing({ user, subscription, gameState, drawEvents }: Props) {
+export default function Drawing({ user, subscription, gameState, events }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [selectedColor, setSelectedColor] = useState<number>(0);
   const selectedColorRef = useRef<number>(0);
 
   const isDrawer = gameState.users[gameState.drawingUserIndex].id == user.id;
 
+  const canvasWidth = 600;
+  const canvasHeight = 400;
+
   // What index have we drawn up to
-  let drawIndexPtr: number = 0;
+  let processIndexPtr: number = 0;
 
   // What index have we sent up to
   let sendIndexPtr: number = 0;
@@ -67,28 +70,45 @@ export default function Drawing({ user, subscription, gameState, drawEvents }: P
     "#0000FF",
   ]
 
-  function drawFromDrawEvents() {
-    const len = drawEvents.current.length;
+  function processEvents() {
+    const len = events.current.length;
 
-    if(len === drawIndexPtr)
+    if(len === processIndexPtr)
       return;
 
-    const canvasContext = canvasRef.current.getContext("2d");
+    events.current.slice(processIndexPtr, len).forEach((e: Event) => {
+      switch(e.type) {
+        case "draw":
+          drawFromEvent(e.data);
+          break;
 
-    drawEvents.current.slice(drawIndexPtr, len).forEach((e: DrawEvent) => {
-      const from: Coordinates = { x: e.x1, y: e.y1 };
-      const to: Coordinates = { x: e.x2, y: e.y2 };
-      draw(canvasContext, from, to, e.strokeWidth, colors[e.strokeColor]);
+        case "erase":
+          erase();
+          break;
+      }
     });
 
-    drawIndexPtr = len;
+    processIndexPtr = len;
   }
 
-  async function sendDrawEvents() {
+  function erase() {
+    const canvasContext = canvasRef.current.getContext("2d"); // Todo: Can we memoize this somehow
+    canvasContext.clearRect(0, 0, canvasWidth, canvasHeight);
+  }
+
+  function drawFromEvent(e: DrawEvent) {
+    const canvasContext = canvasRef.current.getContext("2d"); // Todo: Can we memoize this somehow
+
+    const from: Coordinates = { x: e.x1, y: e.y1 };
+    const to: Coordinates = { x: e.x2, y: e.y2 };
+    draw(canvasContext, from, to, e.strokeWidth, colors[e.strokeColor]);
+  }
+
+  async function sendEvents() {
     if(!isDrawer)
       return;
 
-    const len: number = drawEvents.current.length;
+    const len: number = events.current.length;
 
     if(!haveDrawn){
       sendIndexPtr = len;
@@ -98,14 +118,25 @@ export default function Drawing({ user, subscription, gameState, drawEvents }: P
     if(len === sendIndexPtr)
       return;
 
-    const eventsToSend: Array<DrawEvent> = drawEvents.current.slice(sendIndexPtr, len);
-    const serializedEvents: Array<Array<number>> = eventsToSend.map(e => serializeDrawEvent(e) );
+    const eventsToSend: Array<Event> = events.current.slice(sendIndexPtr, len);
 
-    subscription.send({
-      event: "draw",
-      userId: user.id,
-      drawEvents: serializedEvents,
-    });
+    const drawEvents = eventsToSend.filter((e) => e.type === "draw");
+    const eraseEvents = eventsToSend.filter((e) => e.type === "erase");
+
+    if(drawEvents.length > 0) {
+      subscription.send({
+        event: "draw",
+        userId: user.id,
+        drawEvents: drawEvents.map((e) => serializeDrawEvent(e.data)),
+      });
+    }
+
+    if(eraseEvents.length > 0) {
+      subscription.send({
+        event: "erase",
+        userId: user.id,
+      });
+    }
 
     sendIndexPtr = len;
   }
@@ -123,6 +154,10 @@ export default function Drawing({ user, subscription, gameState, drawEvents }: P
     ];
   }
 
+  function createEraseEvent() {
+    events.current = [...events.current, { type: "erase" } ];
+  }
+
   function createDrawEvent(
     from: Coordinates,
     to: Coordinates,
@@ -137,7 +172,7 @@ export default function Drawing({ user, subscription, gameState, drawEvents }: P
       y2: to.y,
     }
 
-    drawEvents.current = [...drawEvents.current, event];
+    events.current = [...events.current, { type: "draw", data: event }];
   }
 
   const penRef = useRef<PenState>({
@@ -218,11 +253,11 @@ export default function Drawing({ user, subscription, gameState, drawEvents }: P
   }, [canvasRef]);
 
   useEffect(() => {
-    const drawInterval = window.setInterval(drawFromDrawEvents, 50);
-    const sendEventsInterval = window.setInterval(sendDrawEvents, 50);
+    const processEventsInterval = window.setInterval(processEvents, 50);
+    const sendEventsInterval = window.setInterval(sendEvents, 50);
 
     return () => {
-      clearInterval(drawInterval);
+      clearInterval(processEventsInterval);
       clearInterval(sendEventsInterval);
     }
   }, []);
@@ -233,7 +268,7 @@ export default function Drawing({ user, subscription, gameState, drawEvents }: P
 
   function controlsMarkup() {
     if(!isDrawer)
-      return null
+      return null;
 
     const colorsMarkup = colors.map((e, index) => {
       return <Box
@@ -249,6 +284,7 @@ export default function Drawing({ user, subscription, gameState, drawEvents }: P
       className={styles.controls}
     >
       {colorsMarkup}
+      <button onClick={createEraseEvent}>Erase</button>
     </Grid>);
   }
 
@@ -258,11 +294,12 @@ export default function Drawing({ user, subscription, gameState, drawEvents }: P
       <canvas
         ref={canvasRef}
         className={styles.canvas}
-        height="400"
-        width="600"
+        height={canvasHeight}
+        width={canvasWidth}
       />
 
       {controlsMarkup()}
+
     </div>
   );
 };

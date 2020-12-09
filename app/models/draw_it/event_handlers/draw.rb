@@ -10,10 +10,4 @@ class DrawIt::EventHandlers::Draw < EventHandler
 
     send_websocket_message(instance, { drawEvents: data["draw_events"], authorId: data["user_id"] })
   end
-
-  private
-
-  def storage
-    instance.storage
-  end
 end
