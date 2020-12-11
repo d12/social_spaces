@@ -56,10 +56,10 @@ export default function Drawing({ user, subscription, gameState, events }: Props
   const canvasHeight = 400;
 
   // What index have we drawn up to
-  let processIndexPtr: number = 0;
+  const processIndexPtr = useRef<number>(0);
 
   // What index have we sent up to
-  let sendIndexPtr: number = 0;
+  const sendIndexPtr = useRef<number>(0);
 
   let haveDrawn = false;
 
@@ -71,12 +71,13 @@ export default function Drawing({ user, subscription, gameState, events }: Props
   ]
 
   function processEvents() {
+    console.log(processIndexPtr.current);
     const len = events.current.length;
 
-    if(len === processIndexPtr)
+    if(len === processIndexPtr.current)
       return;
 
-    events.current.slice(processIndexPtr, len).forEach((e: Event) => {
+    events.current.slice(processIndexPtr.current, len).forEach((e: Event) => {
       switch(e.type) {
         case "draw":
           drawFromEvent(e.data);
@@ -88,7 +89,7 @@ export default function Drawing({ user, subscription, gameState, events }: Props
       }
     });
 
-    processIndexPtr = len;
+    processIndexPtr.current = len;
   }
 
   function erase() {
@@ -111,14 +112,14 @@ export default function Drawing({ user, subscription, gameState, events }: Props
     const len: number = events.current.length;
 
     if(!haveDrawn){
-      sendIndexPtr = len;
+      sendIndexPtr.current = len;
       return;
     }
 
-    if(len === sendIndexPtr)
+    if(len === sendIndexPtr.current)
       return;
 
-    const eventsToSend: Array<Event> = events.current.slice(sendIndexPtr, len);
+    const eventsToSend: Array<Event> = events.current.slice(sendIndexPtr.current, len);
 
     const drawEvents = eventsToSend.filter((e) => e.type === "draw");
     const eraseEvents = eventsToSend.filter((e) => e.type === "erase");
@@ -138,7 +139,7 @@ export default function Drawing({ user, subscription, gameState, events }: Props
       });
     }
 
-    sendIndexPtr = len;
+    sendIndexPtr.current = len;
   }
 
   // Serialize for transport
