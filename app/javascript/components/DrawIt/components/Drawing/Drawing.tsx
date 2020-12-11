@@ -15,7 +15,8 @@ export interface Props {
   user: User;
   subscription: Cable;
   gameState: GameState;
-  events: React.MutableRefObject<Array<Event>>;
+  events: Array<Event>;
+  setEvents: React.Dispatch<React.SetStateAction<Array<Event>>>;
 }
 
 interface Coordinates {
@@ -28,6 +29,9 @@ interface PenState {
   previousCoords: Coordinates;
   currentCoords: Coordinates;
 }
+
+const canvasWidth = 600;
+const canvasHeight = 400;
 
 function draw(
   ctx: CanvasRenderingContext2D,
@@ -45,15 +49,16 @@ function draw(
   ctx.stroke();
 }
 
-export default function Drawing({ user, subscription, gameState, events }: Props) {
+function erase(ctx: CanvasRenderingContext2D) {
+  ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+}
+
+export default function Drawing({ user, subscription, gameState, events, setEvents }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [selectedColor, setSelectedColor] = useState<number>(0);
   const selectedColorRef = useRef<number>(0);
 
   const isDrawer = gameState.users[gameState.drawingUserIndex].id == user.id;
-
-  const canvasWidth = 600;
-  const canvasHeight = 400;
 
   // What index have we drawn up to
   const processIndexPtr = useRef<number>(0);
@@ -70,76 +75,12 @@ export default function Drawing({ user, subscription, gameState, events }: Props
     "#0000FF",
   ]
 
-  function processEvents() {
-    console.log(processIndexPtr.current);
-    const len = events.current.length;
-
-    if(len === processIndexPtr.current)
-      return;
-
-    events.current.slice(processIndexPtr.current, len).forEach((e: Event) => {
-      switch(e.type) {
-        case "draw":
-          drawFromEvent(e.data);
-          break;
-
-        case "erase":
-          erase();
-          break;
-      }
-    });
-
-    processIndexPtr.current = len;
+  function getCanvasContext(): CanvasRenderingContext2D {
+    return canvasRef.current.getContext("2d");
   }
 
-  function erase() {
-    const canvasContext = canvasRef.current.getContext("2d"); // Todo: Can we memoize this somehow
-    canvasContext.clearRect(0, 0, canvasWidth, canvasHeight);
-  }
-
-  function drawFromEvent(e: DrawEvent) {
-    const canvasContext = canvasRef.current.getContext("2d"); // Todo: Can we memoize this somehow
-
-    const from: Coordinates = { x: e.x1, y: e.y1 };
-    const to: Coordinates = { x: e.x2, y: e.y2 };
-    draw(canvasContext, from, to, e.strokeWidth, colors[e.strokeColor]);
-  }
-
-  async function sendEvents() {
-    if(!isDrawer)
-      return;
-
-    const len: number = events.current.length;
-
-    if(!haveDrawn){
-      sendIndexPtr.current = len;
-      return;
-    }
-
-    if(len === sendIndexPtr.current)
-      return;
-
-    const eventsToSend: Array<Event> = events.current.slice(sendIndexPtr.current, len);
-
-    const drawEvents = eventsToSend.filter((e) => e.type === "draw");
-    const eraseEvents = eventsToSend.filter((e) => e.type === "erase");
-
-    if(drawEvents.length > 0) {
-      subscription.send({
-        event: "draw",
-        userId: user.id,
-        drawEvents: drawEvents.map((e) => serializeDrawEvent(e.data)),
-      });
-    }
-
-    if(eraseEvents.length > 0) {
-      subscription.send({
-        event: "erase",
-        userId: user.id,
-      });
-    }
-
-    sendIndexPtr.current = len;
+  function addEvent(event: Event){
+    setEvents(e => [...e, event]);
   }
 
   // Serialize for transport
@@ -155,15 +96,20 @@ export default function Drawing({ user, subscription, gameState, events }: Props
     ];
   }
 
+  const eventsToSend = useRef<Array<Event>>([]);
+
   function createEraseEvent() {
-    events.current = [...events.current, { type: "erase" } ];
+    const event: Event = { type: "erase" };
+
+    addEvent(event);
+    eventsToSend.current = [...eventsToSend.current, event];
   }
 
   function createDrawEvent(
     from: Coordinates,
     to: Coordinates,
   ) {
-    const event: DrawEvent = {
+    const drawEvent: DrawEvent = {
       strokeType: StrokeType.PAINT,
       strokeColor: selectedColorRef.current,
       strokeWidth: 4,
@@ -173,7 +119,10 @@ export default function Drawing({ user, subscription, gameState, events }: Props
       y2: to.y,
     }
 
-    events.current = [...events.current, { type: "draw", data: event }];
+    const event: Event = { type: "draw", data: drawEvent };
+
+    addEvent(event);
+    eventsToSend.current = [...eventsToSend.current, event];
   }
 
   const penRef = useRef<PenState>({
@@ -253,15 +202,72 @@ export default function Drawing({ user, subscription, gameState, events }: Props
     }
   }, [canvasRef]);
 
+  // Draw events
   useEffect(() => {
-    const processEventsInterval = window.setInterval(processEvents, 50);
+    events.slice(processIndexPtr.current, events.length).forEach((e: Event) => {
+      switch(e.type) {
+        case "draw":
+          const drawEvent: DrawEvent = e.data;
+          const from: Coordinates = { x: drawEvent.x1, y: drawEvent.y1 };
+          const to: Coordinates = { x: drawEvent.x2, y: drawEvent.y2 };
+
+          draw(getCanvasContext(), from, to, drawEvent.strokeWidth, colors[drawEvent.strokeColor]);
+          break;
+
+        case "erase":
+          erase(getCanvasContext());
+          break;
+      }
+    });
+
+    processIndexPtr.current = events.length;
+  }, [events]);
+
+  // Send events
+  useEffect(() => {
+    async function sendEvents() {
+      if(!isDrawer)
+        return;
+
+      const len = eventsToSend.current.length;
+
+      if(!haveDrawn){
+        sendIndexPtr.current = len;
+        return;
+      }
+
+      if(len === sendIndexPtr.current)
+        return;
+
+      const selectedEvents: Array<Event> = eventsToSend.current.slice(sendIndexPtr.current, len);
+
+      const drawEvents = selectedEvents.filter((e) => e.type === "draw");
+      const eraseEvents = selectedEvents.filter((e) => e.type === "erase");
+
+      if(drawEvents.length > 0) {
+        subscription.send({
+          event: "draw",
+          userId: user.id,
+          drawEvents: drawEvents.map((e) => serializeDrawEvent(e.data)),
+        });
+      }
+
+      if(eraseEvents.length > 0) {
+        subscription.send({
+          event: "erase",
+          userId: user.id,
+        });
+      }
+
+      sendIndexPtr.current = len;
+    }
+
     const sendEventsInterval = window.setInterval(sendEvents, 50);
 
     return () => {
-      clearInterval(processEventsInterval);
       clearInterval(sendEventsInterval);
     }
-  }, []);
+  }, [eventsToSend, subscription]);
 
   const title: string = isDrawer ?
     "You're drawing!" :

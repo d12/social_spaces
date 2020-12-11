@@ -78,7 +78,7 @@ export default function DrawIt({
   const [gameState, setGameState] = useState<GameState>();
   const [activitySubscription, setActivitySubscription] = useState<Cable>();
   const [userSubscription, setUserSubscription] = useState<Cable>();
-  const events = useRef<Array<Event>>([]);
+  const [events, setEvents] = useState<Array<Event>>([]);
 
   useEffect(() => {
     setActivitySubscription(
@@ -94,13 +94,13 @@ export default function DrawIt({
               return;
 
             if(message.drawEvents){
-              events.current = [...events.current, ...message.drawEvents.map(e => {
-                return { type: "draw", data: deserializeDrawEvent(e) }
-              })];
+              setEvents(e => [...e, ...message.drawEvents.map(drawEvent => {
+                return { type: "draw", data: deserializeDrawEvent(drawEvent) }
+              })]);
             }
 
             if(message.erase === true) {
-              events.current = [...events.current, { type: "erase" }]
+              setEvents(e => [...e, { type: "erase" }]);
             }
           },
         }
@@ -113,9 +113,9 @@ export default function DrawIt({
         {
           received: (message: Message) => {
             if(message.drawEvents && message.authorId !== user.id){
-              events.current = [...events.current, ...message.drawEvents.map(e => {
+              setEvents([...events, ...message.drawEvents.map(e => {
                 return {type: "draw", data: deserializeDrawEvent(e)}
-              })];
+              })]);
             }
           }
         },
@@ -129,6 +129,6 @@ export default function DrawIt({
 
   switch (gameState.status) {
     case ActivityStatus.DRAWING:
-      return <Drawing user={user} subscription={activitySubscription} gameState={gameState} events={events} />;
+      return <Drawing user={user} subscription={activitySubscription} gameState={gameState} events={events} setEvents={setEvents} />;
   }
 }
