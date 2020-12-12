@@ -53,6 +53,19 @@ function erase(ctx: CanvasRenderingContext2D) {
   ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 }
 
+// Serialize for transport
+function serializeDrawEvent(event: DrawEvent): Array<number> {
+  return [
+    event.strokeType,
+    event.strokeColor,
+    event.strokeWidth,
+    event.x1,
+    event.y1,
+    event.x2,
+    event.y2,
+  ];
+}
+
 export default function Drawing({ user, subscription, gameState, events, setEvents }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [selectedColor, setSelectedColor] = useState<number>(0);
@@ -71,8 +84,12 @@ export default function Drawing({ user, subscription, gameState, events, setEven
   const colors = [
     "#000000",
     "#FF0000",
+    "#FFFF00",
     "#00FF00",
+    "#00FFFF",
     "#0000FF",
+    "#FF8000",
+
   ]
 
   function getCanvasContext(): CanvasRenderingContext2D {
@@ -83,43 +100,10 @@ export default function Drawing({ user, subscription, gameState, events, setEven
     setEvents(e => [...e, event]);
   }
 
-  // Serialize for transport
-  function serializeDrawEvent(event: DrawEvent): Array<number> {
-    return [
-      event.strokeType,
-      event.strokeColor,
-      event.strokeWidth,
-      event.x1,
-      event.y1,
-      event.x2,
-      event.y2,
-    ];
-  }
-
   const eventsToSend = useRef<Array<Event>>([]);
 
   function createEraseEvent() {
     const event: Event = { type: "erase" };
-
-    addEvent(event);
-    eventsToSend.current = [...eventsToSend.current, event];
-  }
-
-  function createDrawEvent(
-    from: Coordinates,
-    to: Coordinates,
-  ) {
-    const drawEvent: DrawEvent = {
-      strokeType: StrokeType.PAINT,
-      strokeColor: selectedColorRef.current,
-      strokeWidth: 4,
-      x1: from.x,
-      y1: from.y,
-      x2: to.x,
-      y2: to.y,
-    }
-
-    const event: Event = { type: "draw", data: drawEvent };
 
     addEvent(event);
     eventsToSend.current = [...eventsToSend.current, event];
@@ -137,12 +121,33 @@ export default function Drawing({ user, subscription, gameState, events, setEven
     },
   });
 
+  // Drawing
   useEffect(() => {
     if (!canvasRef.current) {
       return;
     }
 
     const canvas = canvasRef.current;
+
+    function createDrawEvent(
+      from: Coordinates,
+      to: Coordinates,
+    ) {
+      const drawEvent: DrawEvent = {
+        strokeType: StrokeType.PAINT,
+        strokeColor: selectedColorRef.current,
+        strokeWidth: 4,
+        x1: from.x,
+        y1: from.y,
+        x2: to.x,
+        y2: to.y,
+      }
+
+      const event: Event = { type: "draw", data: drawEvent };
+
+      addEvent(event);
+      eventsToSend.current = [...eventsToSend.current, event];
+    }
 
     if(isDrawer){
       canvas.addEventListener("mousedown", (e) => {
@@ -268,6 +273,8 @@ export default function Drawing({ user, subscription, gameState, events, setEven
       clearInterval(sendEventsInterval);
     }
   }, [eventsToSend, subscription]);
+
+  // Rendering
 
   const title: string = isDrawer ?
     "You're drawing!" :
