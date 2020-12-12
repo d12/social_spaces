@@ -89,7 +89,6 @@ export default function Drawing({ user, subscription, gameState, events, setEven
     "#00FFFF",
     "#0000FF",
     "#FF8000",
-
   ]
 
   function getCanvasContext(): CanvasRenderingContext2D {
