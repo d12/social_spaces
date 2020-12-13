@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { Cable } from "actioncable";
 import {
   useForm,
@@ -77,27 +77,34 @@ const useStyles = makeStyles(
   })
 );
 
+function titleText(step) {
+  switch(step) {
+    case 1:
+      return "First, begin by telling us something that is true about yourself";
+
+    case 2:
+      return "Tell us another thing that is true about yourself!";
+
+    case 3:
+      return "Last step! What’s something that isn’t true about yourself?";
+  }
+}
+
 export function Brainstorming({ userId, subscription, gameState, currentUserData }: Props) {
   const classes = useStyles(useTheme());
   const [examplesOpen, setExamplesOpen] = useState<boolean>(false);
+  const [step, setStep] = useState<number>(1);
+
+  const [firstTruth, setFirstTruth] = useState<string>(null);
+  const [secondTruth, setSecondTruth] = useState<string>(null);
+
+  const textBox = useRef<HTMLInputElement>(null);
 
   const requiredErrorMessage = "This field is required";
   const required = [
     notEmpty(requiredErrorMessage),
     notEmptyString(requiredErrorMessage),
   ];
-
-  const { fields, submit, dirty, reset } = useForm({
-    fields: {
-      firstTruth: useField<string>({ value: "", validates: required }),
-      secondTruth: useField<string>({ value: "", validates: required }),
-      lie: useField<string>({ value: "", validates: required }),
-    },
-    onSubmit: async ({ firstTruth, secondTruth, lie }) => {
-      submitStatements([firstTruth, secondTruth, lie]);
-      return submitSuccess();
-    },
-  });
 
   function openExamples() {
     setExamplesOpen(true);
@@ -107,6 +114,43 @@ export function Brainstorming({ userId, subscription, gameState, currentUserData
     setExamplesOpen(false);
   }
 
+  function submitStatements(truths: string[], lie: string): void {
+    subscription.send({
+      event: ClientEvent.ENTERED_STATEMENTS,
+      userId,
+      truths,
+      lie,
+    });
+  }
+
+  function clickButton() {
+    console.log("YO!");
+    console.log(textBox.current.value);
+    if(!textBox.current) {
+      return;
+    }
+
+    switch(step) {
+      case 1:
+        setFirstTruth(textBox.current.value);
+        textBox.current.value = "";
+
+        setStep(e => e + 1);
+        break;
+
+      case 2:
+        setSecondTruth(textBox.current.value);
+        textBox.current.value = "";
+        setStep(e => e + 1);
+        break;
+
+      case 3:
+        const lie: string = textBox.current.value;
+        submitStatements([firstTruth, secondTruth], lie);
+        break;
+    }
+  }
+
   if (currentUserData.statements != null) {
     return <p>Waiting for other players to finish...</p>;
   }
@@ -114,9 +158,9 @@ export function Brainstorming({ userId, subscription, gameState, currentUserData
   return (
     <>
       <ActivityCard>
-        <ProgressBar step={2} />
+        <ProgressBar step={step} />
         <Typography variant="h4" className={classes.header}>
-          First, begin by telling us something that is true about yourself
+          {titleText(step)}
         </Typography>
         <Grid
           container
@@ -125,8 +169,13 @@ export function Brainstorming({ userId, subscription, gameState, currentUserData
           justify="center"
           alignItems="flex-end"
         >
-          <TextField label="Type here" className={classes.textBox} />
-          <Button variant="contained" className={classes.button}>
+          <TextField
+            label="Type here"
+            className={classes.textBox}
+            autoComplete="off"
+            inputRef={textBox}
+          />
+          <Button variant="contained" className={classes.button} onClick={clickButton}>
             <img src={arrow} />
           </Button>
         </Grid>
@@ -162,16 +211,4 @@ export function Brainstorming({ userId, subscription, gameState, currentUserData
       </Dialog>
     </>
   );
-
-  function submitStatements(statements: string[]): void {
-    const lie = statements[2];
-    const truths = statements.slice(0, 2);
-
-    subscription.send({
-      event: ClientEvent.ENTERED_STATEMENTS,
-      userId,
-      truths,
-      lie,
-    });
-  }
 }
