@@ -8,9 +8,28 @@ import {
   notEmptyString,
 } from "@shopify/react-form";
 
+import {
+  Grid,
+  Typography,
+  Card,
+  CardContent,
+  Paper,
+  Box,
+  Link,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Button
+} from "@material-ui/core";
+
+import ActivityCard from "../../../ActivityCard";
+
 import { ClientEvent } from "../../subscription-manager";
 
 import { GameState, ActivityUser } from "../../TwoTruthsOneLie";
+import { makeStyles, useTheme } from "@material-ui/core/styles";
 
 export interface Props {
   userId: number;
@@ -19,7 +38,22 @@ export interface Props {
   currentUserData: ActivityUser;
 }
 
+const useStyles = makeStyles(
+  (theme) => ({
+    cardContainer: {
+      height: "100%",
+      minHeight: "100%",
+    },
+    backgroundCard: {
+      width: "60vw",
+      height: "60vh",
+    },
+  })
+);
+
 export function Brainstorming({ userId, subscription, gameState, currentUserData }: Props) {
+  const classes = useStyles(useTheme());
+
   const requiredErrorMessage = "This field is required";
   const required = [
     notEmpty(requiredErrorMessage),
@@ -44,7 +78,9 @@ export function Brainstorming({ userId, subscription, gameState, currentUserData
 
   return (
     <>
-
+      <ActivityCard>
+        <Typography>Hello world!</Typography>
+      </ActivityCard>
     </>
   );
 

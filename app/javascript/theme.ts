@@ -53,7 +53,7 @@ let orangeTheme: Theme = createMuiTheme({
     },
     background: {
       default: "#FFD9B6",
-      paper: "#FFD9B6",
+      paper: "#FFFFFF",
     },
     divider: "#F5C89F",
   },
