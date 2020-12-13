@@ -40,6 +40,7 @@ let orangeTheme: Theme = createMuiTheme({
     },
     h4: {
       fontWeight: 600,
+      fontSize: "1.8243rem",
     },
   },
   palette: {

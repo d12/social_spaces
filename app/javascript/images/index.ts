@@ -7,4 +7,5 @@ export { default as cardDiamond } from "./card_diamond.svg";
 export { default as cardHeart } from "./card_heart.svg";
 export { default as cardBack } from "./card_back_no_border.png";
 export { default as twoTruthsTitleBlob } from "./two-truths-title-blob.svg";
-export { default as jitsiBackground } from "./jitsi-background.png"
+export { default as jitsiBackground } from "./jitsi-background.png";
+export { default as arrow } from "./arrow.svg";

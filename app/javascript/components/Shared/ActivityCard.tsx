@@ -25,7 +25,7 @@ interface Props {
   children?: React.ReactNode;
 }
 
-export default function ActivityCard({ children }: Props) {
+export function ActivityCard({ children }: Props) {
   const classes = useStyles();
 
   return (
@@ -38,13 +38,14 @@ export default function ActivityCard({ children }: Props) {
     >
       <Card variant="outlined" className={classes.backgroundCard}>
         <CardContent>
-          <Box
-            display="flex"
-            justifyContent="space-between"
+          <Grid
+            container
+            direction="column"
+            justify="space-between"
             alignItems="center"
           >
             {children}
-          </Box>
+          </Grid>
         </CardContent>
       </Card>
     </Grid>
