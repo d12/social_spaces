@@ -1,11 +1,13 @@
 class TwoTruthsOneLie < ActivityInstance
   class Status
-    BRAINSTORMING = :brainstorming # Users are entering statements
-    VOTING = :voting               # Users are voting which statement they think is a lie
-    REVEAL = :reveal               # Transition state between voting rounds, shows which one was a lie, + score
-    SUMMARY = :summary             # End of round summary with scoreboard
+    WAITING_TO_START = :waiting_to_start  # Waiting on players to join and host to start
+    BRAINSTORMING = :brainstorming        # Users are entering statements
+    VOTING = :voting                      # Users are voting which statement they think is a lie
+    REVEAL = :reveal                      # Transition state between voting rounds, shows which one was a lie, + score
+    SUMMARY = :summary                    # End of round summary with scoreboard
   end
 
+  register_event "begin_game", EventHandlers::BeginGame
   register_event "entered_statements", TwoTruthsOneLie::EventHandlers::EnteredStatements
   register_event "voted", TwoTruthsOneLie::EventHandlers::Voted
   register_event "initiated_next_turn", TwoTruthsOneLie::EventHandlers::InitiatedNextTurn
@@ -48,10 +50,10 @@ class TwoTruthsOneLie < ActivityInstance
     end
 
     {
-      status: Status::BRAINSTORMING,
-      leader_index: leader_index,    # The index of the leader in the users list
-      users: users_array,            # The users in the game
-      whos_turn_index: nil,          # The current player who's statements are being voted on
+      status: Status::WAITING_TO_START,
+      leader_index: nil,    # The index of the leader in the users list
+      users: users_array,   # The users in the game
+      whos_turn_index: nil, # The current player who's statements are being voted on
       round_count: 1
     }
   end

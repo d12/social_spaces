@@ -6,7 +6,7 @@ import { User, Group } from "../ApplicationRoot";
 import * as _styles from "./TwoTruthsOneLie.module.scss";
 
 import consumer from "../../channels/consumer";
-import { Brainstorming, Voting, Reveal, Summary } from "./components";
+import { Brainstorming, Voting, Reveal, Summary, WaitingToStart } from "./components";
 
 interface Props {
   user: User;
@@ -40,6 +40,7 @@ export interface GameState {
 }
 
 enum ActivityStatus {
+  WAITING_TO_START = "waiting_to_start",
   BRAINSTORMING = "brainstorming",
   VOTING = "voting",
   REVEAL = "reveal",
@@ -81,6 +82,16 @@ export default function TwentyQuestions({
   const currentUserData: ActivityUser = gameState.users.filter(function(u) { return u.id == user.id})[0];
 
   switch (gameState.status) {
+    case ActivityStatus.WAITING_TO_START:
+
+      return (
+        <WaitingToStart
+          userId={user.id}
+          subscription={subscription}
+          gameState={gameState}
+          group={group}
+        />
+      );
     case ActivityStatus.BRAINSTORMING:
       return (
         <Brainstorming

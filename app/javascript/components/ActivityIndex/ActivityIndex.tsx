@@ -17,7 +17,6 @@ import {
 
 import { info } from "images";
 
-import { theme } from "theme";
 import { User, Group, Activity } from "../ApplicationRoot";
 import { API } from "../modules/API"
 
@@ -78,8 +77,7 @@ const useStyles = makeStyles(
       paddingLeft: "15px",
       paddingRight: "15px"
     }
-  }),
-  { defaultTheme: theme }
+  })
 );
 
 export default function ActivityIndex({

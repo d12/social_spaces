@@ -18,19 +18,21 @@ import {
   TextField,
   Paper,
 } from "@material-ui/core";
-import { ThemeProvider, makeStyles } from "@material-ui/core/styles";
-import { theme } from "theme";
+import { ThemeProvider, makeStyles, Theme } from "@material-ui/core/styles";
 import Toast, { ToastSeverity } from "./Toast";
 import consumer from "../../channels/consumer";
 
 import { User, Group } from "../ApplicationRoot";
 import { API } from "../modules/API";
 
+import { jitsiBackground } from "../../images";
+
 declare var JitsiMeetExternalAPI: any;
 
 export interface Props {
   children?: React.ReactNode;
   user: User;
+  showGroupTab?: boolean;
   group?: Group;
   setGroupCallback(group: Group): void;
   alertToast?: string;
@@ -40,6 +42,8 @@ export interface Props {
 
 const drawerWidth = 350;
 const buttonWidth = drawerWidth * 0.8;
+const headerPadding = 2;
+const headerHeight = 50;
 
 const useStyles = makeStyles((_theme) => ({
   appTitle: {
@@ -48,6 +52,9 @@ const useStyles = makeStyles((_theme) => ({
   appBar: {
     flexGrow: 1,
     marginLeft: drawerWidth,
+  },
+  appBarBorder: {
+    borderBottomColor: _theme.palette.divider,
   },
   mainBody: {
     flexGrow: 1,
@@ -77,12 +84,22 @@ const useStyles = makeStyles((_theme) => ({
     flexDirection: "column"
   },
   video: {
-    width: "400px",
+    width: "358px",
     backgroundColor: "grey",
+    background: `url(${jitsiBackground}) no-repeat`,
+    backgroundSize: "contain",
   },
   headerBox: {
     flexDirection: "row",
     justifyContent: "space-between",
+    height: headerHeight,
+    backgroundColor: _theme.palette.background.default,
+  },
+  activityContainer: {
+    height: "calc(100% - " + (headerHeight + headerPadding) + "px)",
+    backgroundColor: _theme.palette.background.default,
+    width: "100%",
+    maxWidth: "100%",
   }
 }));
 
@@ -90,15 +107,12 @@ export function AppFrame({
   children,
   user,
   group,
+  showGroupTab,
   setGroupCallback,
   alertToast,
   noticeToast,
   toasts,
 }: Props) {
-  function navigateToActivity(): void {
-    window.location.replace("/play");
-  }
-
   useEffect(() => {
     group &&
       consumer.subscriptions.create(
@@ -177,7 +191,7 @@ export function AppFrame({
 
   const hostId = group && group.hostId;
 
-  const groupBarMarkup = group && (
+  const groupBarMarkup = group && showGroupTab && (
     <Grid item>
       <Paper
         className={classes.drawerPaper}
@@ -265,7 +279,7 @@ export function AppFrame({
   );
 
   return (
-    <ThemeProvider theme={theme}>
+    <>
       {alertMarkup || noticeMarkup}
       <Grid
        container
@@ -275,7 +289,7 @@ export function AppFrame({
        className={classes.container}
       >
         <Grid item className={classes.mainBody}>
-          <AppBar color="transparent" variant="outlined" position="relative">
+          <AppBar color="transparent" variant="outlined" position="relative" className={classes.appBarBorder}>
             <Toolbar variant="dense" className={classes.headerBox}>
               <Typography variant="h6" className={classes.appTitle}>
                 Social Spaces
@@ -292,13 +306,13 @@ export function AppFrame({
               </Link>
             </Toolbar>
           </AppBar>
-          <Container maxWidth="lg">{children} {endActivityMarkup}</Container>
+          <Container className={classes.activityContainer}>{children} {endActivityMarkup}</Container>
         </Grid>
         {groupBarMarkup}
         <Box className={classes.video} id="video-container">
         </Box>
       </Grid>
-    </ThemeProvider>
+    </>
   );
 
   function EndActivity() {

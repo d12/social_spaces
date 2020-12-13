@@ -11,6 +11,9 @@ import Clicker from "../Clicker";
 import TwoTruthsOneLie from "../TwoTruthsOneLie";
 import DrawIt from "../DrawIt";
 
+import { Theme, ThemeProvider } from "@material-ui/core/styles";
+import { plainTheme, orangeTheme } from "../../theme";
+
 export interface User {
   id: number;
   name: string;
@@ -45,11 +48,16 @@ export default function ApplicationRoot(props: Props) {
   const [group, setGroup] = useState<Group>(props.group);
   const [user] = useState<User>(props.user);
 
-  function withAppFrame(markup: JSX.Element) {
+  function withAppFrame(markup: JSX.Element, theme?: Theme, showGroupTab: boolean = false) {
+    if(!theme)
+      theme = plainTheme;
+
     return (
-      <AppFrame user={user} group={group} setGroupCallback={setGroup}>
-        {markup}
-      </AppFrame>
+      <ThemeProvider theme={theme}>
+        <AppFrame user={user} group={group} setGroupCallback={setGroup} showGroupTab={showGroupTab}>
+          {markup}
+        </AppFrame>
+      </ThemeProvider>
     );
   }
 
@@ -62,7 +70,7 @@ export default function ApplicationRoot(props: Props) {
   }
 
   if(group.activity === undefined || group.activity === null) {
-    return withAppFrame(<ActivityIndex user={user} activities={props.allActivities} setGroupCallback={setGroup} />);
+    return withAppFrame(<ActivityIndex user={user} activities={props.allActivities} setGroupCallback={setGroup} />, null, true);
   }
 
   switch(group.activity.name) {
@@ -70,7 +78,7 @@ export default function ApplicationRoot(props: Props) {
       return withAppFrame(<Clicker user={user} group={group} />);
 
     case "TwoTruthsOneLie":
-      return withAppFrame(<TwoTruthsOneLie user={user} group={group} />);
+      return withAppFrame(<TwoTruthsOneLie user={user} group={group}/>, orangeTheme);
 
     case "DrawIt":
       return withAppFrame(<DrawIt user={user} group={group} />);

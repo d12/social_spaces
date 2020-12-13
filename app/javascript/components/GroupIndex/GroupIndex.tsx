@@ -14,7 +14,7 @@ import {
   Button,
   TextField,
 } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles, Theme } from "@material-ui/core/styles";
 import {
   useForm,
   useField,
@@ -27,6 +27,7 @@ import { yam } from "images";
 import { AppFrame } from "../AppFrame";
 import { User, Group } from "../ApplicationRoot";
 import { API } from "../modules/API";
+import { plainTheme } from "../../theme";
 
 const useStyles = makeStyles((theme) => ({
   wrapper: {

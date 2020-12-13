@@ -44,63 +44,7 @@ export function Brainstorming({ userId, subscription, gameState, currentUserData
 
   return (
     <>
-      <h2>Brainstorming - Enter two truths and one lie.</h2>
-      <br />
-      <form onSubmit={submit}>
-        <div>
-          <label htmlFor="firstTruth">
-            Truth #1
-            <input
-              id="firstTruth"
-              name="firstTruth"
-              value={fields.firstTruth.value}
-              onChange={fields.firstTruth.onChange}
-              onBlur={fields.firstTruth.onBlur}
-              autoComplete="off"
-            />
-          </label>
-          {fields.firstTruth.error && (
-            <p className="error">{fields.firstTruth.error}</p>
-          )}
-        </div>
-        <div>
-          <label htmlFor="secondTruth">
-            Truth #2
-            <input
-              id="secondTruth"
-              name="secondTruth"
-              value={fields.secondTruth.value}
-              onChange={fields.secondTruth.onChange}
-              onBlur={fields.secondTruth.onBlur}
-              autoComplete="off"
-            />
-          </label>
-          {fields.secondTruth.error && (
-            <p className="error">{fields.secondTruth.error}</p>
-          )}
-        </div>
-        <div>
-          <label htmlFor="lie">
-            Lie
-            <input
-              id="lie"
-              name="lie"
-              value={fields.lie.value}
-              onChange={fields.lie.onChange}
-              onBlur={fields.lie.onBlur}
-              autoComplete="off"
-            />
-          </label>
-          {fields.lie.error && <p className="error">{fields.lie.error}</p>}
-        </div>
-        <br />
-        <button type="button" disabled={!dirty} onClick={reset}>
-          Reset
-        </button>
-        <button type="submit" disabled={!dirty} onClick={submit}>
-          Submit
-        </button>
-      </form>
+
     </>
   );
 
