@@ -73,11 +73,17 @@ const useStyles = makeStyles(
       color: "#069",
       textDecoration: "underline",
       cursor: "pointer",
+    },
+    confirmationHeader: {
+      marginTop: "30px",
+      marginBottom: "60px",
+      marginLeft: "20px",
+      marginRight: "auto",
     }
   })
 );
 
-function titleText(step) {
+function titleTextForStep(step: number) {
   switch(step) {
     case 1:
       return "First, begin by telling us something that is true about yourself";
@@ -87,6 +93,9 @@ function titleText(step) {
 
     case 3:
       return "Last step! What’s something that isn’t true about yourself?";
+
+    case 4:
+      return "Here are your two truths and a lie";
   }
 }
 
@@ -97,14 +106,9 @@ export function Brainstorming({ userId, subscription, gameState, currentUserData
 
   const [firstTruth, setFirstTruth] = useState<string>(null);
   const [secondTruth, setSecondTruth] = useState<string>(null);
+  const [lie, setLie] = useState<string>(null);
 
   const textBox = useRef<HTMLInputElement>(null);
-
-  const requiredErrorMessage = "This field is required";
-  const required = [
-    notEmpty(requiredErrorMessage),
-    notEmptyString(requiredErrorMessage),
-  ];
 
   function openExamples() {
     setExamplesOpen(true);
@@ -123,65 +127,80 @@ export function Brainstorming({ userId, subscription, gameState, currentUserData
     });
   }
 
-  function clickButton() {
-    console.log("YO!");
-    console.log(textBox.current.value);
+  function clickNextButton() {
     if(!textBox.current) {
       return;
     }
 
-    switch(step) {
-      case 1:
-        setFirstTruth(textBox.current.value);
-        textBox.current.value = "";
-
-        setStep(e => e + 1);
-        break;
-
-      case 2:
-        setSecondTruth(textBox.current.value);
-        textBox.current.value = "";
-        setStep(e => e + 1);
-        break;
-
-      case 3:
-        const lie: string = textBox.current.value;
-        submitStatements([firstTruth, secondTruth], lie);
-        break;
-    }
+    setStep(e => e + 1);
   }
 
   if (currentUserData.statements != null) {
     return <p>Waiting for other players to finish...</p>;
   }
 
+  const enterStatementsMarkup = step <= 3 && <>
+  <ProgressBar step={step} />
+    <Typography variant="h4" className={classes.header}>
+      {titleTextForStep(step)}
+    </Typography>
+    <Grid
+      container
+      direction="row"
+      className="form"
+      justify="center"
+      alignItems="flex-end"
+    >
+      <TextField
+        label="Type here"
+        className={classes.textBox}
+        autoComplete="off"
+        inputRef={textBox}
+        value={firstTruth}
+        onChange={(e) => setFirstTruth(e.target.value)}
+        style={{display: step == 1 ? "block" : "none"}}
+        fullWidth={true}
+      />
+      <TextField
+        label="Type here"
+        className={classes.textBox}
+        autoComplete="off"
+        inputRef={textBox}
+        value={secondTruth}
+        onChange={(e) => setSecondTruth(e.target.value)}
+        style={{display: step == 2 ? "block" : "none"}}
+        fullWidth={true}
+      />
+      <TextField
+        label="Type here"
+        className={classes.textBox}
+        autoComplete="off"
+        inputRef={textBox}
+        value={lie}
+        onChange={(e) => setLie(e.target.value)}
+        style={{display: step == 3 ? "block" : "none"}}
+        fullWidth={true}
+      />
+      <Button variant="contained" className={classes.button} onClick={clickNextButton}>
+        <img src={arrow} />
+      </Button>
+    </Grid>
+    <Typography className={classes.exampleText}>
+      Can’t think of anything? Choose from some examples <button className={classes.exampleLink} onClick={openExamples}>here</button>.
+    </Typography>
+  </>;
+
+  const confirmationMarkup = step > 3 && <>
+    <Typography variant="h4" className={classes.confirmationHeader}>
+        {titleTextForStep(step)}
+    </Typography>
+  </>;
+
   return (
     <>
       <ActivityCard>
-        <ProgressBar step={step} />
-        <Typography variant="h4" className={classes.header}>
-          {titleText(step)}
-        </Typography>
-        <Grid
-          container
-          direction="row"
-          className="form"
-          justify="center"
-          alignItems="flex-end"
-        >
-          <TextField
-            label="Type here"
-            className={classes.textBox}
-            autoComplete="off"
-            inputRef={textBox}
-          />
-          <Button variant="contained" className={classes.button} onClick={clickButton}>
-            <img src={arrow} />
-          </Button>
-        </Grid>
-        <Typography className={classes.exampleText}>
-          Can’t think of anything? Choose from some examples <button className={classes.exampleLink} onClick={openExamples}>here</button>.
-        </Typography>
+        {enterStatementsMarkup}
+        {confirmationMarkup}
       </ActivityCard>
       <Dialog
         open={examplesOpen}
