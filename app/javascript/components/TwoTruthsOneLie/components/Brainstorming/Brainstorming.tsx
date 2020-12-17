@@ -27,6 +27,7 @@ import {
 
 import { ActivityCard } from "../../../Shared";
 import ProgressBar from "./ProgressBar";
+import StatementBox from "./StatementBox";
 
 import { ClientEvent } from "../../subscription-manager";
 
@@ -76,9 +77,16 @@ const useStyles = makeStyles(
     },
     confirmationHeader: {
       marginTop: "30px",
-      marginBottom: "60px",
+      marginBottom: "40px",
       marginLeft: "20px",
       marginRight: "auto",
+    },
+    summaryContainer: {
+      paddingLeft: "35px",
+      paddingRight: "35px",
+    },
+    submitButton: {
+      marginTop: "50px",
     }
   })
 );
@@ -118,11 +126,11 @@ export function Brainstorming({ userId, subscription, gameState, currentUserData
     setExamplesOpen(false);
   }
 
-  function submitStatements(truths: string[], lie: string): void {
+  function submitStatements(): void {
     subscription.send({
       event: ClientEvent.ENTERED_STATEMENTS,
       userId,
-      truths,
+      truths: [firstTruth, secondTruth],
       lie,
     });
   }
@@ -194,6 +202,19 @@ export function Brainstorming({ userId, subscription, gameState, currentUserData
     <Typography variant="h4" className={classes.confirmationHeader}>
         {titleTextForStep(step)}
     </Typography>
+    <Grid
+      container
+      direction="column"
+      alignItems="center"
+      className={classes.summaryContainer}
+    >
+      <StatementBox color="#D9EDFF" statement={"Once upon a time I ate a giraffe"} />
+      <StatementBox color="#D9EDFF" statement={"One a time I ate a Buffallo"} />
+      <StatementBox color="#FEE7E7" statement={"Once upon a time I ate a giraffe"} />
+    </Grid>
+    <Button onClick={submitStatements} color="secondary" variant="contained" className={classes.submitButton}>
+      <strong>Let's Go!</strong>
+    </Button>
   </>;
 
   return (
