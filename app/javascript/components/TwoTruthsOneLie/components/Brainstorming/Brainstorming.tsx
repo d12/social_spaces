@@ -149,7 +149,7 @@ export function Brainstorming({ userId, subscription, gameState, currentUserData
 
   const enterStatementsMarkup = step <= 3 && <>
   <ProgressBar step={step} />
-    <Typography variant="h4" className={classes.header}>
+    <Typography variant="h2" className={classes.header}>
       {titleTextForStep(step)}
     </Typography>
     <Grid
@@ -199,7 +199,7 @@ export function Brainstorming({ userId, subscription, gameState, currentUserData
   </>;
 
   const confirmationMarkup = step > 3 && <>
-    <Typography variant="h4" className={classes.confirmationHeader}>
+    <Typography variant="h2" className={classes.confirmationHeader}>
         {titleTextForStep(step)}
     </Typography>
     <Grid

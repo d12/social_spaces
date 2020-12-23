@@ -9,6 +9,18 @@ let plainTheme: Theme = createMuiTheme({
     h4: {
       fontWeight: 600,
     },
+    h3: {
+      fontSize: "22px", // 18px in figma
+      fontWeight: 600,
+    },
+    h2: {
+      fontSize: "30px", // 24px in figma
+      fontWeight: 600,
+    },
+    h1: {
+      fontSize: "42px", // 36px in figma
+      fontweight: 600,
+    }
   },
   palette: {
     primary: {
@@ -40,8 +52,19 @@ let orangeTheme: Theme = createMuiTheme({
     },
     h4: {
       fontWeight: 600,
-      fontSize: "1.8243rem",
     },
+    h3: {
+      fontSize: "22px", // 18px in figma
+      fontWeight: 600,
+    },
+    h2: {
+      fontSize: "30px", // 24px in figma
+      fontWeight: 600,
+    },
+    h1: {
+      fontSize: "42px", // 36px in figma
+      fontweight: 600,
+    }
   },
   palette: {
     primary: {
