@@ -1,0 +1,122 @@
+import React from "react";
+
+import {
+  Grid,
+  Typography,
+} from "@material-ui/core";
+
+import {
+  blobBlue,
+  blobGreen,
+  blobPink,
+  blobPurple,
+  blobYellow
+} from "../../images";
+
+import { makeStyles, useTheme } from "@material-ui/core/styles";
+
+function blobForIndex(index: number) {
+  switch(index % 5) {
+    case 0: return blobBlue;
+    case 1: return blobGreen;
+    case 2: return blobYellow;
+    case 3: return blobPurple;
+    case 4: return blobPink;
+  }
+}
+
+const useStyles = makeStyles((_theme) => ({
+  scoreBox: {
+    height: "130px",
+    width: "240px",
+    marginBottom: "20px",
+    paddingTop: "20px",
+    paddingLeft: "15px",
+    backgroundColor: "#F2F9FF",
+    borderRadius: "10px",
+  },
+  outlinedScoreBox: { // TODO: Get SASS working
+    height: "130px",
+    width: "240px",
+    marginBottom: "20px",
+    paddingTop: "20px",
+    paddingLeft: "15px",
+    backgroundColor: "#F2F9FF",
+    borderRadius: "10px",
+    borderColor: "#000000",
+    borderStyle: "solid"
+  },
+  name: {
+    marginTop: "8px",
+  },
+  blob: {
+    marginRight: "10px",
+    height: "35px",
+    width: "35px",
+  },
+  scoreTextContainer: {
+    backgroundColor: "#74A2CC",
+    borderRadius:"7px",
+    width: "210px",
+    height: "40px",
+    marginTop: "20px",
+    paddingLeft: "15px",
+    color: "#FFFFFF"
+
+  },
+  scoreText: {
+    fontSize: "22px",
+    marginRight: "12px",
+  }
+}));
+
+export interface PlayerScore {
+  name: string;
+  score: number;
+}
+
+interface Props {
+  scores: PlayerScore[];
+  selectedIndex: number;
+}
+
+export function ScoreBoard({ scores, selectedIndex }: Props) {
+  const classes = useStyles();
+
+  const scoresMarkup = scores.map((score, index) => {
+    return (
+      <Grid
+        container
+        direction="column"
+        className={index == selectedIndex ? classes.outlinedScoreBox : classes.scoreBox}
+      >
+        <Grid
+          container
+          direction="row"
+          alignItems="center"
+        >
+          <img src={blobForIndex(index)} className={classes.blob} />
+          <Typography variant="h3" className={classes.name}>{score.name}</Typography>
+        </Grid>
+        <Grid
+          container
+          direction="row"
+          className={classes.scoreTextContainer}
+          alignItems="center"
+        >
+          <Typography className={classes.scoreText}>Score:</Typography>
+          <Typography className={classes.scoreText}><strong>{score.score}</strong></Typography>
+        </Grid>
+      </Grid>
+    );
+  });
+
+  return (
+    <Grid
+      container
+      direction="column"
+    >
+      {scoresMarkup}
+    </Grid>
+  );
+}

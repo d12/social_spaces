@@ -15,17 +15,23 @@ const useStyles = makeStyles((_theme) => ({
     minHeight: "100%",
   },
   backgroundCard: {
-    width: "60vw",
+    width: "75vw",
     height: "60vh",
     borderRadius: "10px",
   },
+  backgroundCardTall: {
+    width: "75vw",
+    height: "78vh",
+    borderRadius: "10px",
+  }
 }));
 
 interface Props {
+  tall?: Boolean;
   children?: React.ReactNode;
 }
 
-export function ActivityCard({ children }: Props) {
+export function ActivityCard({ children, tall }: Props) {
   const classes = useStyles();
 
   return (
@@ -36,7 +42,7 @@ export function ActivityCard({ children }: Props) {
       alignItems="center"
       className={classes.cardContainer}
     >
-      <Card variant="outlined" className={classes.backgroundCard}>
+      <Card variant="outlined" className={tall ? classes.backgroundCardTall : classes.backgroundCard}>
         <CardContent>
           <Grid
             container

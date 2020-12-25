@@ -1,21 +1,10 @@
 import React, { useState, useRef } from "react";
 import { Cable } from "actioncable";
-import {
-  useForm,
-  useField,
-  submitSuccess,
-  notEmpty,
-  notEmptyString,
-} from "@shopify/react-form";
 
 import {
   Grid,
   Typography,
-  Card,
-  CardContent,
   Paper,
-  Box,
-  Link,
   Dialog,
   DialogActions,
   DialogContent,
@@ -78,8 +67,8 @@ const useStyles = makeStyles(
     confirmationHeader: {
       marginTop: "30px",
       marginBottom: "40px",
-      marginLeft: "20px",
-      marginRight: "auto",
+      paddingLeft: "20px",
+      paddingRight: "20px",
     },
     summaryContainer: {
       paddingLeft: "35px",
@@ -87,6 +76,16 @@ const useStyles = makeStyles(
     },
     submitButton: {
       marginTop: "50px",
+    },
+    waiting: {
+      marginTop: "250px",
+    },
+    linkWithNoUnderline: {
+      background: "none!important",
+      border: "none",
+      padding: "0!important",
+      color: "#069",
+      cursor: "pointer",
     }
   })
 );
@@ -144,7 +143,15 @@ export function Brainstorming({ userId, subscription, gameState, currentUserData
   }
 
   if (currentUserData.statements != null) {
-    return <p>Waiting for other players to finish...</p>;
+    return (
+      <ActivityCard>
+        <Grid container justify="center">
+          <Typography variant="h2" className={classes.waiting}>
+            Waiting for other players
+          </Typography>
+        </Grid>
+      </ActivityCard>
+    )
   }
 
   const enterStatementsMarkup = step <= 3 && <>
@@ -199,18 +206,29 @@ export function Brainstorming({ userId, subscription, gameState, currentUserData
   </>;
 
   const confirmationMarkup = step > 3 && <>
-    <Typography variant="h2" className={classes.confirmationHeader}>
-        {titleTextForStep(step)}
-    </Typography>
+    <Grid
+      container
+      direction="row"
+      justify="space-between"
+      alignItems="center"
+      className={classes.confirmationHeader}
+    >
+      <Typography variant="h2">
+          {titleTextForStep(step)}
+      </Typography>
+      <Typography className={classes.linkWithNoUnderline}>
+        I’d like to change my answers
+      </Typography>
+    </Grid>
     <Grid
       container
       direction="column"
       alignItems="center"
       className={classes.summaryContainer}
     >
-      <StatementBox color="#D9EDFF" statement={"Once upon a time I ate a giraffe"} />
-      <StatementBox color="#D9EDFF" statement={"One a time I ate a Buffallo"} />
-      <StatementBox color="#FEE7E7" statement={"Once upon a time I ate a giraffe"} />
+      <StatementBox color="#D9EDFF" statement={firstTruth} />
+      <StatementBox color="#D9EDFF" statement={secondTruth} />
+      <StatementBox color="#FEE7E7" statement={lie} />
     </Grid>
     <Button onClick={submitStatements} color="secondary" variant="contained" className={classes.submitButton}>
       <strong>Let's Go!</strong>

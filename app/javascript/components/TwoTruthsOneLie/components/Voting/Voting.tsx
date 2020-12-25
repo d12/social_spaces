@@ -3,6 +3,12 @@ import { Cable } from "actioncable";
 
 import { ClientEvent } from "../../subscription-manager";
 import { GameState, ActivityUser } from "../../TwoTruthsOneLie";
+import { ActivityCard, ScoreBoard, PlayerScore} from "../../../Shared";
+import { makeStyles } from "@material-ui/core/styles";
+
+import {
+  Grid
+} from "@material-ui/core";
 
 export interface Props {
   userId: number;
@@ -11,9 +17,17 @@ export interface Props {
   currentUserData: ActivityUser;
 }
 
+const useStyles = makeStyles((_theme) => ({
+  container: {
+    margin: "10px",
+  }
+}));
+
 export function Voting({ userId, subscription, gameState, currentUserData }: Props) {
   const statements = gameState.users[gameState.whosTurnIndex].statements;
   const isMyTurn = userId === gameState.users[gameState.whosTurnIndex].id;
+
+  const classes = useStyles();
 
   const header = isMyTurn ? "Others are guessing which is a lie... 🤔" : "Pick which one you think is a lie 🤔"
 
@@ -41,10 +55,32 @@ export function Voting({ userId, subscription, gameState, currentUserData }: Pro
     );
   });
 
+  const scores: PlayerScore[] = [
+    {
+      name: "Nathaniel",
+      score: 2,
+    },
+    {
+      name: "Lulu",
+      score: 3,
+    },
+    {
+      name: "Angie",
+      score: 1,
+    }
+  ]
+
   return (
     <>
-      <h2>{header}</h2>
-      {statementsMarkup}
+      <ActivityCard tall>
+        <Grid
+          container
+          direction="row"
+          className={classes.container}
+        >
+          <ScoreBoard scores={scores} selectedIndex={0} />
+        </Grid>
+      </ActivityCard>
     </>
   );
 

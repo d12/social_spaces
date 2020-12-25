@@ -9,3 +9,8 @@ export { default as cardBack } from "./card_back_no_border.png";
 export { default as twoTruthsTitleBlob } from "./two-truths-title-blob.svg";
 export { default as jitsiBackground } from "./jitsi-background.png";
 export { default as arrow } from "./arrow.svg";
+export { default as blobBlue } from "./blob-blue.svg";
+export { default as blobGreen } from "./blob-green.svg";
+export { default as blobPink } from "./blob-pink.svg";
+export { default as blobPurple } from "./blob-purple.svg";
+export { default as blobYellow } from "./blob-yellow.svg";
