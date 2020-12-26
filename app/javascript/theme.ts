@@ -19,7 +19,7 @@ let plainTheme: Theme = createMuiTheme({
     },
     h1: {
       fontSize: "42px", // 36px in figma
-      fontweight: 600,
+      fontWeight: 600,
     }
   },
   palette: {
@@ -63,7 +63,7 @@ let orangeTheme: Theme = createMuiTheme({
     },
     h1: {
       fontSize: "42px", // 36px in figma
-      fontweight: 600,
+      fontWeight: 600,
     }
   },
   palette: {

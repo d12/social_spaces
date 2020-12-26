@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Cable } from "actioncable";
 
 import {
@@ -111,11 +111,22 @@ export function Brainstorming({ userId, subscription, gameState, currentUserData
   const [examplesOpen, setExamplesOpen] = useState<boolean>(false);
   const [step, setStep] = useState<number>(1);
 
-  const [firstTruth, setFirstTruth] = useState<string>(null);
-  const [secondTruth, setSecondTruth] = useState<string>(null);
-  const [lie, setLie] = useState<string>(null);
+  const [firstTruth, setFirstTruth] = useState<string>("");
+  const [secondTruth, setSecondTruth] = useState<string>("");
+  const [lie, setLie] = useState<string>("");
 
-  const textBox = useRef<HTMLInputElement>(null);
+  const textboxRefs = [
+    useRef<HTMLInputElement>(),
+    useRef<HTMLInputElement>(),
+    useRef<HTMLInputElement>(),
+  ];
+
+  useEffect(() => {
+    const textbox = textboxRefs[step - 1];
+    if(!textbox) return;
+
+    textbox.current.focus();
+  }, [step]);
 
   function openExamples() {
     setExamplesOpen(true);
@@ -134,8 +145,14 @@ export function Brainstorming({ userId, subscription, gameState, currentUserData
     });
   }
 
+  function submitIfEnter(e: { keyCode: number; }) {
+    if(e.keyCode == 13) {
+      clickNextButton();
+    }
+  }
+
   function clickNextButton() {
-    if(!textBox.current) {
+    if(!textboxRefs[step - 1].current) {
       return;
     }
 
@@ -170,9 +187,10 @@ export function Brainstorming({ userId, subscription, gameState, currentUserData
         label="Type here"
         className={classes.textBox}
         autoComplete="off"
-        inputRef={textBox}
+        inputRef={textboxRefs[0]}
         value={firstTruth}
         onChange={(e) => setFirstTruth(e.target.value)}
+        onKeyDown={submitIfEnter}
         style={{display: step == 1 ? "block" : "none"}}
         fullWidth={true}
       />
@@ -180,9 +198,10 @@ export function Brainstorming({ userId, subscription, gameState, currentUserData
         label="Type here"
         className={classes.textBox}
         autoComplete="off"
-        inputRef={textBox}
+        inputRef={textboxRefs[1]}
         value={secondTruth}
         onChange={(e) => setSecondTruth(e.target.value)}
+        onKeyDown={submitIfEnter}
         style={{display: step == 2 ? "block" : "none"}}
         fullWidth={true}
       />
@@ -190,9 +209,10 @@ export function Brainstorming({ userId, subscription, gameState, currentUserData
         label="Type here"
         className={classes.textBox}
         autoComplete="off"
-        inputRef={textBox}
+        inputRef={textboxRefs[2]}
         value={lie}
         onChange={(e) => setLie(e.target.value)}
+        onKeyDown={submitIfEnter}
         style={{display: step == 3 ? "block" : "none"}}
         fullWidth={true}
       />
@@ -216,7 +236,7 @@ export function Brainstorming({ userId, subscription, gameState, currentUserData
       <Typography variant="h2">
           {titleTextForStep(step)}
       </Typography>
-      <Typography className={classes.linkWithNoUnderline}>
+      <Typography className={classes.linkWithNoUnderline} onClick={() => setStep(1)}>
         I’d like to change my answers
       </Typography>
     </Grid>

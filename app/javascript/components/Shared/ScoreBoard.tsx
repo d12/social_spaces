@@ -3,6 +3,7 @@ import React from "react";
 import {
   Grid,
   Typography,
+  Box,
 } from "@material-ui/core";
 
 import {
@@ -26,8 +27,13 @@ function blobForIndex(index: number) {
 }
 
 const useStyles = makeStyles((_theme) => ({
+  container: {
+    height: "72vh",
+    overflowY: "auto",
+    width: "250px",
+  },
   scoreBox: {
-    height: "130px",
+    height: "135px",
     width: "240px",
     marginBottom: "20px",
     paddingTop: "20px",
@@ -48,6 +54,10 @@ const useStyles = makeStyles((_theme) => ({
   },
   name: {
     marginTop: "8px",
+    width: "150px",
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
+    overflow: "hidden"
   },
   blob: {
     marginRight: "10px",
@@ -85,10 +95,9 @@ export function ScoreBoard({ scores, selectedIndex }: Props) {
 
   const scoresMarkup = scores.map((score, index) => {
     return (
-      <Grid
-        container
-        direction="column"
+      <Box
         className={index == selectedIndex ? classes.outlinedScoreBox : classes.scoreBox}
+        key={index}
       >
         <Grid
           container
@@ -107,16 +116,15 @@ export function ScoreBoard({ scores, selectedIndex }: Props) {
           <Typography className={classes.scoreText}>Score:</Typography>
           <Typography className={classes.scoreText}><strong>{score.score}</strong></Typography>
         </Grid>
-      </Grid>
+      </Box>
     );
   });
 
   return (
-    <Grid
-      container
-      direction="column"
+    <div
+      className={classes.container}
     >
       {scoresMarkup}
-    </Grid>
+    </div>
   );
 }

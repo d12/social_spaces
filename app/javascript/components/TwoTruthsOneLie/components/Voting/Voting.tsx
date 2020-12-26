@@ -7,7 +7,10 @@ import { ActivityCard, ScoreBoard, PlayerScore} from "../../../Shared";
 import { makeStyles } from "@material-ui/core/styles";
 
 import {
-  Grid
+  Grid,
+  Box,
+  Typography,
+  Button
 } from "@material-ui/core";
 
 export interface Props {
@@ -20,55 +23,134 @@ export interface Props {
 const useStyles = makeStyles((_theme) => ({
   container: {
     margin: "10px",
+    position: "relative",
+  },
+  divider: {
+    backgroundColor: "#F6F6F4",
+    width: "2px",
+    height: "72vh",
+    marginLeft: "15px",
+    marginRight: "15px",
+  },
+  mainContainer: {
+    marginLeft: "20px",
+    paddingTop: "20px",
+  },
+  voteButton: {
+    height: "80px",
+    width: "51vw",
+    marginTop: "45px",
+    paddingLeft: "23px",
+    borderRadius: "8px",
+    borderStyle: "solid",
+    borderColor: "#74A2CC",
+    borderWidth: "1px",
+    '&:hover': {
+      backgroundColor: "#F2F9FF",
+    }
+  },
+  votedButton: {
+    height: "80px",
+    width: "51vw",
+    marginTop: "45px",
+    paddingLeft: "23px",
+    borderRadius: "8px",
+    borderStyle: "solid",
+    borderColor: "#74A2CC",
+    borderWidth: "1px",
+    backgroundColor: "#F2F9FF"
+  },
+  message: {
+    marginTop: "7vh",
+  },
+  revealText: {
+    marginRight: "20px"
+  },
+  button: {
+    position: "absolute",
+    bottom: 0,
+    marginBottom: "10px",
   }
 }));
 
 export function Voting({ userId, subscription, gameState, currentUserData }: Props) {
-  const statements = gameState.users[gameState.whosTurnIndex].statements;
+  const currentUser = gameState.users[gameState.whosTurnIndex];
+  const statements = currentUser.statements;
   const isMyTurn = userId === gameState.users[gameState.whosTurnIndex].id;
+  const allUsersHaveVoted = gameState.users.filter(u => u.hasVoted).length === (gameState.users.length - 1);
+  const usersVoteWasCorrect = allUsersHaveVoted && !isMyTurn && currentUser.statements.find(s => s.isLie).voters.includes(userId);
+  const numberOfWrongUsers = allUsersHaveVoted && (gameState.users.length - currentUser.statements.find(s => s.isLie).voters.length - 1);
 
   const classes = useStyles();
 
-  const header = isMyTurn ? "Others are guessing which is a lie... 🤔" : "Pick which one you think is a lie 🤔"
-
-  const statementsMarkup = statements.map((statement, index) => {
-    const voteButton = isMyTurn ? null : (
-      <button type="submit" disabled={currentUserData.hasVoted} onClick={() => submitVote(index)}>
-        Vote
-      </button>
-    );
-
-    // PEOPLE WHO VOTED
-    // {gameState.users.reduce((names, user) => {
-    //   if (statement.voters.includes(user.id)) {
-    //     return [...names, user.name];
-    //   }
-    //   return names;
-    // }, [])}
+  const voteButtonsMarkup = statements.map((statement, index) => {
+    const revealTextMarkup = allUsersHaveVoted ? (
+      <Typography
+        variant="h3"
+        style={{color: statement.isLie ? "#BD201C" : "#20BD1C"}}
+        className={classes.revealText}
+      >
+        {statement.isLie ? "Lie" : "Truth"}
+      </Typography>
+    ) : "";
 
     return (
-      <div key={index}>
-
-        <p> {voteButton} {statement.content}</p>
-        <br />
-      </div>
+      <Grid
+        container
+        direction="row"
+        alignItems="center"
+        justify="space-between"
+        className={statement.voters.includes(userId) ? classes.votedButton : classes.voteButton}
+        key={index}
+        onClick={() => submitVote(index)}
+      >
+        <Typography variant="h2">{statement.content}</Typography>
+        {revealTextMarkup}
+      </Grid>
     );
   });
 
-  const scores: PlayerScore[] = [
-    {
-      name: "Nathaniel",
-      score: 2,
-    },
-    {
-      name: "Lulu",
-      score: 3,
-    },
-    {
-      name: "Angie",
-      score: 1,
-    }
-  ]
+  let message = null;
+  let messageColor = "#000000";
+
+  if(currentUserData.hasVoted && !allUsersHaveVoted) {
+    message = "Waiting for other's to vote...";
+  } else if(isMyTurn && allUsersHaveVoted) {
+    const personWord = numberOfWrongUsers === 1 ? "person" : "people";
+    message = `You fooled ${numberOfWrongUsers} ${personWord}, nice work!`;
+  } else if(allUsersHaveVoted && usersVoteWasCorrect) {
+    message = "You got it, good guess!";
+    messageColor = "#20BD1C";
+  } else if(allUsersHaveVoted && !usersVoteWasCorrect) {
+    message = "Incorrect!";
+    messageColor = "#BD201C";
+  }
+
+  const nextTurnButtonMarkup = allUsersHaveVoted && isMyTurn && (
+    <Button className={classes.button} onClick={initiateNextTurn} color="secondary" variant="contained">Next player</Button>
+  );
+
+  const messageMarkup = message && <Grid
+      container
+      alignItems="center"
+      justify="center"
+      className={classes.message}
+    >
+      <Typography variant="h1" style={{color: messageColor}}>{message}</Typography>
+      {nextTurnButtonMarkup}
+    </Grid>;
+
+  const scores: PlayerScore[] = gameState.users.map((user) => {
+    return {
+      name: user.name,
+      score: user.score,
+    };
+  });
+
+  const header = allUsersHaveVoted ?
+    "Results:" : (isMyTurn ?
+    `Other players are guessing your lie` :
+    `Which is ${currentUser.name}'s lie?`);
 
   return (
     <>
@@ -78,17 +160,32 @@ export function Voting({ userId, subscription, gameState, currentUserData }: Pro
           direction="row"
           className={classes.container}
         >
-          <ScoreBoard scores={scores} selectedIndex={0} />
+          <ScoreBoard scores={scores} selectedIndex={gameState.whosTurnIndex} />
+          <Box className={classes.divider} />
+          <Box className={classes.mainContainer}>
+            <Typography variant="h1">{header}</Typography>
+            {voteButtonsMarkup}
+            {messageMarkup}
+          </Box>
         </Grid>
       </ActivityCard>
     </>
   );
 
   function submitVote(voteIndex: number): void {
+    if(!currentUser.hasVoted && !isMyTurn){
+      subscription.send({
+        event: ClientEvent.VOTED,
+        userId,
+        voteIndex,
+      });
+    }
+  }
+
+  function initiateNextTurn(): void {
     subscription.send({
-      event: ClientEvent.VOTED,
+      event: ClientEvent.INITIATED_NEXT_TURN,
       userId,
-      voteIndex,
     });
   }
 }

@@ -19,17 +19,12 @@ class TwoTruthsOneLie::EventHandlers::Voted < EventHandler
     total_votes = statements.sum { |a| a[:voters].count }
     if total_votes == storage[:users].count - 1
       add_points_for_round
-      transition_to_reveal
     end
 
     send_gamestate_to_all(instance)
   end
 
   private
-
-  def transition_to_reveal
-    storage[:status] = TwoTruthsOneLie::Status::REVEAL
-  end
 
   def add_points_for_round
     statements = storage[:users][storage[:whos_turn_index]][:statements]
