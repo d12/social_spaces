@@ -3,7 +3,6 @@ class TwoTruthsOneLie < ActivityInstance
     WAITING_TO_START = :waiting_to_start  # Waiting on players to join and host to start
     BRAINSTORMING = :brainstorming        # Users are entering statements
     VOTING = :voting                      # Users are voting which statement they think is a lie
-    REVEAL = :reveal                      # Transition state between voting rounds, shows which one was a lie, + score
     SUMMARY = :summary                    # End of round summary with scoreboard
   end
 
@@ -51,7 +50,7 @@ class TwoTruthsOneLie < ActivityInstance
 
     {
       status: Status::WAITING_TO_START,
-      leader_index: nil,    # The index of the leader in the users list
+      leader_index: leader_index,    # The index of the leader in the users list
       users: users_array,   # The users in the game
       whos_turn_index: nil, # The current player who's statements are being voted on
       round_count: 1

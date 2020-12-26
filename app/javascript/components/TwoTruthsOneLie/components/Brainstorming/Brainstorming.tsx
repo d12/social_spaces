@@ -122,10 +122,10 @@ export function Brainstorming({ userId, subscription, gameState, currentUserData
   ];
 
   useEffect(() => {
-    const textbox = textboxRefs[step - 1];
+    const textbox = textboxRefs[step - 1] && textboxRefs[step - 1].current;
     if(!textbox) return;
 
-    textbox.current.focus();
+    textbox.focus();
   }, [step]);
 
   function openExamples() {

@@ -11,6 +11,7 @@ export interface Props {
 }
 
 export function Summary({ userId, subscription, gameState }: Props) {
+  console.log(gameState);
   const isLeader = userId === gameState.users[gameState.leaderIndex].id;
 
   const scoresMarkup = gameState.users.map((user, index) => {
