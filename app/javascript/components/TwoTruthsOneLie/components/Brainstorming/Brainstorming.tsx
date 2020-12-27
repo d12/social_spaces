@@ -86,6 +86,12 @@ const useStyles = makeStyles(
       padding: "0!important",
       color: "#069",
       cursor: "pointer",
+    },
+    dialog: {
+    },
+    example: {
+      color: "#000000",
+      marginBottom: "5px",
     }
   })
 );
@@ -264,24 +270,26 @@ export function Brainstorming({ userId, subscription, currentUserData }: Props) 
       <Dialog
         open={examplesOpen}
         onClose={handleCloseExamplesDialog}
+        maxWidth="xs"
+        fullWidth
       >
-      <DialogTitle><strong>Sample Statements</strong></DialogTitle>
+        <DialogTitle>
+          Sample Statements
+        </DialogTitle>
         <DialogContent>
           <Paper elevation={0} />
-          <DialogContentText>
-            <div>I love horror movies</div>
-            <div>I have never been ice skating</div>
-            <div>I am afraid of birds</div>
-            <div>I hate chocolate</div>
-            <div>I’ve never had the chicken pox</div>
-            <div>I own a convertable</div>
-            <div>I can juggle</div>
-            <div>I’ve climbed Mount Everest</div>
-            <div>I can’t drink coffee</div>
-            <div>I’m actually an owl</div>
-          </DialogContentText>
+          <Typography className={classes.example}>I love horror movies</Typography>
+          <Typography className={classes.example}>I have never been ice skating</Typography>
+          <Typography className={classes.example}>I am afraid of birds</Typography>
+          <Typography className={classes.example}>I hate chocolate</Typography>
+          <Typography className={classes.example}>I’ve never had the chicken pox</Typography>
+          <Typography className={classes.example}>I own a convertable</Typography>
+          <Typography className={classes.example}>I can juggle</Typography>
+          <Typography className={classes.example}>I’ve climbed Mount Everest</Typography>
+          <Typography className={classes.example}>I can’t drink coffee</Typography>
+          <Typography className={classes.example}>I’m actually an owl</Typography>
         </DialogContent>
-        <DialogActions>
+        <DialogActions style={{justifyContent: "center", marginTop: "10px"}}>
           <Button onClick={handleCloseExamplesDialog} color="secondary" variant="contained">
             Looks good!
           </Button>
