@@ -2,27 +2,14 @@ import React from "react";
 import { Cable } from "actioncable";
 
 import { ClientEvent } from "../../subscription-manager";
-import { GameState, ActivityUser } from "../../TwoTruthsOneLie";
+import { GameState } from "../../TwoTruthsOneLie";
 import { Group } from "../../../ApplicationRoot"
 
 import {
-  AppBar,
-  Toolbar,
   Typography,
   Button,
-  Container,
-  Link,
-  Drawer,
-  List,
-  ListItem,
-  ListItemText,
-  Divider,
-  ListItemAvatar,
-  Avatar,
   Grid,
   Box,
-  TextField,
-  Paper,
 } from "@material-ui/core";
 
 import { twoTruthsTitleBlob } from "../../../../images"
@@ -60,8 +47,7 @@ const useStyles = makeStyles((_theme) => ({
   },
 }));
 
-export function WaitingToStart({ userId, group, subscription, gameState }: Props) {
-  const isHost = userId === group.hostId;
+export function WaitingToStart({ userId, subscription }: Props) {
   const classes = useStyles(useTheme());
 
   function beginGame(): void {

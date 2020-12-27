@@ -21,7 +21,7 @@ import StatementBox from "./StatementBox";
 import { ClientEvent } from "../../subscription-manager";
 
 import { GameState, ActivityUser } from "../../TwoTruthsOneLie";
-import { makeStyles, useTheme, withStyles } from "@material-ui/core/styles";
+import { makeStyles, useTheme } from "@material-ui/core/styles";
 
 import { arrow } from "../../../../images";
 
@@ -33,7 +33,7 @@ export interface Props {
 }
 
 const useStyles = makeStyles(
-  (theme) => ({
+  () => ({
     header: {
       marginTop: "120px",
       marginBottom: "60px",
@@ -106,7 +106,7 @@ function titleTextForStep(step: number) {
   }
 }
 
-export function Brainstorming({ userId, subscription, gameState, currentUserData }: Props) {
+export function Brainstorming({ userId, subscription, currentUserData }: Props) {
   const classes = useStyles(useTheme());
   const [examplesOpen, setExamplesOpen] = useState<boolean>(false);
   const [step, setStep] = useState<number>(1);

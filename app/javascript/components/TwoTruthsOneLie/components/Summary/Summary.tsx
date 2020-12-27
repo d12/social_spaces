@@ -2,7 +2,7 @@ import React from "react";
 import { Cable } from "actioncable";
 
 import { ClientEvent } from "../../subscription-manager";
-import { GameState, ActivityUser } from "../../TwoTruthsOneLie";
+import { GameState } from "../../TwoTruthsOneLie";
 import { ActivityCard, ScoreBoard, PlayerScore} from "../../../Shared";
 import { makeStyles } from "@material-ui/core/styles";
 
