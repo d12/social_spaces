@@ -41,30 +41,6 @@ const useStyles = makeStyles((_theme) => ({
     marginLeft: "20px",
     paddingTop: "20px",
   },
-  voteButton: {
-    height: "80px",
-    width: "51vw",
-    marginTop: "45px",
-    paddingLeft: "23px",
-    borderRadius: "8px",
-    borderStyle: "solid",
-    borderColor: "#74A2CC",
-    borderWidth: "1px",
-    '&:hover': {
-      backgroundColor: "#F2F9FF",
-    }
-  },
-  votedButton: {
-    height: "80px",
-    width: "51vw",
-    marginTop: "45px",
-    paddingLeft: "23px",
-    borderRadius: "8px",
-    borderStyle: "solid",
-    borderColor: "#74A2CC",
-    borderWidth: "1px",
-    backgroundColor: "#F2F9FF"
-  },
   message: {
     marginTop: "7vh",
   },
@@ -116,7 +92,7 @@ export function Voting({ userId, subscription, gameState, currentUserData }: Pro
   const voteButtonsMarkup = statements.map((statement, index) => {
     const revealTextMarkup = allUsersHaveVoted ? (
       <Typography
-        variant="h4"
+        variant="h3"
         style={{color: statement.isLie ? "#BD201C" : "#20BD1C"}}
         className={classes.revealText}
       >
@@ -135,9 +111,16 @@ export function Voting({ userId, subscription, gameState, currentUserData }: Pro
           selected: classes.voteButtonSelected,
         }}
         style={{ justifyContent: "flex-start", textTransform: "initial" }}
+        disabled={allUsersHaveVoted || isMyTurn}
       >
-        <Typography variant="h3" className={classes.voteButtonText}>{statement.content}</Typography>
-        {revealTextMarkup}
+        <Grid
+          container
+          direction="row"
+          justify="space-between"
+        >
+          <Typography variant="h3" className={classes.voteButtonText}>{statement.content}</Typography>
+          {revealTextMarkup}
+        </Grid>
       </ToggleButton>
     );
   });
@@ -149,7 +132,9 @@ export function Voting({ userId, subscription, gameState, currentUserData }: Pro
     message = "Waiting for other's to vote...";
   } else if(isMyTurn && allUsersHaveVoted) {
     const personWord = numberOfWrongUsers === 1 ? "person" : "people";
-    message = `You fooled ${numberOfWrongUsers} ${personWord}, nice work!`;
+    message = numberOfWrongUsers === 0 ?
+    "Oof, you didn't fool anyone this time!" :
+    `You fooled ${numberOfWrongUsers} ${personWord}!`;
   } else if(allUsersHaveVoted && usersVoteWasCorrect) {
     message = "You got it, good guess!";
     messageColor = "#20BD1C";
@@ -212,7 +197,7 @@ export function Voting({ userId, subscription, gameState, currentUserData }: Pro
   );
 
   function submitVote(voteIndex: number): void {
-    if(isMyTurn)
+    if(isMyTurn || allUsersHaveVoted)
       return;
 
     setVotedIndex(voteIndex);
