@@ -37,6 +37,7 @@ export interface GameState {
   leaderIndex: number;
   whosTurnIndex: number;
   users: ActivityUser[];
+  roundCount: number;
 }
 
 enum ActivityStatus {

@@ -19,7 +19,6 @@ class TwoTruthsOneLie::EventHandlers::InitiatedNextRound < EventHandler
   def clear_user_data
     storage[:users].each do |user|
       user[:statements] = nil
-      user[:score] = 0
     end
   end
 
