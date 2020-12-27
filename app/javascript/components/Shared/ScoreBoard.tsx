@@ -57,7 +57,9 @@ const useStyles = makeStyles((_theme) => ({
     width: "150px",
     textOverflow: "ellipsis",
     whiteSpace: "nowrap",
-    overflow: "hidden"
+    overflow: "hidden",
+    fontSize: "1rem",
+    fontWeight: 600,
   },
   blob: {
     marginRight: "10px",
@@ -105,7 +107,7 @@ export function ScoreBoard({ scores, selectedIndex }: Props) {
           alignItems="center"
         >
           <img src={blobForIndex(index)} className={classes.blob} />
-          <Typography variant="h3" className={classes.name}>{score.name}</Typography>
+          <Typography className={classes.name}>{score.name}</Typography>
         </Grid>
         <Grid
           container

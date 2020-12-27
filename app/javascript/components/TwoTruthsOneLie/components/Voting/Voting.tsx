@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Cable } from "actioncable";
 
 import { ClientEvent } from "../../subscription-manager";
@@ -10,8 +10,13 @@ import {
   Grid,
   Box,
   Typography,
-  Button
+  Button,
 } from "@material-ui/core";
+
+import {
+  ToggleButton,
+  ToggleButtonGroup,
+} from "@material-ui/lab";
 
 export interface Props {
   userId: number;
@@ -70,6 +75,23 @@ const useStyles = makeStyles((_theme) => ({
     position: "absolute",
     bottom: 0,
     marginBottom: "10px",
+  },
+  voteButtonNew: {
+    height: "80px",
+    width: "51vw",
+    marginTop: "45px !important",
+    paddingLeft: "23px",
+    borderRadius: "8px !important",
+    border: "1px solid #74A2CC !important",
+    '&:hover': {
+      backgroundColor: "#F2F9FF"
+    }
+  },
+  voteButtonText: {
+    color: "#000000",
+  },
+  voteButtonSelected: {
+    backgroundColor: "#F2F9FF !important",
   }
 }));
 
@@ -78,15 +100,23 @@ export function Voting({ userId, subscription, gameState, currentUserData }: Pro
   const statements = currentUser.statements;
   const isMyTurn = userId === gameState.users[gameState.whosTurnIndex].id;
   const allUsersHaveVoted = gameState.users.filter(u => u.hasVoted).length === (gameState.users.length - 1);
+  const userVotedStatementIndex = currentUser.statements.findIndex(s => s.voters.includes(userId));
   const usersVoteWasCorrect = allUsersHaveVoted && !isMyTurn && currentUser.statements.find(s => s.isLie).voters.includes(userId);
   const numberOfWrongUsers = allUsersHaveVoted && (gameState.users.length - currentUser.statements.find(s => s.isLie).voters.length - 1);
 
   const classes = useStyles();
 
+  const [votedIndex, setVotedIndex] = useState<number>(null);
+
+  useEffect(() => {
+    if(userVotedStatementIndex !== votedIndex)
+      setVotedIndex(userVotedStatementIndex);
+  }, [gameState]);
+
   const voteButtonsMarkup = statements.map((statement, index) => {
     const revealTextMarkup = allUsersHaveVoted ? (
       <Typography
-        variant="h3"
+        variant="h4"
         style={{color: statement.isLie ? "#BD201C" : "#20BD1C"}}
         className={classes.revealText}
       >
@@ -95,18 +125,20 @@ export function Voting({ userId, subscription, gameState, currentUserData }: Pro
     ) : "";
 
     return (
-      <Grid
-        container
-        direction="row"
-        alignItems="center"
-        justify="space-between"
-        className={statement.voters.includes(userId) ? classes.votedButton : classes.voteButton}
+      <ToggleButton
+        className={classes.voteButtonNew}
         key={index}
+        color="primary"
+        value={index}
         onClick={() => submitVote(index)}
+        classes={{
+          selected: classes.voteButtonSelected,
+        }}
+        style={{ justifyContent: "flex-start", textTransform: "initial" }}
       >
-        <Typography variant="h2">{statement.content}</Typography>
+        <Typography variant="h3" className={classes.voteButtonText}>{statement.content}</Typography>
         {revealTextMarkup}
-      </Grid>
+      </ToggleButton>
     );
   });
 
@@ -136,7 +168,7 @@ export function Voting({ userId, subscription, gameState, currentUserData }: Pro
       justify="center"
       className={classes.message}
     >
-      <Typography variant="h1" style={{color: messageColor}}>{message}</Typography>
+      <Typography variant="h2" style={{color: messageColor}}>{message}</Typography>
       {nextTurnButtonMarkup}
     </Grid>;
 
@@ -163,8 +195,15 @@ export function Voting({ userId, subscription, gameState, currentUserData }: Pro
           <ScoreBoard scores={scores} selectedIndex={gameState.whosTurnIndex} />
           <Box className={classes.divider} />
           <Box className={classes.mainContainer}>
-            <Typography variant="h1">{header}</Typography>
-            {voteButtonsMarkup}
+            <Typography variant="h2">{header}</Typography>
+            <ToggleButtonGroup
+              orientation="vertical"
+              exclusive
+              value={votedIndex}
+            >
+              {voteButtonsMarkup}
+            </ToggleButtonGroup>
+
             {messageMarkup}
           </Box>
         </Grid>
@@ -173,13 +212,16 @@ export function Voting({ userId, subscription, gameState, currentUserData }: Pro
   );
 
   function submitVote(voteIndex: number): void {
-    if(!currentUser.hasVoted && !isMyTurn){
-      subscription.send({
-        event: ClientEvent.VOTED,
-        userId,
-        voteIndex,
-      });
-    }
+    if(isMyTurn)
+      return;
+
+    setVotedIndex(voteIndex);
+
+    subscription.send({
+      event: ClientEvent.VOTED,
+      userId,
+      voteIndex,
+    });
   }
 
   function initiateNextTurn(): void {

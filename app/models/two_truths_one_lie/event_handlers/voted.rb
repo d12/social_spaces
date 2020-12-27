@@ -11,7 +11,9 @@ class TwoTruthsOneLie::EventHandlers::Voted < EventHandler
     statements = storage[:users][storage[:whos_turn_index]][:statements]
     voted_statement = statements[vote_index]
 
-    return if instance.user_by_id(user_id)[:has_voted]
+    if instance.user_by_id(user_id)[:has_voted]
+      statements.map{ |s| s[:voters].delete(user_id) } # Remove users former vote
+    end
 
     voted_statement[:voters] << user_id
     instance.user_by_id(user_id)[:has_voted] = true
@@ -38,6 +40,10 @@ class TwoTruthsOneLie::EventHandlers::Voted < EventHandler
         instance.user_by_id(voter_id)[:score] += 5
       end
     end
+  end
+
+  def remove_users_previous_vote
+
   end
 
   def storage
