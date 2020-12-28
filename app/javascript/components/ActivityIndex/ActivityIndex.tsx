@@ -84,8 +84,6 @@ export default function ActivityIndex({
   user,
   activities,
   setGroupCallback,
-  alertToast,
-  noticeToast,
 }: Props) {
   const classes = useStyles();
 

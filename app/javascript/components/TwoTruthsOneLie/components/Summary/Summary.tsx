@@ -75,7 +75,7 @@ export function Summary({ userId, subscription, gameState }: Props) {
 
   return (
     <>
-      <ActivityCard tall>
+      <ActivityCard size="lg">
         <Grid
           container
           direction="row"

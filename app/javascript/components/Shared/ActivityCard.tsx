@@ -14,12 +14,17 @@ const useStyles = makeStyles((_theme) => ({
     height: "100%",
     minHeight: "100%",
   },
-  backgroundCard: {
+  backgroundCardSm: {
     width: "75vw",
     height: "60vh",
     borderRadius: "10px",
   },
-  backgroundCardTall: {
+  backgroundCardMd: {
+    width: "75vw",
+    height: "70vh",
+    borderRadius: "10px",
+  },
+  backgroundCardLg: {
     width: "75vw",
     height: "78vh",
     borderRadius: "10px",
@@ -27,12 +32,21 @@ const useStyles = makeStyles((_theme) => ({
 }));
 
 interface Props {
-  tall?: Boolean;
+  size?: "sm" | "md" | "lg";
   children?: React.ReactNode;
 }
 
-export function ActivityCard({ children, tall }: Props) {
+export function ActivityCard({ children, size }: Props) {
   const classes = useStyles();
+
+  if(!size)
+    size = "sm";
+
+  const sizeToClassMap = {
+    "sm": classes.backgroundCardSm,
+    "md": classes.backgroundCardMd,
+    "lg": classes.backgroundCardLg,
+  }
 
   return (
     <Grid
@@ -42,7 +56,7 @@ export function ActivityCard({ children, tall }: Props) {
       alignItems="center"
       className={classes.cardContainer}
     >
-      <Card variant="outlined" className={tall ? classes.backgroundCardTall : classes.backgroundCard}>
+      <Card variant="outlined" className={sizeToClassMap[size]}>
         <CardContent>
           <Grid
             container

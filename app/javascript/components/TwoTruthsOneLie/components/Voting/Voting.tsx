@@ -171,7 +171,7 @@ export function Voting({ userId, subscription, gameState, currentUserData }: Pro
 
   return (
     <>
-      <ActivityCard tall>
+      <ActivityCard size="lg">
         <Grid
           container
           direction="row"
