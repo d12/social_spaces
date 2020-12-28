@@ -80,18 +80,7 @@ export default function DrawIt({
   const [activitySubscription, setActivitySubscription] = useState<Cable>();
   const [userSubscription, setUserSubscription] = useState<Cable>();
   const events = useRef<Array<Event>>([]);
-  const [messages, setMessages] = useState<Array<ChatMessage>>([{
-    author: "Nathaniel",
-    content: "spaghetti",
-  },
-  {
-    author: "Lulu",
-    content: "oatmeal",
-  },
-  {
-    author: "Nathaniel",
-    content: "Really really long message which is definitely not the correct answer but I figure I'd give it a go anyways just in case"
-  }]);
+  const [messages, setMessages] = useState<Array<ChatMessage>>([]);
 
   useEffect(() => {
     setActivitySubscription(
