@@ -36,13 +36,9 @@ export enum StrokeType {
   FILL = 2,
 }
 
-export enum StrokeColor {
-  BLACK = 0,
-}
-
 export interface DrawEvent {
   strokeType: StrokeType;
-  strokeColor: StrokeColor;
+  strokeColor: number;
   strokeWidth: number;
   x1: number;
   y1: number;
@@ -57,6 +53,11 @@ enum ActivityStatus {
 export interface Event {
   type: string; // Make this "draw" | "erase"
   data?: any;
+}
+
+export interface ChatMessage {
+  author: string;
+  content: string;
 }
 
 function deserializeDrawEvent(input: Array<number>) : DrawEvent {
@@ -79,6 +80,18 @@ export default function DrawIt({
   const [activitySubscription, setActivitySubscription] = useState<Cable>();
   const [userSubscription, setUserSubscription] = useState<Cable>();
   const events = useRef<Array<Event>>([]);
+  const [messages, setMessages] = useState<Array<ChatMessage>>([{
+    author: "Nathaniel",
+    content: "spaghetti",
+  },
+  {
+    author: "Lulu",
+    content: "oatmeal",
+  },
+  {
+    author: "Nathaniel",
+    content: "Really really long message which is definitely not the correct answer but I figure I'd give it a go anyways just in case"
+  }]);
 
   useEffect(() => {
     setActivitySubscription(
@@ -129,6 +142,6 @@ export default function DrawIt({
 
   switch (gameState.status) {
     case ActivityStatus.DRAWING:
-      return <Drawing user={user} subscription={activitySubscription} gameState={gameState} events={events} />;
+      return <Drawing user={user} subscription={activitySubscription} gameState={gameState} events={events} messages={messages}/>;
   }
 }

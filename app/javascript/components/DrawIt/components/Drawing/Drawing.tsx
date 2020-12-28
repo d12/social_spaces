@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Cable } from "actioncable";
 
 import { User } from "../../../ApplicationRoot";
-import { GameState, DrawEvent, StrokeType, StrokeColor, Event } from "../../DrawIt";
+import { GameState, DrawEvent, StrokeType, Event, ChatMessage } from "../../DrawIt";
 import { makeStyles, useTheme, withStyles } from "@material-ui/core/styles";
 
 import { ScoreBoard, PlayerScore } from "../../../Shared";
@@ -21,9 +21,10 @@ export interface Props {
   subscription: Cable;
   gameState: GameState;
   events: React.MutableRefObject<Array<Event>>;
+  messages: Array<ChatMessage>;
 }
 
-const canvasWidth = 400;
+const canvasWidth = 800;
 const canvasHeight = 600;
 
 const useStyles = makeStyles(
@@ -116,6 +117,16 @@ const useStyles = makeStyles(
     },
     colorsContainer: {
       width: canvasWidth / 3,
+      height: "50%"
+    },
+    message: {
+      margin: "5px",
+      marginTop: "2px",
+    },
+    messageAuthor: {
+      fontWeight: 800,
+      fontSize: "18px",
+      marginRight: "3px",
     }
   })
 );
@@ -129,16 +140,25 @@ const CustomTextField = withStyles({
       '& fieldset': {
         borderTopLeftRadius: 0,
         borderTopRightRadius: 0,
+        borderLeft: 0,
+        borderRight: 0,
+        borderBottom: 0,
         borderColor: '#C4C4C4',
       },
       '&:hover fieldset': {
         borderTopLeftRadius: 0,
         borderTopRightRadius: 0,
+        borderLeft: 0,
+        borderRight: 0,
+        borderBottom: 0,
         borderColor: '#C4C4C4',
       },
       '&.Mui-focused fieldset': {
         borderTopLeftRadius: 0,
         borderTopRightRadius: 0,
+        borderLeft: 0,
+        borderRight: 0,
+        borderBottom: 0,
         borderWidth: "1px",
         borderColor: '#C4C4C4',
       },
@@ -190,7 +210,7 @@ function serializeDrawEvent(event: DrawEvent): Array<number> {
   ];
 }
 
-export default function Drawing({ user, subscription, gameState, events }: Props) {
+export default function Drawing({ user, subscription, gameState, events, messages }: Props) {
   const classes = useStyles(useTheme());
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -222,7 +242,6 @@ export default function Drawing({ user, subscription, gameState, events }: Props
     "#27AE60",
     "#6FCF97",
     "#9B51E0",
-    "#BB6BD9",
   ]
 
   function submitIfEnter(e: { keyCode: number; }) {
@@ -431,6 +450,7 @@ export default function Drawing({ user, subscription, gameState, events }: Props
     return (<Grid
       container
       className={classes.controls}
+      alignItems="center"
     >
       <Grid container direction="row" className={classes.colorsContainer} >
         {colorsMarkup}
@@ -465,6 +485,15 @@ export default function Drawing({ user, subscription, gameState, events }: Props
       score: 0,
     },
   ];
+
+  const messagesMarkup = messages.map((message) => {
+    return (<>
+      <Box className={classes.message}>
+        <Typography className={classes.messageAuthor} display="inline">{message.author}: </Typography>
+        <Typography display="inline" style={{color: "#444444"}}>{message.content}</Typography>
+      </Box>
+    </>);
+  });
 
   return (
     <>
@@ -540,9 +569,13 @@ export default function Drawing({ user, subscription, gameState, events }: Props
                 direction="column"
                 className={classes.chatBoxContainer}
               >
-                <Box className={classes.chatBoxMessagesContainer}>
-                  Hello
-                </Box>
+                <Grid
+                  container
+                  direction="column-reverse"
+                  className={classes.chatBoxMessagesContainer}
+                >
+                  {messagesMarkup}
+                </Grid>
                 <Box className={classes.textFieldContainer}>
                 <CustomTextField
                   placeholder="Type guesses here"
