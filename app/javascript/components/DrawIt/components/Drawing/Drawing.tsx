@@ -20,11 +20,10 @@ export interface Props {
   user: User;
   subscription: Cable;
   gameState: GameState;
-  events: Array<Event>;
-  setEvents: React.Dispatch<React.SetStateAction<Array<Event>>>;
+  events: React.MutableRefObject<Array<Event>>;
 }
 
-const canvasWidth = 600;
+const canvasWidth = 400;
 const canvasHeight = 600;
 
 const useStyles = makeStyles(
@@ -191,7 +190,7 @@ function serializeDrawEvent(event: DrawEvent): Array<number> {
   ];
 }
 
-export default function Drawing({ user, subscription, gameState, events, setEvents }: Props) {
+export default function Drawing({ user, subscription, gameState, events }: Props) {
   const classes = useStyles(useTheme());
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -237,7 +236,7 @@ export default function Drawing({ user, subscription, gameState, events, setEven
   }
 
   function addEvent(event: Event){
-    setEvents(e => [...e, event]);
+    events.current =  [...events.current, event];
   }
 
   const eventsToSend = useRef<Array<Event>>([]);
@@ -349,7 +348,7 @@ export default function Drawing({ user, subscription, gameState, events, setEven
 
   // Draw events
   useEffect(() => {
-    events.slice(processIndexPtr.current, events.length).forEach((e: Event) => {
+    events.current.slice(processIndexPtr.current, events.current.length).forEach((e: Event) => {
       switch(e.type) {
         case "draw":
           const drawEvent: DrawEvent = e.data;
@@ -365,8 +364,8 @@ export default function Drawing({ user, subscription, gameState, events, setEven
       }
     });
 
-    processIndexPtr.current = events.length;
-  }, [events]);
+    processIndexPtr.current = events.current.length;
+  }, [events.current]);
 
   // Send events
   useEffect(() => {
