@@ -12,7 +12,7 @@ import TwoTruthsOneLie from "../TwoTruthsOneLie";
 import DrawIt from "../DrawIt";
 
 import { Theme, ThemeProvider } from "@material-ui/core/styles";
-import { plainTheme, orangeTheme } from "../../theme";
+import { plainTheme, twoTruthsOneLieTheme, drawItTheme } from "../../theme";
 
 export interface User {
   id: number;
@@ -78,10 +78,10 @@ export default function ApplicationRoot(props: Props) {
       return withAppFrame(<Clicker user={user} group={group} />);
 
     case "TwoTruthsOneLie":
-      return withAppFrame(<TwoTruthsOneLie user={user} group={group}/>, orangeTheme);
+      return withAppFrame(<TwoTruthsOneLie user={user} group={group}/>, twoTruthsOneLieTheme);
 
     case "DrawIt":
-      return withAppFrame(<DrawIt user={user} group={group} />);
+      return withAppFrame(<DrawIt user={user} group={group} />, drawItTheme);
 
     default:
       return `No activity markup for ${name}`;

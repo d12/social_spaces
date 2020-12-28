@@ -28,7 +28,7 @@ function blobForIndex(index: number) {
 
 const useStyles = makeStyles((_theme) => ({
   container: {
-    height: "72vh",
+    height: "100%",
     overflowY: "auto",
     width: "250px",
   },
