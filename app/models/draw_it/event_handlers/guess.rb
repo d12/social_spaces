@@ -22,9 +22,25 @@ class DrawIt::EventHandlers::Guess < EventHandler
         authorId: data["user_id"]
       })
     end
+
+    if(storage[:users].count{ |u| u[:has_guessed_current_word] } == storage[:users].count - 1)
+      next_turn
+    end
+
+    send_gamestate_to_all(instance)
   end
 
   private
+
+  def next_turn
+    storage[:drawing_user_index] = (storage[:drawing_user_index] + 1) % storage[:users].count
+    if(storage[:drawing_user_index] == 0)
+      storage[:round_number] += 1
+    end
+
+    storage[:words_to_choose] = DrawIt::WORDS.sample(3)
+    storage[:given_letters] = storage[:chosen_word]
+  end
 
   def storage
     instance.storage
