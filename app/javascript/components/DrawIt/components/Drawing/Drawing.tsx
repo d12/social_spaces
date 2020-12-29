@@ -231,6 +231,7 @@ export default function Drawing({ user, subscription, gameState, events, message
   const [guess, setGuess] = useState<string>("");
 
   const isDrawer = gameState.users[gameState.drawingUserIndex].id == user.id;
+  const currentUser = gameState.users.find(u => u.id == user.id);
 
   // What index have we drawn up to
   const processIndexPtr = useRef<number>(0);
@@ -548,6 +549,10 @@ export default function Drawing({ user, subscription, gameState, events, message
     }
   });
 
+  const textboxText = isDrawer ? "You can't guess, you're drawing!"
+    : (currentUser.hasGuessedCurrentWord ? "You got it! Waiting for others..."
+      : "Type guesses here");
+
   return (
     <>
       <Grid
@@ -622,7 +627,7 @@ export default function Drawing({ user, subscription, gameState, events, message
                 </Grid>
                 <Box className={classes.textFieldContainer}>
                 <CustomTextField
-                  placeholder="Type guesses here"
+                  placeholder={textboxText}
                   variant="outlined"
                   autoComplete="off"
                   inputRef={textFieldRef}
@@ -631,6 +636,7 @@ export default function Drawing({ user, subscription, gameState, events, message
                   onKeyDown={sendMessageIfEnter}
                   fullWidth={true}
                   autoFocus
+                  disabled={currentUser.hasGuessedCurrentWord}
                 />
                 </Box>
               </Grid>

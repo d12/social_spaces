@@ -6,8 +6,10 @@ class DrawIt::EventHandlers::Guess < EventHandler
   end
 
   def call(data)
+    user = storage[:users].find{|u| u[:id] == data["user_id"]}
+    return if user[:has_guessed_current_word]
+
     if(data["message"].downcase == storage[:chosen_word])
-      user = storage[:users].find{|u| u[:id] == data["user_id"]}
       user[:has_guessed_current_word] = true
 
       send_websocket_message(instance, {

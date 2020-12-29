@@ -126,7 +126,6 @@ export default function DrawIt({
         { channel: "UserChannel", user_id: user.id },
         {
           received: (message: Message) => {
-            console.log(message);
             if(message.drawEvents && message.authorId !== user.id){
               events.current = [...events.current, ...message.drawEvents.map(e => {
                 return {type: "draw", data: deserializeDrawEvent(e)}
