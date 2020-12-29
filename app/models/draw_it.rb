@@ -41,7 +41,14 @@ class DrawIt < ActivityInstance
   end
 
   def client_data
-    storage.slice(:users, :status, :drawing_user_index, :words_to_choose).deep_transform_keys{ |k| k.camelcase(:lower) }
+    storage.slice(
+      :users,
+      :status,
+      :drawing_user_index,
+      :words_to_choose,
+      :given_letters,
+      :round_number
+    ).deep_transform_keys{ |k| k.camelcase(:lower) }
   end
 
   # The initial value to use for a instances save state
@@ -59,6 +66,8 @@ class DrawIt < ActivityInstance
       chosen_word: nil,
       drawing_user_index: 0,
       users: users_array,
+      given_letters: nil,
+      round_number: 1,
     }
   end
 end

@@ -534,6 +534,16 @@ export default function Drawing({ user, subscription, gameState, events, message
 
   const canvasOverlayElement = selectAWordMarkupDrawer || selectAWordMarkupOther;
 
+  const lettersMarkup = gameState.givenLetters && gameState.givenLetters.split("").map((letter) => {
+    if(letter === "_"){
+      return <Box className={classes.letterUnfilled} />
+    } else {
+      return <Box className={classes.letterFilled}>
+        <Typography variant="h3">{letter}</Typography>
+      </Box>;
+    }
+  });
+
   return (
     <>
       <Grid
@@ -554,26 +564,13 @@ export default function Drawing({ user, subscription, gameState, events, message
               <Box className={classes.timerContainer}>
                 <Typography variant="h3">1:01</Typography>
               </Box>
-              <Typography variant="h3" style={{ marginLeft: "25px" }}>Round 1 of 3</Typography>
+              <Typography variant="h3" style={{ marginLeft: "25px" }}>Round {gameState.roundNumber} of 3</Typography>
               <Grid
                 container
                 className={classes.lettersContainer}
                 justify="center"
               >
-                <Box className={classes.letterFilled}>
-                  <Typography variant="h3">P</Typography>
-                </Box>
-                <Box className={classes.letterFilled}>
-                  <Typography variant="h3">E</Typography>
-                </Box>
-                <Box className={classes.letterUnfilled}>
-                </Box>
-                <Box className={classes.letterFilled}>
-                  <Typography variant="h3">I</Typography>
-                </Box>
-                <Box className={classes.letterFilled}>
-                  <Typography variant="h3">S</Typography>
-                </Box>
+                {lettersMarkup}
               </Grid>
             </Grid>
           </CardContent>

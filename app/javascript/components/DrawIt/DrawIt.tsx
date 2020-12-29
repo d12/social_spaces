@@ -30,6 +30,8 @@ export interface GameState {
   users: Array<ActivityUser>;
   drawingUserIndex: number;
   wordsToChoose: string;
+  givenLetters: string;
+  roundNumber: number;
 }
 
 export enum StrokeType {
