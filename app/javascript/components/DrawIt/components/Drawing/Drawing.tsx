@@ -14,6 +14,7 @@ import {
   CardContent,
   Typography,
   TextField,
+  Button,
 } from "@material-ui/core";
 
 export interface Props {
@@ -127,6 +128,16 @@ const useStyles = makeStyles(
       fontWeight: 800,
       fontSize: "18px",
       marginRight: "3px",
+    },
+    canvasWrapper: {
+    },
+    canvasTextContainer: {
+      top:0,
+      position: "absolute",
+      height: "100%",
+      width: "100%",
+      paddingLeft: "25%",
+      paddingRight: "25%",
     }
   })
 );
@@ -244,9 +255,16 @@ export default function Drawing({ user, subscription, gameState, events, message
     "#9B51E0",
   ]
 
-  function submitIfEnter(e: { keyCode: number; }) {
+  function sendMessageIfEnter(e: { keyCode: number; }) {
     if (e.keyCode === 13) {
-      console.log(guess);
+      subscription.send({
+        event: "guess",
+        userId: user.id,
+        userName: user.name,
+        message: guess,
+      });
+
+      setGuess("");
     }
   }
 
@@ -265,6 +283,14 @@ export default function Drawing({ user, subscription, gameState, events, message
 
     addEvent(event);
     eventsToSend.current = [...eventsToSend.current, event];
+  }
+
+  function selectedWord(index: number): void {
+    subscription.send({
+      event: "select_word",
+      userId: user.id,
+      wordIndex: index,
+    });
   }
 
   const penRef = useRef<PenState>({
@@ -459,41 +485,54 @@ export default function Drawing({ user, subscription, gameState, events, message
     </Grid>);
   }
 
-  const scores: PlayerScore[] = [
-    {
-      name: "Nathaniel",
-      score: 2,
-    },
-    {
-      name: "Lulu",
-      score: 5,
-    },
-    {
-      name: "Angie",
-      score: 9,
-    },
-    {
-      name: "Fergie",
-      score: 1,
-    },
-    {
-      name: "Sabera",
+  const scores: PlayerScore[] = gameState.users.map((user) => {
+    return {
+      name: user.name,
       score: 0,
-    },
-    {
-      name: "Andrei",
-      score: 0,
-    },
-  ];
-
-  const messagesMarkup = messages.map((message) => {
-    return (<>
-      <Box className={classes.message}>
-        <Typography className={classes.messageAuthor} display="inline">{message.author}: </Typography>
-        <Typography display="inline" style={{color: "#444444"}}>{message.content}</Typography>
-      </Box>
-    </>);
+    };
   });
+
+  const messagesMarkup = messages.map((message, index) => {
+    return (<Box className={classes.message} key={index}>
+      <Typography className={classes.messageAuthor} display="inline">{message.author}: </Typography>
+      <Typography display="inline" style={{color: "#444444"}}>{message.content}</Typography>
+    </Box>);
+  });
+
+  console.log(gameState);
+
+  const selectAWordMarkupDrawer = isDrawer && gameState.status === "choosing" && <Grid
+    container
+    className={classes.canvasTextContainer}
+    direction="column"
+    justify="center"
+    alignItems="center"
+  >
+    <Typography variant="h3">Pick a word</Typography>
+    <Grid
+      container
+      direction="row"
+      justify="space-around"
+      alignItems="center"
+      style={{marginTop: "50px"}}
+    >
+      <Button variant="outlined" color="secondary" onClick={() => selectedWord(0)}>{gameState.wordsToChoose[0]}</Button>
+      <Button variant="outlined" color="secondary" onClick={() => selectedWord(1)}>{gameState.wordsToChoose[1]}</Button>
+      <Button variant="outlined" color="secondary" onClick={() => selectedWord(2)}>{gameState.wordsToChoose[2]}</Button>
+    </Grid>
+  </Grid>;
+
+  const selectAWordMarkupOther = !isDrawer && gameState.status === "choosing" && <Grid
+    container
+    className={classes.canvasTextContainer}
+    direction="column"
+    justify="center"
+    alignItems="center"
+  >
+    <Typography variant="h3">{gameState.users[gameState.drawingUserIndex].name} is choosing a word...</Typography>
+  </Grid>;
+
+  const canvasOverlayElement = selectAWordMarkupDrawer || selectAWordMarkupOther;
 
   return (
     <>
@@ -548,19 +587,22 @@ export default function Drawing({ user, subscription, gameState, events, message
               style={{ height: "100%" }}
               wrap="nowrap"
             >
-              <ScoreBoard scores={scores} selectedIndex={0} />
+              <ScoreBoard scores={scores} selectedIndex={gameState.drawingUserIndex} />
               <Grid
                 container
                 direction="column"
                 style={{ width: "auto" }}
                 wrap="nowrap"
               >
-                <canvas
-                  ref={canvasRef}
-                  className={classes.canvas}
-                  height={canvasHeight}
-                  width={canvasWidth}
-                />
+                <div className={classes.canvasWrapper} style={{position: canvasOverlayElement ? "relative" : "static"}}>
+                  <canvas
+                    ref={canvasRef}
+                    className={classes.canvas}
+                    height={canvasHeight}
+                    width={canvasWidth}
+                  />
+                  {canvasOverlayElement}
+                </div>
 
                 {controlsMarkup()}
               </Grid>
@@ -571,7 +613,8 @@ export default function Drawing({ user, subscription, gameState, events, message
               >
                 <Grid
                   container
-                  direction="column-reverse"
+                  direction="column"
+                  justify="flex-end"
                   className={classes.chatBoxMessagesContainer}
                 >
                   {messagesMarkup}
@@ -584,7 +627,7 @@ export default function Drawing({ user, subscription, gameState, events, message
                   inputRef={textFieldRef}
                   value={guess}
                   onChange={(e) => setGuess(e.target.value)}
-                  onKeyDown={submitIfEnter}
+                  onKeyDown={sendMessageIfEnter}
                   fullWidth={true}
                   autoFocus
                 />

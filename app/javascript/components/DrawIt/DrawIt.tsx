@@ -17,6 +17,7 @@ interface Message {
   drawEvents: Array<Array<number>>;
   authorId?: number;
   erase?: boolean;
+  chatMessage?: ChatMessage;
 }
 
 interface ActivityUser {
@@ -28,6 +29,7 @@ export interface GameState {
   status: ActivityStatus;
   users: Array<ActivityUser>;
   drawingUserIndex: number;
+  wordsToChoose: string;
 }
 
 export enum StrokeType {
@@ -48,6 +50,7 @@ export interface DrawEvent {
 
 enum ActivityStatus {
   DRAWING = "drawing",
+  CHOOSING = "choosing",
 }
 
 export interface Event {
@@ -92,6 +95,10 @@ export default function DrawIt({
               setGameState(message.gameState);
             }
 
+            if(message.chatMessage){
+              setMessages(messages => [...messages, message.chatMessage]);
+            }
+
             if(message.authorId == user.id)
               return;
 
@@ -114,6 +121,7 @@ export default function DrawIt({
         { channel: "UserChannel", user_id: user.id },
         {
           received: (message: Message) => {
+            console.log(message);
             if(message.drawEvents && message.authorId !== user.id){
               events.current = [...events.current, ...message.drawEvents.map(e => {
                 return {type: "draw", data: deserializeDrawEvent(e)}
@@ -129,8 +137,5 @@ export default function DrawIt({
     return <p>Loading...</p>;
   }
 
-  switch (gameState.status) {
-    case ActivityStatus.DRAWING:
-      return <Drawing user={user} subscription={activitySubscription} gameState={gameState} events={events} messages={messages}/>;
-  }
+  return <Drawing user={user} subscription={activitySubscription} gameState={gameState} events={events} messages={messages}/>
 }
