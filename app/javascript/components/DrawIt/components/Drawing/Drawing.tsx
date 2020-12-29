@@ -488,18 +488,22 @@ export default function Drawing({ user, subscription, gameState, events, message
   const scores: PlayerScore[] = gameState.users.map((user) => {
     return {
       name: user.name,
-      score: 0,
+      score: user.score,
     };
   });
 
   const messagesMarkup = messages.map((message, index) => {
-    return (<Box className={classes.message} key={index}>
-      <Typography className={classes.messageAuthor} display="inline">{message.author}: </Typography>
-      <Typography display="inline" style={{color: "#444444"}}>{message.content}</Typography>
-    </Box>);
+    if(message.correct) {
+      return (<Box className={classes.message} key={index}>
+        <Typography display="inline" style={{color: "#24C024"}}>{message.content}</Typography>
+      </Box>);
+    } else {
+      return (<Box className={classes.message} key={index}>
+        <Typography className={classes.messageAuthor} display="inline">{message.author}: </Typography>
+        <Typography display="inline" style={{color: "#444444"}}>{message.content}</Typography>
+      </Box>);
+    }
   });
-
-  console.log(gameState);
 
   const selectAWordMarkupDrawer = isDrawer && gameState.status === "choosing" && <Grid
     container
@@ -534,11 +538,11 @@ export default function Drawing({ user, subscription, gameState, events, message
 
   const canvasOverlayElement = selectAWordMarkupDrawer || selectAWordMarkupOther;
 
-  const lettersMarkup = gameState.givenLetters && gameState.givenLetters.split("").map((letter) => {
+  const lettersMarkup = gameState.givenLetters && gameState.givenLetters.split("").map((letter, index) => {
     if(letter === "_"){
-      return <Box className={classes.letterUnfilled} />
+      return <Box key={index} className={classes.letterUnfilled} />
     } else {
-      return <Box className={classes.letterFilled}>
+      return <Box key={index} className={classes.letterFilled}>
         <Typography variant="h3">{letter}</Typography>
       </Box>;
     }

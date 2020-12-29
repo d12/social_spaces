@@ -56,7 +56,9 @@ class DrawIt < ActivityInstance
     users_array = users.map do |user|
       {
         id: user.id,
-        name: user.name
+        name: user.name,
+        score: 0,
+        has_guessed_current_word: false,
       }
     end
 

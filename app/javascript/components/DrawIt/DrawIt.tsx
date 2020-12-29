@@ -23,6 +23,8 @@ interface Message {
 interface ActivityUser {
   id: number;
   name: string;
+  score: number;
+  hasGuessedCurrentWord: boolean;
 }
 
 export interface GameState {
@@ -63,6 +65,7 @@ export interface Event {
 export interface ChatMessage {
   author: string;
   content: string;
+  correct: boolean;
 }
 
 function deserializeDrawEvent(input: Array<number>) : DrawEvent {
