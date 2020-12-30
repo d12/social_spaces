@@ -137,7 +137,7 @@ export default function DrawIt({
     );
   }, []);
 
-  if (!activitySubscription || !gameState) {
+  if (!activitySubscription || !gameState || !gameState.users.find(u => u.id == user.id)) {
     return <p>Loading...</p>;
   }
 

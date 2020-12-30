@@ -1,6 +1,7 @@
 class DrawIt < ActivityInstance
   register_event "draw", DrawIt::EventHandlers::Draw
   register_event "user_joined", DrawIt::EventHandlers::UserJoined
+  register_event "user_disconnected", DrawIt::EventHandlers::UserDisconnected
   register_event "erase", DrawIt::EventHandlers::Erase
   register_event "select_word", DrawIt::EventHandlers::SelectWord
   register_event "guess", DrawIt::EventHandlers::Guess

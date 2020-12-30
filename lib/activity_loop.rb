@@ -13,8 +13,6 @@ class ActivityLoop
     @id = @instance.id
   end
 
-  # TODO: Handle exceptions.
-  # If we have an exception in `tick`, the whole activity loop is killed and the game is stuck.
   def run
     loop do
       terminate_thread if activity_finished?
@@ -24,7 +22,11 @@ class ActivityLoop
 
       remove_disconnected_users
 
-      @instance.tick
+      begin
+        @instance.tick
+      rescue StandardError => e
+        puts e
+      end
 
       difference = next_cycle_time - Time.now
       if difference > 0

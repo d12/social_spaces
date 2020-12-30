@@ -6,7 +6,9 @@ class DrawIt::EventHandlers::UserJoined < EventHandler
   end
 
   def call(data)
-    user = User.find(data[:user_id]
+    user = User.find(data[:user_id])
+
+    return if storage[:users].find{|a| a[:id] == data[:user_id]}
 
     storage[:users].push({
       id: user.id,
