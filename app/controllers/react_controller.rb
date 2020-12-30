@@ -18,6 +18,10 @@ class ReactController < ApplicationController
     set_context
   end
 
+  def test
+    set_context
+  end
+
   private
 
   def group_key

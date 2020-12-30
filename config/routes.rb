@@ -8,6 +8,8 @@ Rails.application.routes.draw do
 
   delete "/logout", to: "sessions#destroy"
 
+  get "/test", to: "react#test", as: "test"
+
   namespace :api do
     get "/groups/:key", to: "groups#show"
     post "/groups/create", to: "groups#create"
