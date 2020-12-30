@@ -7,6 +7,8 @@ import { makeStyles, useTheme, withStyles } from "@material-ui/core/styles";
 
 import { ScoreBoard, PlayerScore } from "../../../Shared";
 
+import { CSSTransition, SwitchTransition } from 'react-transition-group';
+
 import {
   Box,
   Grid,
@@ -27,6 +29,8 @@ export interface Props {
 
 const canvasWidth = 800;
 const canvasHeight = 600;
+
+const canvasOverlayAnimationLength = 1000;
 
 const useStyles = makeStyles(
   () => ({
@@ -132,12 +136,27 @@ const useStyles = makeStyles(
     canvasWrapper: {
     },
     canvasTextContainer: {
-      top:0,
+      backgroundColor: "rgba(255, 255, 255, 0.95)",
+      top: 0,
       position: "absolute",
-      height: "100%",
-      width: "100%",
-      paddingLeft: "25%",
-      paddingRight: "25%",
+      height: `${canvasHeight - 4}px`,
+      width: "calc(100% - 4px)",
+      paddingBottom: "10px",
+      margin: "2px",
+    },
+    canvasOverlayEnter: {
+      opacity: 0,
+    },
+    canvasOverlayEnterActive: {
+      transition: `opacity ${canvasOverlayAnimationLength}ms ease-in-out`,
+      opacity: 1,
+    },
+    canvasOverlayExit: {
+      opacity: 1,
+    },
+    canvasOverlayExitActive: {
+      transition: `opacity ${canvasOverlayAnimationLength}ms ease-in-out`,
+      opacity: 0,
     }
   })
 );
@@ -229,6 +248,9 @@ export default function Drawing({ user, subscription, gameState, events, message
   const selectedColorRef = useRef<number>(0);
   const textFieldRef = useRef<HTMLInputElement>();
   const [guess, setGuess] = useState<string>("");
+  const [animStep, setAnimStep] = useState<number>(0);
+
+  const previousGameState: GameState = usePrevious(gameState);
 
   const isDrawer = gameState.users[gameState.drawingUserIndex].id == user.id;
   const currentUser = gameState.users.find(u => u.id == user.id);
@@ -334,63 +356,76 @@ export default function Drawing({ user, subscription, gameState, events, message
       eventsToSend.current = [...eventsToSend.current, event];
     }
 
-    if(isDrawer){
-      canvas.addEventListener("mousedown", (e) => {
-        haveDrawn = true;
+    function mouseDown(e) {
+      haveDrawn = true;
 
-        const x = e.clientX - canvas.offsetLeft;
-        const y = e.clientY - canvas.offsetTop;
+      const x = e.clientX - canvas.offsetLeft;
+      const y = e.clientY - canvas.offsetTop;
 
-        penRef.current = {
-          previousCoords: { x, y },
-          currentCoords: { x, y },
-          isPenDown: true,
-        };
-      });
-
-      canvas.addEventListener("mousemove", (e) => {
-        const pen = penRef.current;
-        const canvas = canvasRef.current;
-
-        if (!pen.isPenDown) {
-          return;
-        }
-
-        const x = e.clientX - canvas.offsetLeft;
-        const y = e.clientY - canvas.offsetTop;
-
-        penRef.current = {
-          previousCoords: pen.currentCoords,
-          currentCoords: { x, y },
-          isPenDown: true,
-        };
-
-        const { previousCoords: from, currentCoords: to } = penRef.current;
-        createDrawEvent(from, to);
-      });
-
-      // TODO: Refactor so mouseup and mouseout don't repeat each other
-      canvas.addEventListener("mouseup", () => {
-        const pen = penRef.current;
-        if (!pen.isPenDown) {
-          return;
-        }
-        const { previousCoords: from, currentCoords: to } = penRef.current;
-        createDrawEvent(from, to);
-        penRef.current.isPenDown = false;
-      });
-
-      canvas.addEventListener("mouseout", () => {
-        const pen = penRef.current;
-        if (!pen.isPenDown) {
-          return;
-        }
-        const { previousCoords: from, currentCoords: to } = penRef.current;
-        createDrawEvent(from, to);
-        penRef.current.isPenDown = false;
-      });
+      penRef.current = {
+        previousCoords: { x, y },
+        currentCoords: { x, y },
+        isPenDown: true,
+      };
     }
-  }, [canvasRef]);
+
+    function mouseMove(e) {
+      const pen = penRef.current;
+      const canvas = canvasRef.current;
+
+      if (!pen.isPenDown) {
+        return;
+      }
+
+      const x = e.clientX - canvas.offsetLeft;
+      const y = e.clientY - canvas.offsetTop;
+
+      penRef.current = {
+        previousCoords: pen.currentCoords,
+        currentCoords: { x, y },
+        isPenDown: true,
+      };
+
+      const { previousCoords: from, currentCoords: to } = penRef.current;
+      createDrawEvent(from, to);
+    }
+
+    function mouseUp() {
+      const pen = penRef.current;
+      if (!pen.isPenDown) {
+        return;
+      }
+      const { previousCoords: from, currentCoords: to } = penRef.current;
+      createDrawEvent(from, to);
+      penRef.current.isPenDown = false;
+    }
+
+    function mouseOut() {
+      const pen = penRef.current;
+      if (!pen.isPenDown) {
+        return;
+      }
+      const { previousCoords: from, currentCoords: to } = penRef.current;
+      createDrawEvent(from, to);
+      penRef.current.isPenDown = false;
+    }
+
+    if(isDrawer){
+      console.log("enabled");
+      canvas.addEventListener("mousedown", mouseDown);
+      canvas.addEventListener("mousemove", mouseMove);
+      canvas.addEventListener("mouseup", mouseUp);
+      canvas.addEventListener("mouseout", mouseOut);
+    }
+
+    return () => {
+      console.log("disabled");
+      canvas.removeEventListener("mousedown", mouseDown);
+      canvas.removeEventListener("mousemove", mouseMove);
+      canvas.removeEventListener("mouseup", mouseUp);
+      canvas.removeEventListener("mouseout", mouseDown);
+    }
+  }, [canvasRef, isDrawer]);
 
   // Draw events
   useEffect(() => {
@@ -457,7 +492,7 @@ export default function Drawing({ user, subscription, gameState, events, message
     return () => {
       clearInterval(sendEventsInterval);
     }
-  }, [eventsToSend, subscription]);
+  }, [eventsToSend, subscription, isDrawer]);
 
   // Rendering
 
@@ -506,6 +541,8 @@ export default function Drawing({ user, subscription, gameState, events, message
     }
   });
 
+  // Reveal / Pick a word / animations
+
   const selectAWordMarkupDrawer = isDrawer && gameState.status === "choosing" && <Grid
     container
     className={classes.canvasTextContainer}
@@ -519,7 +556,7 @@ export default function Drawing({ user, subscription, gameState, events, message
       direction="row"
       justify="space-around"
       alignItems="center"
-      style={{marginTop: "50px"}}
+      style={{marginTop: "50px", paddingLeft: "25%", paddingRight: "25%"}}
     >
       <Button variant="outlined" color="secondary" onClick={() => selectedWord(0)}>{gameState.wordsToChoose[0]}</Button>
       <Button variant="outlined" color="secondary" onClick={() => selectedWord(1)}>{gameState.wordsToChoose[1]}</Button>
@@ -537,7 +574,63 @@ export default function Drawing({ user, subscription, gameState, events, message
     <Typography variant="h3">{gameState.users[gameState.drawingUserIndex].name} is choosing a word...</Typography>
   </Grid>;
 
-  const canvasOverlayElement = selectAWordMarkupDrawer || selectAWordMarkupOther;
+  const revealText = gameState.status === "choosing" && gameState.givenLetters && <Grid
+    container
+    className={classes.canvasTextContainer}
+    direction="column"
+    justify="center"
+    alignItems="center"
+  >
+    <Typography variant="h3">The word was {gameState.givenLetters}!</Typography>
+  </Grid>;
+
+  const transitionStyles = {
+    enter: classes.canvasOverlayEnter,
+    enterActive: classes.canvasOverlayEnterActive,
+    exit: classes.canvasOverlayExit,
+    exitActive: classes.canvasOverlayExitActive,
+  };
+
+  function nextAnimStep() {
+    if(animStep > 1)
+      return;
+
+    setAnimStep(animStep + 1);
+  }
+
+  // On choosing
+  useEffect(() => {
+    if(gameState.status !== "choosing"){
+      setAnimStep(0);
+      return;
+    }
+
+    if(previousGameState === undefined || previousGameState.status != "choosing"){
+      if(revealText) {
+        setAnimStep(1);
+      } else {
+        setAnimStep(2)
+      }
+    }
+  }, [gameState]);
+
+  // On choosing -> drawing
+  useEffect(() => {
+    if(gameState.status == "drawing" && previousGameState && previousGameState.status != "drawing"){
+      erase(getCanvasContext());
+    }
+  });
+
+  const canvasOverlayElement = (selectAWordMarkupDrawer || selectAWordMarkupOther) && <SwitchTransition>
+    <CSSTransition
+      timeout={canvasOverlayAnimationLength}
+      classNames={transitionStyles}
+      key={animStep}
+      onEntered={() => setTimeout(nextAnimStep, 1000)}
+    >
+      {animStep === 0 ? <></> : (animStep === 1 ? revealText : (selectAWordMarkupDrawer || selectAWordMarkupOther))}
+    </CSSTransition>
+  </SwitchTransition>;
 
   const lettersMarkup = gameState.givenLetters && gameState.givenLetters.split("").map((letter, index) => {
     if(letter === "_"){
@@ -636,7 +729,7 @@ export default function Drawing({ user, subscription, gameState, events, message
                   onKeyDown={sendMessageIfEnter}
                   fullWidth={true}
                   autoFocus
-                  disabled={currentUser.hasGuessedCurrentWord}
+                  disabled={currentUser.hasGuessedCurrentWord || isDrawer}
                 />
                 </Box>
               </Grid>
@@ -647,3 +740,13 @@ export default function Drawing({ user, subscription, gameState, events, message
     </>
   );
 };
+
+// TODO: Bring this into its own file
+function usePrevious(value: any) {
+  const ref = useRef();
+
+  useEffect(() => {
+    ref.current = value;
+  }, [value]);
+  return ref.current;
+}

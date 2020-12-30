@@ -38,8 +38,13 @@ class DrawIt::EventHandlers::Guess < EventHandler
       storage[:round_number] += 1
     end
 
+    storage[:users].each do |u|
+      u[:has_guessed_current_word] = false
+    end
+
     storage[:words_to_choose] = DrawIt::WORDS.sample(3)
     storage[:given_letters] = storage[:chosen_word]
+    storage[:status] = "choosing"
   end
 
   def storage

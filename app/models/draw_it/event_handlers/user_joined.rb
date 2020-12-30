@@ -6,7 +6,16 @@ class DrawIt::EventHandlers::UserJoined < EventHandler
   end
 
   def call(data)
-    send_websocket_message(User.find(data[:user_id]), { drawEvents: draw_events })
+    user = User.find(data[:user_id]
+
+    storage[:users].push({
+      id: user.id,
+      name: user.name,
+      score: 0,
+      has_guessed_current_word: false,
+    })
+
+    send_websocket_message(user, { drawEvents: draw_events })
     send_gamestate_to_all(instance)
   end
 

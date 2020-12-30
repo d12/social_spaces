@@ -11,6 +11,10 @@ class DrawIt::EventHandlers::SelectWord < EventHandler
     storage[:status] = "drawing"
     storage[:given_letters] = "_" * storage[:chosen_word].length
 
+    # Clear the canvas before the next round
+    instance.draw_event_batches.delete_all
+    send_websocket_message(instance, { erase: true, authorId: data["user_id"] })
+
     send_gamestate_to_all(instance)
   end
 
