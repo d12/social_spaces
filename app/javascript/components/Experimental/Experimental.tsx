@@ -17,7 +17,7 @@ interface GameState {}
 interface GroupUser {
   id: number;
   name: string;
-  email: string;
+  email?: string;
   gravatarUrl: string;
 }
 

@@ -17,7 +17,7 @@ import { plainTheme, twoTruthsOneLieTheme, drawItTheme } from "../../theme";
 export interface User {
   id: number;
   name: string;
-  email: string;
+  email?: string;
   gravatarUrl: string;
   jitsiJwt?: string;
 }

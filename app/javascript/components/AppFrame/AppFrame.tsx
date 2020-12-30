@@ -226,7 +226,7 @@ export function AppFrame({
           </Box>
           <List>
             {group.users.map(({ email, name, gravatarUrl, id }) => (
-              <ListItem alignItems="center" key={email}>
+              <ListItem alignItems="center" key={id}>
                 <ListItemAvatar>
                   <Avatar alt={name} src={gravatarUrl} />
                 </ListItemAvatar>
