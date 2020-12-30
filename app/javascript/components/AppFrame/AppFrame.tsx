@@ -181,8 +181,8 @@ export function AppFrame({
           parentNode: document.querySelector('#video-container')
       };
 
-      // if(user.jitsiJwt != null)
-      //   new JitsiMeetExternalAPI(domain, options);
+      if(user.jitsiJwt != null)
+        new JitsiMeetExternalAPI(domain, options);
   }, []);
 
   const classes = useStyles();
