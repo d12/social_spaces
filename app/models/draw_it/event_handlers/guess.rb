@@ -11,6 +11,7 @@ class DrawIt::EventHandlers::Guess < EventHandler
 
     if(data["message"].downcase == storage[:chosen_word])
       user[:has_guessed_current_word] = true
+      user[:score] += (10 - correct_players_count)
 
       send_websocket_message(instance, {
         chatMessage: { author: data["user_name"], content: "#{data['user_name']} guessed the word.", correct: true },
@@ -33,6 +34,8 @@ class DrawIt::EventHandlers::Guess < EventHandler
   private
 
   def next_turn
+    give_points_to_drawer
+
     storage[:drawing_user_index] = (storage[:drawing_user_index] + 1) % storage[:users].count
     if(storage[:drawing_user_index] == 0)
       storage[:round_number] += 1
@@ -45,6 +48,14 @@ class DrawIt::EventHandlers::Guess < EventHandler
     storage[:words_to_choose] = DrawIt::WORDS.sample(3)
     storage[:given_letters] = storage[:chosen_word]
     storage[:status] = "choosing"
+  end
+
+  def give_points_to_drawer
+    storage[:users][storage[:drawing_user_index]][:score] += (correct_players_count * storage[:chosen_word].length)
+  end
+
+  def correct_players_count
+    storage[:users].count{|u| u[:has_guessed_current_word]}
   end
 
   def storage

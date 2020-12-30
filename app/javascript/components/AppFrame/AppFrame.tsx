@@ -114,7 +114,7 @@ export function AppFrame({
   toasts,
 }: Props) {
   useEffect(() => {
-    group &&
+    if(group){
       consumer.subscriptions.create(
         { channel: "GroupChannel", group_id: group.key },
         {
@@ -143,7 +143,7 @@ export function AppFrame({
 
       const domain = '8x8.vc';
       const options = {
-          roomName: "vpaas-magic-cookie-cb5f846d50d54f4eb3ecfbdfc3875b94/" +  (group && group.key),
+          roomName: "vpaas-magic-cookie-cb5f846d50d54f4eb3ecfbdfc3875b94/" +  (group.key),
           interfaceConfigOverwrite: {
             TILE_VIEW_MAX_COLUMNS: 1,
             DISPLAY_WELCOME_FOOTER: false,
@@ -185,6 +185,7 @@ export function AppFrame({
         new JitsiMeetExternalAPI(domain, options);
 
       history.replaceState(null, "", `/groups/${group.key}`);
+    }
   }, []);
 
   const classes = useStyles();

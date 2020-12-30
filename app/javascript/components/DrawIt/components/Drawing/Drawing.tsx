@@ -108,6 +108,8 @@ const useStyles = makeStyles(
       overflow: "hidden",
     },
     chatBoxMessagesContainer: {
+      overflowY: "auto",
+      flexWrap: "nowrap",
       backgroundColor: "#F6F6F4",
       flex: 1,
     },
@@ -122,8 +124,6 @@ const useStyles = makeStyles(
       borderRadius: "50%",
     },
     colorsContainer: {
-      width: canvasWidth / 3,
-      height: "50%"
     },
     message: {
       margin: "5px",

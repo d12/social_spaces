@@ -74,7 +74,6 @@ const useStyles = makeStyles((_theme) => ({
     marginTop: "20px",
     paddingLeft: "15px",
     color: "#FFFFFF"
-
   },
   scoreText: {
     fontSize: "22px",
