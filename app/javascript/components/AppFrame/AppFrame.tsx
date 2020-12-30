@@ -237,7 +237,7 @@ export function AppFrame({
           </List>
           <Link
             rel="nofollow"
-            onClick={LeaveGroupAndReload}
+            onClick={LeaveGroup}
             underline="none"
             color="textPrimary"
             className={classes.leaveGroupLink}
@@ -327,9 +327,8 @@ export function AppFrame({
     setGroupCallback(response);
   }
 
-  // Reload, since we need to kill the video. This is lazy, fix it later.
-  async function LeaveGroupAndReload() {
+  async function LeaveGroup() {
     await API.leaveGroup();
-    location.reload();
+    document.location.href="/";
   }
 }
