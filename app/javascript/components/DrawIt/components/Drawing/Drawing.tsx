@@ -412,7 +412,6 @@ export default function Drawing({ user, subscription, gameState, events, message
     }
 
     if(isDrawer){
-      console.log("enabled");
       canvas.addEventListener("mousedown", mouseDown);
       canvas.addEventListener("mousemove", mouseMove);
       canvas.addEventListener("mouseup", mouseUp);
@@ -420,7 +419,6 @@ export default function Drawing({ user, subscription, gameState, events, message
     }
 
     return () => {
-      console.log("disabled");
       canvas.removeEventListener("mousedown", mouseDown);
       canvas.removeEventListener("mousemove", mouseMove);
       canvas.removeEventListener("mouseup", mouseUp);
@@ -633,8 +631,6 @@ export default function Drawing({ user, subscription, gameState, events, message
     </CSSTransition>
   </SwitchTransition>;
 
-
-  console.log(wordForDrawer);
   const lettersMarkup = gameState.givenLetters && ((isDrawer && wordForDrawer) || gameState.givenLetters).split("").map((letter, index) => {
     if(letter === "_"){
       return <Box key={index} className={classes.letterUnfilled} />
