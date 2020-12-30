@@ -18,6 +18,7 @@ interface Message {
   authorId?: number;
   erase?: boolean;
   chatMessage?: ChatMessage;
+  wordForDrawer?: string;
 }
 
 interface ActivityUser {
@@ -89,6 +90,7 @@ export default function DrawIt({
   const [userSubscription, setUserSubscription] = useState<Cable>();
   const events = useRef<Array<Event>>([]);
   const [messages, setMessages] = useState<Array<ChatMessage>>([]);
+  const [wordForDrawer, setWordForDrawer] = useState<string>();
 
   useEffect(() => {
     setActivitySubscription(
@@ -131,6 +133,10 @@ export default function DrawIt({
                 return {type: "draw", data: deserializeDrawEvent(e)}
               })];
             }
+
+            if(message.wordForDrawer) {
+              setWordForDrawer(message.wordForDrawer);
+            }
           }
         },
       )
@@ -141,5 +147,5 @@ export default function DrawIt({
     return <p>Loading...</p>;
   }
 
-  return <Drawing user={user} subscription={activitySubscription} gameState={gameState} events={events} messages={messages}/>
+  return <Drawing user={user} subscription={activitySubscription} gameState={gameState} events={events} messages={messages} wordForDrawer={wordForDrawer}/>
 }

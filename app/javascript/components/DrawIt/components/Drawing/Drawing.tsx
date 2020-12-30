@@ -25,6 +25,7 @@ export interface Props {
   gameState: GameState;
   events: React.MutableRefObject<Array<Event>>;
   messages: Array<ChatMessage>;
+  wordForDrawer?: string;
 }
 
 const canvasWidth = 800;
@@ -240,7 +241,7 @@ function serializeDrawEvent(event: DrawEvent): Array<number> {
   ];
 }
 
-export default function Drawing({ user, subscription, gameState, events, messages }: Props) {
+export default function Drawing({ user, subscription, gameState, events, messages, wordForDrawer }: Props) {
   const classes = useStyles(useTheme());
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -632,7 +633,9 @@ export default function Drawing({ user, subscription, gameState, events, message
     </CSSTransition>
   </SwitchTransition>;
 
-  const lettersMarkup = gameState.givenLetters && gameState.givenLetters.split("").map((letter, index) => {
+
+  console.log(wordForDrawer);
+  const lettersMarkup = gameState.givenLetters && ((isDrawer && wordForDrawer) || gameState.givenLetters).split("").map((letter, index) => {
     if(letter === "_"){
       return <Box key={index} className={classes.letterUnfilled} />
     } else {

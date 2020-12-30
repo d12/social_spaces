@@ -6,6 +6,8 @@ class DrawIt::EventHandlers::SelectWord < EventHandler
   end
 
   def call(data)
+    user = User.find(storage[:users][storage[:drawing_user_index]][:id])
+
     storage[:chosen_word] = storage[:words_to_choose][data["word_index"].to_i]
     storage[:words_to_choose] = nil
     storage[:status] = "drawing"
@@ -14,6 +16,9 @@ class DrawIt::EventHandlers::SelectWord < EventHandler
     # Clear the canvas before the next round
     instance.draw_event_batches.delete_all
     send_websocket_message(instance, { erase: true, authorId: data["user_id"] })
+
+
+    send_websocket_message(user, { wordForDrawer: storage[:chosen_word] })
 
     send_gamestate_to_all(instance)
   end

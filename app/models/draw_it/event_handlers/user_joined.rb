@@ -17,6 +17,10 @@ class DrawIt::EventHandlers::UserJoined < EventHandler
       })
     end
 
+    if(storage[:users][storage[:drawing_user_index]][:id] == data[:user_id])
+      send_websocket_message(user, { wordForDrawer: storage[:chosen_word] })
+    end
+
     send_websocket_message(user, { drawEvents: draw_events })
     send_gamestate_to_all(instance)
   end
