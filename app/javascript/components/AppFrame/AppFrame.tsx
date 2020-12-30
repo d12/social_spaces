@@ -183,6 +183,8 @@ export function AppFrame({
 
       if(user.jitsiJwt != null)
         new JitsiMeetExternalAPI(domain, options);
+
+      history.replaceState(null, "", `/groups/${group.key}`);
   }, []);
 
   const classes = useStyles();

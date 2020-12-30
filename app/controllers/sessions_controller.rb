@@ -11,6 +11,6 @@ class SessionsController < ApplicationController
     current_group&.remove_user(current_user)
     reset_session
 
-    redirect_to react_path
+    redirect_to root_path
   end
 end

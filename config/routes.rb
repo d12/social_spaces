@@ -2,7 +2,8 @@ Rails.application.routes.draw do
   devise_for :users, :controllers => { :omniauth_callbacks => "users/omniauth_callbacks" }
   mount ActionCable.server => '/cable'
 
-  get "/(:room_key)", to: "react#show", constraints: { room_key: /[a-zA-Z\d]{6}/ }, as: "react"
+  root to: "react#show"
+  get "/groups/(:room_key)", to: "react#show", constraints: { room_key: /[a-zA-Z\d]{6}/ }, as: "react"
 
   get "/login/google(/join/:room_key)", to: "sessions#redirect_to_google_oauth", constraints: { room_key: /[a-zA-Z\d]{6}/ }
 
