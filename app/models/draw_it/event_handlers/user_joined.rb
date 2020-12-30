@@ -8,14 +8,14 @@ class DrawIt::EventHandlers::UserJoined < EventHandler
   def call(data)
     user = User.find(data[:user_id])
 
-    return if storage[:users].find{|a| a[:id] == data[:user_id]}
-
-    storage[:users].push({
-      id: user.id,
-      name: user.name,
-      score: 0,
-      has_guessed_current_word: false,
-    })
+    unless storage[:users].find{|a| a[:id] == data[:user_id]}
+      storage[:users].push({
+        id: user.id,
+        name: user.name,
+        score: 0,
+        has_guessed_current_word: false,
+      })
+    end
 
     send_websocket_message(user, { drawEvents: draw_events })
     send_gamestate_to_all(instance)
