@@ -37,6 +37,8 @@ class User < ApplicationRecord
 
   # See https://en.gravatar.com/site/implement/hash/
   def gravatar_url
+    return "https://www.gravatar.com/avatar/" unless email
+
     downcased_email = email.downcase
     gravatar_hash = Digest::MD5.hexdigest(downcased_email)
     "https://www.gravatar.com/avatar/#{gravatar_hash}"
@@ -54,7 +56,6 @@ class User < ApplicationRecord
           id: id.to_s,
           name: name,
           avatar: gravatar_url,
-          email: email,
           moderator: "false",
         },
         features: {

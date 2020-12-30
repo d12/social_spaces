@@ -298,6 +298,7 @@ export default function Drawing({ user, subscription, gameState, events, message
 
   function addEvent(event: Event){
     events.current =  [...events.current, event];
+    processDrawEvents();
   }
 
   const eventsToSend = useRef<Array<Event>>([]);
@@ -427,7 +428,7 @@ export default function Drawing({ user, subscription, gameState, events, message
   }, [canvasRef, isDrawer]);
 
   // Draw events
-  useEffect(() => {
+  function processDrawEvents() {
     events.current.slice(processIndexPtr.current, events.current.length).forEach((e: Event) => {
       switch(e.type) {
         case "draw":
@@ -445,6 +446,10 @@ export default function Drawing({ user, subscription, gameState, events, message
     });
 
     processIndexPtr.current = events.current.length;
+  }
+
+  useEffect(() => {
+    processDrawEvents();
   }, [events.current]);
 
   // Send events
