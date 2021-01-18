@@ -5,7 +5,9 @@ const path = require('path')
 const webpack = require('webpack')
 
 const typescript = require("./loaders/typescript");
+const mjs = require("./loaders/mjs-fix");
 environment.loaders.prepend("typescript", typescript);
+environment.loaders.prepend("mjs", mjs);
 environment.loaders.delete("nodeModules");
 
 const webpackerDefaultWebpackConfig = environment.toWebpackConfig().toObject()
