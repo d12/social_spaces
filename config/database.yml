@@ -1,9 +1,12 @@
 production:
   adapter: postgresql
   encoding: unicode
-  database: postgres_production
+  database: <%= ENV['RDS_DB_NAME'] %>
   pool: 20
-  url: <%= ENV['DATABASE_URL'] %>
+  username: <%= ENV['RDS_USERNAME'] %>
+  password: <%= ENV['RDS_PASSWORD'] %>
+  host: <%= ENV['RDS_HOSTNAME'] %>
+  port: <%= ENV['RDS_PORT'] %>
 
 development:
   adapter: postgresql

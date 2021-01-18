@@ -42,3 +42,8 @@ yarn-debug.log*
 .env
 .npmrc
 .yarnrc
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
