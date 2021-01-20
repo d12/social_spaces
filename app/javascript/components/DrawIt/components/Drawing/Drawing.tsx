@@ -361,8 +361,8 @@ export default function Drawing({ user, subscription, gameState, events, message
     function mouseDown(e) {
       haveDrawn = true;
 
-      const x = e.clientX - canvas.offsetLeft;
-      const y = e.clientY - canvas.offsetTop;
+      const x = (e.clientX - canvas.offsetLeft) * (canvasWidth / canvas.offsetWidth);
+      const y = (e.clientY - canvas.offsetTop) * (canvasHeight / canvas.offsetHeight);
 
       penRef.current = {
         previousCoords: { x, y },
@@ -379,8 +379,9 @@ export default function Drawing({ user, subscription, gameState, events, message
         return;
       }
 
-      const x = e.clientX - canvas.offsetLeft;
-      const y = e.clientY - canvas.offsetTop;
+
+      const x = (e.clientX - canvas.offsetLeft) * (canvasWidth / canvas.offsetWidth);
+      const y = (e.clientY - canvas.offsetTop) * (canvasHeight / canvas.offsetHeight);
 
       penRef.current = {
         previousCoords: pen.currentCoords,
