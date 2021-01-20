@@ -36,7 +36,7 @@ const canvasOverlayAnimationLength = 1000;
 const useStyles = makeStyles(
   () => ({
     statusCard: {
-      width: "100%",
+      width: "min(1450px, 90vw)",
       height: "60px",
       borderRadius: "10px",
       marginTop: "30px",
@@ -46,7 +46,7 @@ const useStyles = makeStyles(
       flex: 1,
       borderRadius: "10px",
       marginBottom: "40px",
-      width: "90vw",
+      width: "min(1450px, 90vw)",
     },
     statusCardContent: {
       paddingTop: "0px",
@@ -688,7 +688,7 @@ export default function Drawing({ user, subscription, gameState, events, message
             <Grid
               container
               direction="row"
-              style={{ height: "100%" }}
+              style={{ height: "100%", justifyContent: "space-between" }}
               wrap="nowrap"
             >
               <ScoreBoard scores={scores} selectedIndex={gameState.drawingUserIndex} />
