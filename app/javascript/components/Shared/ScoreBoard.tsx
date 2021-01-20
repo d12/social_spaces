@@ -28,6 +28,7 @@ function blobForIndex(index: number) {
 
 const useStyles = makeStyles((_theme) => ({
   container: {
+    marginRight: "8px",
     height: "100%",
     overflowY: "auto",
     flexGrow: 1,
@@ -35,7 +36,6 @@ const useStyles = makeStyles((_theme) => ({
   },
   scoreBox: {
     height: "135px",
-    width: "90%",
     marginBottom: "20px",
     paddingTop: "20px",
     paddingLeft: "15px",
@@ -45,7 +45,6 @@ const useStyles = makeStyles((_theme) => ({
   },
   outlinedScoreBox: { // TODO: Get SASS working
     height: "130px",
-    width: "90%",
     marginBottom: "20px",
     paddingTop: "20px",
     paddingLeft: "15px",
