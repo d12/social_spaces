@@ -21,6 +21,7 @@ class Group < ApplicationRecord
     if users.reload.any?
       GroupChannel.broadcast_user_left(self)
     else
+      activity.destroy
       destroy
     end
   end
