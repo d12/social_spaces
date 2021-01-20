@@ -30,23 +30,26 @@ const useStyles = makeStyles((_theme) => ({
   container: {
     height: "100%",
     overflowY: "auto",
-    width: "250px",
+    flexGrow: 1,
+    maxWidth: "300px",
   },
   scoreBox: {
     height: "135px",
-    width: "240px",
+    width: "90%",
     marginBottom: "20px",
     paddingTop: "20px",
     paddingLeft: "15px",
+    paddingRight: "15px",
     backgroundColor: "#F2F9FF",
     borderRadius: "10px",
   },
   outlinedScoreBox: { // TODO: Get SASS working
     height: "130px",
-    width: "240px",
+    width: "90%",
     marginBottom: "20px",
     paddingTop: "20px",
     paddingLeft: "15px",
+    paddingRight: "15px",
     backgroundColor: "#F2F9FF",
     borderRadius: "10px",
     borderColor: "#000000",
@@ -69,11 +72,12 @@ const useStyles = makeStyles((_theme) => ({
   scoreTextContainer: {
     backgroundColor: "#74A2CC",
     borderRadius:"7px",
-    width: "210px",
+    width: "100%",
     height: "40px",
     marginTop: "20px",
     paddingLeft: "15px",
-    color: "#FFFFFF"
+    color: "#FFFFFF",
+    flexWrap: "nowrap",
   },
   scoreText: {
     fontSize: "22px",
@@ -104,6 +108,7 @@ export function ScoreBoard({ scores, selectedIndex }: Props) {
           container
           direction="row"
           alignItems="center"
+          style={{flexWrap: "nowrap"}}
         >
           <img src={blobForIndex(index)} className={classes.blob} />
           <Typography className={classes.name}>{score.name}</Typography>

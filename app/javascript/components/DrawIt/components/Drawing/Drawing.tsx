@@ -46,6 +46,7 @@ const useStyles = makeStyles(
       flex: 1,
       borderRadius: "10px",
       marginBottom: "40px",
+      width: "90vw",
     },
     statusCardContent: {
       paddingTop: "0px",
@@ -88,15 +89,14 @@ const useStyles = makeStyles(
       border: "1px solid #C4C4C4",
       borderRadius: "5px",
       marginBottom: "8px",
-      height: canvasHeight,
-      width: canvasWidth,
+      width: "min(50vw, 800px)",
     },
     controls: {
       border: "1px solid #C4C4C4",
       borderRadius: "5px",
       padding: "1px",
       flexDirection: "row",
-      width: canvasWidth,
+      width: "100%",
       flex: 1,
     },
     chatBoxContainer: {
