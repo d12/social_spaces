@@ -141,48 +141,48 @@ export function AppFrame({
         }
       );
 
-      const domain = '8x8.vc';
-      const options = {
-          roomName: "vpaas-magic-cookie-cb5f846d50d54f4eb3ecfbdfc3875b94/" +  (group.key),
-          interfaceConfigOverwrite: {
-            TILE_VIEW_MAX_COLUMNS: 1,
-            DISPLAY_WELCOME_FOOTER: false,
-            DISPLAY_WELCOME_PAGE_CONTENT: false,
-            DISPLAY_WELCOME_PAGE_ADDITIONAL_CARD: false,
-            DISPLAY_WELCOME_PAGE_TOOLBAR_ADDITIONAL_CONTENT: false,
-            DISABLE_VIDEO_BACKGROUND: true,
-            GENERATE_ROOMNAMES_ON_WELCOME_PAGE: false,
-            HIDE_INVITE_MORE_HEADER: true,
-            MOBILE_APP_PROMO: false,
-            RECENT_LIST_ENABLED: false,
-            SHOW_CHROME_EXTENSION_BANNER: false,
-            SHOW_JITSI_WATERMARK: false,
-            SHOW_POWERED_BY: false,
-            SHOW_PROMOTIONAL_CLOSE_PAGE: false,
-            TOOLBAR_ALWAYS_VISIBLE: false,
-            TOOLBAR_BUTTONS: [
-              'microphone',
-              'camera',
-              'desktop',
-              'fullscreen',
-              'fodeviceselection',
-              'chat',
-              'settings',
-              'videoquality',
-              'tileview',
-            ],
-            VERTICAL_FILMSTRIP: true,
-            VIDEO_QUALITY_LABEL_DISABLED: true
-          },
-          jwt: user.jitsiJwt,
-          configOverwrite: {
-            enableInsecureRoomNameWarning: false,
-          },
-          parentNode: document.querySelector('#video-container')
-      };
+      // const domain = '8x8.vc';
+      // const options = {
+      //     roomName: "vpaas-magic-cookie-cb5f846d50d54f4eb3ecfbdfc3875b94/" +  (group.key),
+      //     interfaceConfigOverwrite: {
+      //       TILE_VIEW_MAX_COLUMNS: 1,
+      //       DISPLAY_WELCOME_FOOTER: false,
+      //       DISPLAY_WELCOME_PAGE_CONTENT: false,
+      //       DISPLAY_WELCOME_PAGE_ADDITIONAL_CARD: false,
+      //       DISPLAY_WELCOME_PAGE_TOOLBAR_ADDITIONAL_CONTENT: false,
+      //       DISABLE_VIDEO_BACKGROUND: true,
+      //       GENERATE_ROOMNAMES_ON_WELCOME_PAGE: false,
+      //       HIDE_INVITE_MORE_HEADER: true,
+      //       MOBILE_APP_PROMO: false,
+      //       RECENT_LIST_ENABLED: false,
+      //       SHOW_CHROME_EXTENSION_BANNER: false,
+      //       SHOW_JITSI_WATERMARK: false,
+      //       SHOW_POWERED_BY: false,
+      //       SHOW_PROMOTIONAL_CLOSE_PAGE: false,
+      //       TOOLBAR_ALWAYS_VISIBLE: false,
+      //       TOOLBAR_BUTTONS: [
+      //         'microphone',
+      //         'camera',
+      //         'desktop',
+      //         'fullscreen',
+      //         'fodeviceselection',
+      //         'chat',
+      //         'settings',
+      //         'videoquality',
+      //         'tileview',
+      //       ],
+      //       VERTICAL_FILMSTRIP: true,
+      //       VIDEO_QUALITY_LABEL_DISABLED: true
+      //     },
+      //     jwt: user.jitsiJwt,
+      //     configOverwrite: {
+      //       enableInsecureRoomNameWarning: false,
+      //     },
+      //     parentNode: document.querySelector('#video-container')
+      // };
 
-      if(user.jitsiJwt != null)
-        new JitsiMeetExternalAPI(domain, options);
+      // if(user.jitsiJwt != null)
+      //   new JitsiMeetExternalAPI(domain, options);
 
       history.replaceState(null, "", `/groups/${group.key}`);
     }
@@ -312,8 +312,8 @@ export function AppFrame({
           <Container className={classes.activityContainer}>{children} {endActivityMarkup}</Container>
         </Grid>
         {groupBarMarkup}
-        <Box className={classes.video} id="video-container">
-        </Box>
+        {/* <Box className={classes.video} id="video-container">
+        </Box> */}
       </Grid>
     </>
   );

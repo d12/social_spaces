@@ -1,4 +1,6 @@
 class ApplicationController < ActionController::Base
+  include Guestable
+
   private
 
   def not_found

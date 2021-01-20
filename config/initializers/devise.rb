@@ -272,7 +272,8 @@ Devise.setup do |config|
   config.omniauth :google_oauth2, ENV["GOOGLE_CLIENT_ID"], ENV["GOOGLE_CLIENT_SECRET"], {
     # TODO: access_type: 'offline', approval_prompt: 'force', prompt: 'consent' are all dev only, it'll force a prompt on every auth
     #       but ensures we get the refresh token every time in case we clear the database.
-    scope: "email,profile", access_type: 'offline', approval_prompt: 'force', prompt: 'consent'
+    scope: "email,profile"
+    # , access_type: 'offline', approval_prompt: 'force', prompt: 'consent'
   }
 
   # ==> Warden configuration

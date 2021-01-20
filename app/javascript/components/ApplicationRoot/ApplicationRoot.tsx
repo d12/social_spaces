@@ -84,6 +84,6 @@ export default function ApplicationRoot(props: Props) {
       return withAppFrame(<DrawIt user={user} group={group} />, drawItTheme);
 
     default:
-      return `No activity markup for ${name}`;
+      return `No activity markup for ${group.activity.name}`;
   }
 }

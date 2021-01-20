@@ -12,7 +12,7 @@ class User < ApplicationRecord
     return unless auth
 
     # Either create a User record or update it based on the provider (Google) and the UID
-    where(provider: auth.provider, uid: auth.uid).first_or_create do |user|
+    where(provider: auth.provider, uid: auth.uid, guest: false).first_or_create do |user|
       user.name = auth.info.name
       user.email = auth.info.email
       user.token = auth.credentials.token
@@ -30,7 +30,7 @@ class User < ApplicationRecord
 
   def to_h(authenticated: false)
     json = as_json
-    json["jitsiJwt"] = jitsi_jwt if authenticated
+    # json["jitsiJwt"] = jitsi_jwt if authenticated
 
     json
   end
@@ -46,6 +46,7 @@ class User < ApplicationRecord
 
   def jitsi_jwt
     return unless group
+    return if guest?
 
     pem = OpenSSL::PKey::RSA.new(ENV["JITSI_PEM"])
 

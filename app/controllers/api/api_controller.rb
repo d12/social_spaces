@@ -1,5 +1,7 @@
 module Api
   class ApiController < ActionController::API
+    include Guestable
+
     before_action :ensure_user_is_authenticated
 
     private

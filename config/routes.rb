@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
   devise_for :users, :controllers => { :omniauth_callbacks => "users/omniauth_callbacks" }
+
   mount ActionCable.server => '/cable'
 
   root to: "react#show"
@@ -10,6 +11,8 @@ Rails.application.routes.draw do
   delete "/logout", to: "sessions#destroy"
 
   get "/test", to: "react#test", as: "test"
+
+  post "/guest_signup", to: "users#create_guest", as: "create_guest"
 
   namespace :api do
     get "/groups/:key", to: "groups#show"
