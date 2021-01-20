@@ -193,6 +193,7 @@ export function AppFrame({
   // TODO: Break all the group panel stuff into it's own component
 
   const hostId = group && group.hostId;
+  const inviteUrl = window.location.origin + "/groups/" + group.key;
 
   const groupBarMarkup = group && showGroupTab && (
     <Grid item>
@@ -206,20 +207,11 @@ export function AppFrame({
           <Box p={2}>
             <Typography variant="h5">My Group</Typography>
             <TextField
-              label="Google Meet URL"
+              label="Invite URL"
               InputProps={{
                 readOnly: true,
               }}
-              value={""}
-              fullWidth
-              margin="dense"
-            />
-            <TextField
-              label="Group Code"
-              InputProps={{
-                readOnly: true,
-              }}
-              value={group.key}
+              value={inviteUrl}
               fullWidth
               margin="dense"
             />
