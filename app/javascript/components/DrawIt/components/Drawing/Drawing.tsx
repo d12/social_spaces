@@ -5,7 +5,7 @@ import { User } from "../../../ApplicationRoot";
 import { GameState, DrawEvent, StrokeType, Event, ChatMessage } from "../../DrawIt";
 import { makeStyles, useTheme, withStyles } from "@material-ui/core/styles";
 
-import { ScoreBoard, PlayerScore } from "../../../Shared";
+import { ScoreBoard, PlayerScore, Timer } from "../../../Shared";
 
 import { CSSTransition, SwitchTransition } from 'react-transition-group';
 
@@ -675,9 +675,7 @@ export default function Drawing({ user, subscription, gameState, events, message
               alignItems="center"
               className={classes.statusBarFlex}
             >
-              <Box className={classes.timerContainer}>
-                <Typography variant="h3">1:01</Typography>
-              </Box>
+              <Timer seconds={gameState.timeTilRoundEnd} />
               <Typography variant="h3" style={{ marginLeft: "25px" }}>Round {gameState.roundNumber} of 3</Typography>
               <Grid
                 container

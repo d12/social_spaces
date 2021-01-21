@@ -35,6 +35,7 @@ export interface GameState {
   wordsToChoose: string;
   givenLetters: string;
   roundNumber: number;
+  timeTilRoundEnd?: number;
 }
 
 export enum StrokeType {

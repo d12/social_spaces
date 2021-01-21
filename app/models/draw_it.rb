@@ -43,7 +43,11 @@ class DrawIt < ActivityInstance
       :words_to_choose,
       :given_letters,
       :round_number
-    ).deep_transform_keys{ |k| k.camelcase(:lower) }
+    ).merge({
+      "time_til_round_end" => time_til_round_end
+    }).deep_transform_keys { |k|
+       k.camelcase(:lower)
+    }
   end
 
   # The initial value to use for a instances save state
@@ -65,6 +69,15 @@ class DrawIt < ActivityInstance
       users: users_array,
       given_letters: nil,
       round_number: 1,
+      round_expire_time: nil,
     }
+  end
+
+  private
+
+  def time_til_round_end
+    return unless storage[:round_expire_time]
+
+    (Time.at(storage[:round_expire_time]) - Time.now).to_i
   end
 end
