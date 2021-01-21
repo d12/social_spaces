@@ -90,6 +90,10 @@ const useStyles = makeStyles(
       borderRadius: "5px",
       marginBottom: "8px",
       width: "min(50vw, 800px)",
+      height: "100%",
+    },
+    canvasWrapper: {
+      height: "min(100% - 50px - 4px, 800px)",
     },
     controls: {
       border: "1px solid #C4C4C4",
@@ -97,7 +101,9 @@ const useStyles = makeStyles(
       padding: "1px",
       flexDirection: "row",
       width: "100%",
-      flex: 1,
+      flex: "0 1 auto",
+      height: "50px",
+      marginTop: "8px",
     },
     chatBoxContainer: {
       width: "300px",
@@ -133,8 +139,6 @@ const useStyles = makeStyles(
       fontWeight: 800,
       fontSize: "18px",
       marginRight: "3px",
-    },
-    canvasWrapper: {
     },
     canvasTextContainer: {
       backgroundColor: "rgba(255, 255, 255, 0.95)",
@@ -521,8 +525,8 @@ export default function Drawing({ user, subscription, gameState, events, message
     >
       <Grid container direction="row" className={classes.colorsContainer} >
         {colorsMarkup}
+        <button onClick={createEraseEvent}>Erase</button>
       </Grid>
-      <button onClick={createEraseEvent}>Erase</button>
     </Grid>);
   }
 
@@ -695,7 +699,7 @@ export default function Drawing({ user, subscription, gameState, events, message
               <Grid
                 container
                 direction="column"
-                style={{ width: "auto" }}
+                style={{ width: "auto", justifyContent: "space-between" }}
                 wrap="nowrap"
               >
                 <div className={classes.canvasWrapper} style={{position: canvasOverlayElement ? "relative" : "static"}}>
