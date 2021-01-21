@@ -144,7 +144,7 @@ const useStyles = makeStyles(
       backgroundColor: "rgba(255, 255, 255, 0.95)",
       top: 0,
       position: "absolute",
-      height: `${canvasHeight - 4}px`,
+      height: "min(100% - 4px, 800px)",
       width: "calc(100% - 4px)",
       paddingBottom: "10px",
       margin: "2px",
