@@ -31,8 +31,7 @@ const useStyles = makeStyles((_theme) => ({
     marginRight: "8px",
     height: "100%",
     overflowY: "auto",
-    flexGrow: 1,
-    maxWidth: "300px",
+    flex: "0 0 200px",
   },
   scoreBox: {
     height: "135px",
@@ -79,7 +78,7 @@ const useStyles = makeStyles((_theme) => ({
     flexWrap: "nowrap",
   },
   scoreText: {
-    fontSize: "22px",
+    fontSize: "18px",
     marginRight: "12px",
   }
 }));

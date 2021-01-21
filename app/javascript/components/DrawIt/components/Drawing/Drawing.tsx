@@ -112,6 +112,7 @@ const useStyles = makeStyles(
       border: "1px solid #C4C4C4",
       borderRadius: "5px",
       overflow: "hidden",
+      flex: 1,
     },
     chatBoxMessagesContainer: {
       overflowY: "auto",
