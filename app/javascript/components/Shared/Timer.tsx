@@ -11,6 +11,8 @@ timerContainer: {
     padding: "2px",
     paddingLeft: "8px",
     paddingRight: "8px",
+    width: "65px",
+    textAlign: "center",
     },
 }));
 
