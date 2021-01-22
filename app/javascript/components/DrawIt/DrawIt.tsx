@@ -108,6 +108,9 @@ export default function DrawIt({
               setMessages(messages => [...messages, message.chatMessage]);
             }
 
+            if (message.gameState.status == "choosing")
+              setWordForDrawer(null);
+
             if (message.authorId == user.id)
               return;
 
