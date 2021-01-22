@@ -1,27 +1,44 @@
 require "activity_loop"
 
 class ActivityThreadManager
+  attr_reader :handled_activities
+
   def initialize(logger)
     @logger = logger
+    @handled_activities = []
 
-    # TODO: Ensure only one GameThreadManager
-    # TODO: Resiliency? What happenes if a GameThreadManager dies?
+    # TODO: Ensure only one ActivityThreadManager
+    #        - Actually we could have multiple, but we need better locking on picking up activities.
+    # TODO: Resiliency? What happenes if a ActivityThreadManager dies?
   end
 
   def run
-    logger.info "Activity thread manager booted"
+    begin
+      logger.info "Activity thread manager booted"
 
-    loop do
-      next_loop = Time.now + 1.second
+      loop do
+        next_loop = Time.now + 1.second
 
-      logger.info "Checking for activity instances waiting for thread"
-      ActivityInstance.where(status: :awaiting_activity_thread).each do |instance|
-        setup_activity_process(instance)
+        logger.info "Checking for activity instances waiting for thread"
+        ActivityInstance.where(status: :awaiting_activity_thread).each do |instance|
+          setup_activity_process(instance)
+          @handled_activities << instance.id
+        end
+
+        time_til_next_loop = next_loop - Time.now
+        if time_til_next_loop > 0
+          sleep time_til_next_loop
+        end
       end
+    rescue SignalException => e # Note, this won't catch SIGKILL signals
+      logger.info "Caught signal, dropping all activities."
 
-      time_til_next_loop = next_loop - Time.now
-      if time_til_next_loop > 0
-        sleep time_til_next_loop
+      @handled_activities.each do |activity_id|
+        activity = ActivityInstance.find_by(id: activity_id)
+        next unless activity
+
+        activity.status = :awaiting_activity_thread
+        activity.save(validate: false)
       end
     end
   end
