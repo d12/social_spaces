@@ -9,7 +9,7 @@ class DrawIt::EventHandlers::Guess < EventHandler
     user = storage[:users].find{|u| u[:id] == data["user_id"]}
     return if user[:has_guessed_current_word]
 
-    if(data["message"].downcase == storage[:chosen_word])
+    if(data["message"].downcase == storage[:chosen_word].downcase)
       user[:has_guessed_current_word] = true
       user[:score] += (11 - correct_players_count)
 
