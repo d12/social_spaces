@@ -27,6 +27,7 @@ class DrawIt::EventHandlers::OutOfTime < EventHandler
 
     storage[:words_to_choose] = DrawIt::WORDS.sample(3)
     storage[:given_letters] = storage[:chosen_word]
+    storage[:ran_out_of_time] = true
     storage[:status] = "choosing"
   end
 

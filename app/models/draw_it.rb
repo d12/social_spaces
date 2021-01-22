@@ -49,7 +49,8 @@ class DrawIt < ActivityInstance
       :drawing_user_index,
       :words_to_choose,
       :given_letters,
-      :round_number
+      :round_number,
+      :ran_out_of_time,
     ).merge({
       "time_til_round_end" => time_til_round_end
     }).deep_transform_keys { |k|
@@ -78,6 +79,7 @@ class DrawIt < ActivityInstance
       round_number: 1,
       round_expire_time: nil,
       letter_reveal_time: nil,
+      ran_out_of_time: false,
     }
   end
 

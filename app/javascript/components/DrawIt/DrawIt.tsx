@@ -36,6 +36,7 @@ export interface GameState {
   givenLetters: string;
   roundNumber: number;
   timeTilRoundEnd?: number;
+  ranOutOfTime: boolean;
 }
 
 export enum StrokeType {

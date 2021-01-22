@@ -599,6 +599,8 @@ export default function Drawing({ user, subscription, gameState, events, message
     <Typography variant="h3">{gameState.users[gameState.drawingUserIndex].name} is choosing a word...</Typography>
   </Grid>;
 
+  const outOfTimeText = gameState.ranOutOfTime ? "Out of time!" : "";
+
   const revealText = gameState.status === "choosing" && gameState.givenLetters && <Grid
     container
     className={classes.canvasTextContainer}
@@ -606,7 +608,7 @@ export default function Drawing({ user, subscription, gameState, events, message
     justify="center"
     alignItems="center"
   >
-    <Typography variant="h3">The word was {gameState.givenLetters}!</Typography>
+    <Typography variant="h3">{outOfTimeText} The word was {gameState.givenLetters}!</Typography>
   </Grid>;
 
   const transitionStyles = {
@@ -651,7 +653,7 @@ export default function Drawing({ user, subscription, gameState, events, message
       timeout={canvasOverlayAnimationLength}
       classNames={transitionStyles}
       key={animStep}
-      onEntered={() => setTimeout(nextAnimStep, 1000)}
+      onEntered={() => setTimeout(nextAnimStep, 2000)}
     >
       {animStep === 0 ? <></> : (animStep === 1 ? revealText : (selectAWordMarkupDrawer || selectAWordMarkupOther))}
     </CSSTransition>

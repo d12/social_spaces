@@ -14,6 +14,7 @@ class DrawIt::EventHandlers::SelectWord < EventHandler
     storage[:given_letters] = "_" * storage[:chosen_word].length
     storage[:round_expire_time] = DrawIt::ROUND_LENGTH.from_now.to_i
     storage[:letter_reveal_time] = DrawIt::TIME_BETWEEN_REVEALS.from_now.to_i
+    storage[:ran_out_of_time] = false
 
     # Clear the canvas before the next round
     instance.draw_event_batches.delete_all
