@@ -108,6 +108,7 @@ const useStyles = makeStyles(
       flex: "0 1 auto",
       height: "50px",
       marginTop: "8px",
+      paddingLeft: "4px",
     },
     chatBoxContainer: {
       width: "300px",
@@ -511,7 +512,6 @@ export default function Drawing({ user, subscription, gameState, events, message
   }, [eventsToSend, subscription, isDrawer]);
 
   // Rendering
-
   function controlsMarkup() {
     if (!isDrawer)
       return null;
