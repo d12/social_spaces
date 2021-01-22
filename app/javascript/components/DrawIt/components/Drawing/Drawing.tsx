@@ -19,6 +19,8 @@ import {
   Button,
 } from "@material-ui/core";
 
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+
 import {
   garbageCan
 } from "../../../../images";
@@ -104,11 +106,13 @@ const useStyles = makeStyles(
       borderRadius: "5px",
       padding: "1px",
       flexDirection: "row",
-      width: "100%",
+      width: "min(50vw, 800px)",
       flex: "0 1 auto",
       height: "50px",
       marginTop: "8px",
       paddingLeft: "4px",
+      flexWrap: "nowrap",
+      overflowX: "auto",
     },
     chatBoxContainer: {
       width: "300px",
@@ -136,6 +140,9 @@ const useStyles = makeStyles(
       borderRadius: "50%",
     },
     colorsContainer: {
+      width: "100%",
+      flexWrap: "nowrap",
+      justifyContent: "center",
     },
     message: {
       margin: "5px",
@@ -512,6 +519,8 @@ export default function Drawing({ user, subscription, gameState, events, message
   }, [eventsToSend, subscription, isDrawer]);
 
   // Rendering
+  const smallControls = useMediaQuery('(max-width:1040px)');
+
   function controlsMarkup() {
     if (!isDrawer)
       return null;
@@ -530,7 +539,7 @@ export default function Drawing({ user, subscription, gameState, events, message
       className={classes.controls}
       alignItems="center"
     >
-      <Grid container direction="row" className={classes.colorsContainer} >
+      <Grid container direction="row" className={classes.colorsContainer} style={{ width: smallControls ? "auto" : "100%" }} >
         {colorsMarkup}
         <img onClick={createEraseEvent} className={classes.colorSelector} src={garbageCan}></img>
       </Grid>
