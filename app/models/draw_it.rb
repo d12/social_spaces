@@ -1,10 +1,10 @@
 class DrawIt < ActivityInstance
-  register_event "draw", DrawIt::EventHandlers::Draw
-  register_event "user_joined", DrawIt::EventHandlers::UserJoined
-  register_event "user_disconnected", DrawIt::EventHandlers::UserDisconnected
-  register_event "erase", DrawIt::EventHandlers::Erase
-  register_event "select_word", DrawIt::EventHandlers::SelectWord
-  register_event "guess", DrawIt::EventHandlers::Guess
+  register_event "draw", EventHandlers::Draw
+  register_event "user_joined", EventHandlers::UserJoined
+  register_event "user_disconnected", EventHandlers::UserDisconnected
+  register_event "erase", EventHandlers::Erase
+  register_event "select_word", EventHandlers::SelectWord
+  register_event "guess", EventHandlers::Guess
 
   WORDS = File.readlines("db/data/draw_it_words.txt", chomp: true).uniq
 
