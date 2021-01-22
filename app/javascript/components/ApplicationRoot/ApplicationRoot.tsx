@@ -49,7 +49,7 @@ export default function ApplicationRoot(props: Props) {
   const [user] = useState<User>(props.user);
 
   function withAppFrame(markup: JSX.Element, theme?: Theme, showGroupTab: boolean = false) {
-    if(!theme)
+    if (!theme)
       theme = plainTheme;
 
     return (
@@ -61,24 +61,24 @@ export default function ApplicationRoot(props: Props) {
     );
   }
 
-  if(user === undefined || user === null) {
+  if (user === undefined || user === null) {
     return <SplashPage groupKey={props.groupKey} />
   }
 
-  if(group === undefined || group === null) {
+  if (group === undefined || group === null) {
     return <GroupIndex setGroupCallback={setGroup} user={user} />
   }
 
-  if(group.activity === undefined || group.activity === null) {
+  if (group.activity === undefined || group.activity === null) {
     return withAppFrame(<ActivityIndex user={user} activities={props.allActivities} setGroupCallback={setGroup} />, null, true);
   }
 
-  switch(group.activity.name) {
+  switch (group.activity.name) {
     case "Clicker":
       return withAppFrame(<Clicker user={user} group={group} />);
 
     case "TwoTruthsOneLie":
-      return withAppFrame(<TwoTruthsOneLie user={user} group={group}/>, twoTruthsOneLieTheme);
+      return withAppFrame(<TwoTruthsOneLie user={user} group={group} />, twoTruthsOneLieTheme);
 
     case "DrawIt":
       return withAppFrame(<DrawIt user={user} group={group} />, drawItTheme);

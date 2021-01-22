@@ -34,7 +34,7 @@ let plainTheme: Theme = createMuiTheme({
   },
   overrides: {
     MuiButton: {
-      textSecondary: { color: "#FFFFFF"},
+      textSecondary: { color: "#FFFFFF" },
       containedSecondary: {
         backgroundColor: "#0B1624",
         color: "#FFFFFF",

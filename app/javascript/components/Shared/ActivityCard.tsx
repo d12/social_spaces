@@ -39,7 +39,7 @@ interface Props {
 export function ActivityCard({ children, size }: Props) {
   const classes = useStyles();
 
-  if(!size)
+  if (!size)
     size = "sm";
 
   const sizeToClassMap = {

@@ -70,7 +70,7 @@ export interface ChatMessage {
   correct: boolean;
 }
 
-function deserializeDrawEvent(input: Array<number>) : DrawEvent {
+function deserializeDrawEvent(input: Array<number>): DrawEvent {
   return {
     strokeType: input[0],
     strokeColor: input[1],
@@ -99,24 +99,24 @@ export default function DrawIt({
         { channel: "ActivityChannel", activity_instance_id: group.activity.id },
         {
           received: (message: Message) => {
-            if(message.gameState){
+            if (message.gameState) {
               setGameState(message.gameState);
             }
 
-            if(message.chatMessage){
+            if (message.chatMessage) {
               setMessages(messages => [...messages, message.chatMessage]);
             }
 
-            if(message.authorId == user.id)
+            if (message.authorId == user.id)
               return;
 
-            if(message.drawEvents){
+            if (message.drawEvents) {
               events.current = [...events.current, ...message.drawEvents.map(drawEvent => {
                 return { type: "draw", data: deserializeDrawEvent(drawEvent) }
               })];
             }
 
-            if(message.erase === true) {
+            if (message.erase === true) {
               events.current = [...events.current, { type: "erase" }];
             }
           },
@@ -129,13 +129,13 @@ export default function DrawIt({
         { channel: "UserChannel", user_id: user.id },
         {
           received: (message: Message) => {
-            if(message.drawEvents && message.authorId !== user.id){
+            if (message.drawEvents && message.authorId !== user.id) {
               events.current = [...events.current, ...message.drawEvents.map(e => {
-                return {type: "draw", data: deserializeDrawEvent(e)}
+                return { type: "draw", data: deserializeDrawEvent(e) }
               })];
             }
 
-            if(message.wordForDrawer) {
+            if (message.wordForDrawer) {
               setWordForDrawer(message.wordForDrawer);
             }
           }
@@ -148,5 +148,5 @@ export default function DrawIt({
     return <p>Loading...</p>;
   }
 
-  return <Drawing user={user} subscription={activitySubscription} gameState={gameState} events={events} messages={messages} wordForDrawer={wordForDrawer}/>
+  return <Drawing user={user} subscription={activitySubscription} gameState={gameState} events={events} messages={messages} wordForDrawer={wordForDrawer} />
 }

@@ -303,8 +303,8 @@ export default function Drawing({ user, subscription, gameState, events, message
     return canvasRef.current.getContext("2d");
   }
 
-  function addEvent(event: Event){
-    events.current =  [...events.current, event];
+  function addEvent(event: Event) {
+    events.current = [...events.current, event];
     processDrawEvents();
   }
 
@@ -420,7 +420,7 @@ export default function Drawing({ user, subscription, gameState, events, message
       penRef.current.isPenDown = false;
     }
 
-    if(isDrawer){
+    if (isDrawer) {
       canvas.addEventListener("mousedown", mouseDown);
       canvas.addEventListener("mousemove", mouseMove);
       canvas.addEventListener("mouseup", mouseUp);
@@ -438,7 +438,7 @@ export default function Drawing({ user, subscription, gameState, events, message
   // Draw events
   function processDrawEvents() {
     events.current.slice(processIndexPtr.current, events.current.length).forEach((e: Event) => {
-      switch(e.type) {
+      switch (e.type) {
         case "draw":
           const drawEvent: DrawEvent = e.data;
           const from: Coordinates = { x: drawEvent.x1, y: drawEvent.y1 };
@@ -463,17 +463,17 @@ export default function Drawing({ user, subscription, gameState, events, message
   // Send events
   useEffect(() => {
     async function sendEvents() {
-      if(!isDrawer)
+      if (!isDrawer)
         return;
 
       const len = eventsToSend.current.length;
 
-      if(!haveDrawn){
+      if (!haveDrawn) {
         sendIndexPtr.current = len;
         return;
       }
 
-      if(len === sendIndexPtr.current)
+      if (len === sendIndexPtr.current)
         return;
 
       const selectedEvents: Array<Event> = eventsToSend.current.slice(sendIndexPtr.current, len);
@@ -481,7 +481,7 @@ export default function Drawing({ user, subscription, gameState, events, message
       const drawEvents = selectedEvents.filter((e) => e.type === "draw");
       const eraseEvents = selectedEvents.filter((e) => e.type === "erase");
 
-      if(drawEvents.length > 0) {
+      if (drawEvents.length > 0) {
         subscription.send({
           event: "draw",
           userId: user.id,
@@ -489,7 +489,7 @@ export default function Drawing({ user, subscription, gameState, events, message
         });
       }
 
-      if(eraseEvents.length > 0) {
+      if (eraseEvents.length > 0) {
         subscription.send({
           event: "erase",
           userId: user.id,
@@ -509,7 +509,7 @@ export default function Drawing({ user, subscription, gameState, events, message
   // Rendering
 
   function controlsMarkup() {
-    if(!isDrawer)
+    if (!isDrawer)
       return null;
 
     const colorsMarkup = colors.map((e, index) => {
@@ -518,7 +518,7 @@ export default function Drawing({ user, subscription, gameState, events, message
         style={{ backgroundColor: e, border: index == selectedColor ? "2px solid black" : "" }}
         key={"color-" + index}
         onClick={() => { setSelectedColor(index); selectedColorRef.current = index }}
-        />
+      />
     });
 
     return (<Grid
@@ -541,14 +541,14 @@ export default function Drawing({ user, subscription, gameState, events, message
   });
 
   const messagesMarkup = messages.map((message, index) => {
-    if(message.correct) {
+    if (message.correct) {
       return (<Box className={classes.message} key={index}>
-        <Typography display="inline" style={{color: "#24C024"}}>{message.content}</Typography>
+        <Typography display="inline" style={{ color: "#24C024" }}>{message.content}</Typography>
       </Box>);
     } else {
       return (<Box className={classes.message} key={index}>
         <Typography className={classes.messageAuthor} display="inline">{message.author}: </Typography>
-        <Typography display="inline" style={{color: "#444444"}}>{message.content}</Typography>
+        <Typography display="inline" style={{ color: "#444444" }}>{message.content}</Typography>
       </Box>);
     }
   });
@@ -568,7 +568,7 @@ export default function Drawing({ user, subscription, gameState, events, message
       direction="row"
       justify="space-around"
       alignItems="center"
-      style={{marginTop: "50px", paddingLeft: "25%", paddingRight: "25%"}}
+      style={{ marginTop: "50px", paddingLeft: "25%", paddingRight: "25%" }}
     >
       <Button variant="outlined" color="secondary" onClick={() => selectedWord(0)}>{gameState.wordsToChoose[0]}</Button>
       <Button variant="outlined" color="secondary" onClick={() => selectedWord(1)}>{gameState.wordsToChoose[1]}</Button>
@@ -604,7 +604,7 @@ export default function Drawing({ user, subscription, gameState, events, message
   };
 
   function nextAnimStep() {
-    if(animStep > 1)
+    if (animStep > 1)
       return;
 
     setAnimStep(animStep + 1);
@@ -612,13 +612,13 @@ export default function Drawing({ user, subscription, gameState, events, message
 
   // On choosing
   useEffect(() => {
-    if(gameState.status !== "choosing"){
+    if (gameState.status !== "choosing") {
       setAnimStep(0);
       return;
     }
 
-    if(previousGameState === undefined || previousGameState.status != "choosing"){
-      if(revealText) {
+    if (previousGameState === undefined || previousGameState.status != "choosing") {
+      if (revealText) {
         setAnimStep(1);
       } else {
         setAnimStep(2)
@@ -628,7 +628,7 @@ export default function Drawing({ user, subscription, gameState, events, message
 
   // On choosing -> drawing
   useEffect(() => {
-    if(gameState.status == "drawing" && previousGameState && previousGameState.status != "drawing"){
+    if (gameState.status == "drawing" && previousGameState && previousGameState.status != "drawing") {
       erase(getCanvasContext());
     }
   });
@@ -645,7 +645,7 @@ export default function Drawing({ user, subscription, gameState, events, message
   </SwitchTransition>;
 
   const lettersMarkup = gameState.givenLetters && ((isDrawer && wordForDrawer) || gameState.givenLetters).split("").map((letter, index) => {
-    if(letter === "_"){
+    if (letter === "_") {
       return <Box key={index} className={classes.letterUnfilled} />
     } else {
       return <Box key={index} className={classes.letterFilled}>
@@ -703,7 +703,7 @@ export default function Drawing({ user, subscription, gameState, events, message
                 style={{ width: "auto", justifyContent: "space-between" }}
                 wrap="nowrap"
               >
-                <div className={classes.canvasWrapper} style={{position: canvasOverlayElement ? "relative" : "static"}}>
+                <div className={classes.canvasWrapper} style={{ position: canvasOverlayElement ? "relative" : "static" }}>
                   <canvas
                     ref={canvasRef}
                     className={classes.canvas}
@@ -729,18 +729,18 @@ export default function Drawing({ user, subscription, gameState, events, message
                   {messagesMarkup}
                 </Grid>
                 <Box className={classes.textFieldContainer}>
-                <CustomTextField
-                  placeholder={textboxText}
-                  variant="outlined"
-                  autoComplete="off"
-                  inputRef={textFieldRef}
-                  value={guess}
-                  onChange={(e) => setGuess(e.target.value)}
-                  onKeyDown={sendMessageIfEnter}
-                  fullWidth={true}
-                  autoFocus
-                  disabled={currentUser.hasGuessedCurrentWord || isDrawer}
-                />
+                  <CustomTextField
+                    placeholder={textboxText}
+                    variant="outlined"
+                    autoComplete="off"
+                    inputRef={textFieldRef}
+                    value={guess}
+                    onChange={(e) => setGuess(e.target.value)}
+                    onKeyDown={sendMessageIfEnter}
+                    fullWidth={true}
+                    autoFocus
+                    disabled={currentUser.hasGuessedCurrentWord || isDrawer}
+                  />
                 </Box>
               </Grid>
             </Grid>

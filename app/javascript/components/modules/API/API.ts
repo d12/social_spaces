@@ -12,7 +12,7 @@ export function createGroup() {
 }
 
 export function joinGroup(groupKey: string) {
-  return Post(ApiRoutes.JOIN_GROUP, {groupKey: groupKey});
+  return Post(ApiRoutes.JOIN_GROUP, { groupKey: groupKey });
 }
 
 export function leaveGroup() {
@@ -20,11 +20,11 @@ export function leaveGroup() {
 }
 
 export function startActivity(activity: string) {
-  return Post(ApiRoutes.START_ACTIVITY, {activity: activity});
+  return Post(ApiRoutes.START_ACTIVITY, { activity: activity });
 }
 
 export function endActivity(groupKey: string) {
-  return Post(ApiRoutes.END_ACTIVITY, {groupKey: groupKey})
+  return Post(ApiRoutes.END_ACTIVITY, { groupKey: groupKey })
 }
 
 export function getGroup(groupKey: string) {
@@ -54,7 +54,7 @@ function Get(route: string) {
 }
 
 function Post(route: ApiRoutes, body?: object) {
-  if(body === null || body === undefined)
+  if (body === null || body === undefined)
     body = {}
 
   return fetch(route, {

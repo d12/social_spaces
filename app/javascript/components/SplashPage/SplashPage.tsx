@@ -4,7 +4,7 @@ interface Props {
   groupKey?: string;
 }
 
-export default function SplashPage({ groupKey } : Props) {
+export default function SplashPage({ groupKey }: Props) {
   const loginUrl = groupKey ? `/login/google/join/${groupKey}` : "/login/google";
   const csrf = document.querySelector("meta[name='csrf-token']").getAttribute("content");
 

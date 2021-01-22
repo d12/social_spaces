@@ -90,7 +90,7 @@ export default function ActivityIndex({
   const [openDialog, setOpenDialog] = React.useState(null);
 
   const activityMarkup = activities.map((activity, index) => (
-    <Grid item key={"activity-"+ activity.name}>
+    <Grid item key={"activity-" + activity.name}>
       <Grid
         container
         direction="column"
@@ -197,7 +197,7 @@ export default function ActivityIndex({
   async function joinActivity(activityIndex: number) {
     const response = await API.startActivity(activities[activityIndex].name);
 
-    if(response["errors"] === undefined) {
+    if (response["errors"] === undefined) {
       setGroupCallback(response);
     } else {
       alert(response["errors"]);

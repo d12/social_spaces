@@ -114,7 +114,7 @@ export function AppFrame({
   toasts,
 }: Props) {
   useEffect(() => {
-    if(group){
+    if (group) {
       consumer.subscriptions.create(
         { channel: "GroupChannel", group_id: group.key },
         {
@@ -277,11 +277,11 @@ export function AppFrame({
     <>
       {alertMarkup || noticeMarkup}
       <Grid
-       container
-       direction="row"
-       justify="flex-start"
-       align-items="flex-start"
-       className={classes.container}
+        container
+        direction="row"
+        justify="flex-start"
+        align-items="flex-start"
+        className={classes.container}
       >
         <Grid item className={classes.mainBody}>
           <AppBar color="transparent" variant="outlined" position="relative" className={classes.appBarBorder}>
@@ -321,6 +321,6 @@ export function AppFrame({
 
   async function LeaveGroup() {
     await API.leaveGroup();
-    document.location.href="/";
+    document.location.href = "/";
   }
 }

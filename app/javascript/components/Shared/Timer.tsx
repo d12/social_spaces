@@ -5,7 +5,7 @@ import { Box, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((_theme) => ({
-timerContainer: {
+  timerContainer: {
     border: "2px solid red",
     borderRadius: "8px",
     padding: "2px",
@@ -13,7 +13,7 @@ timerContainer: {
     paddingRight: "8px",
     width: "65px",
     textAlign: "center",
-    },
+  },
 }));
 
 interface Props {
@@ -21,13 +21,13 @@ interface Props {
 }
 
 function formatTime(totalSeconds: number): string {
-    if(totalSeconds < 0)
-        totalSeconds = 0;
+  if (totalSeconds < 0)
+    totalSeconds = 0;
 
-    const minutes = Math.floor(totalSeconds / 60);
-    const seconds = totalSeconds % 60;
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
 
-    return `${minutes.toString()}:${seconds.toString().padStart(2, "0")}`
+  return `${minutes.toString()}:${seconds.toString().padStart(2, "0")}`
 }
 
 export function Timer(props: Props) {
@@ -37,7 +37,7 @@ export function Timer(props: Props) {
 
   useEffect(() => {
     const intervalID = window.setInterval(() => {
-        setSeconds(seconds => seconds - 1);
+      setSeconds(seconds => seconds - 1);
     }, 1000)
 
     return () => { clearInterval(intervalID) }
@@ -49,7 +49,7 @@ export function Timer(props: Props) {
 
   return (
     <Box className={classes.timerContainer}>
-        <Typography variant="h3">{formatTime(seconds)}</Typography>
+      <Typography variant="h3">{formatTime(seconds)}</Typography>
     </Box>
   );
 }

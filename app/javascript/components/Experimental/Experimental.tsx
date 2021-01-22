@@ -12,7 +12,7 @@ import PlayingCardHand, {
 
 import { Typography } from "@material-ui/core";
 
-interface GameState {}
+interface GameState { }
 
 interface GroupUser {
   id: number;
