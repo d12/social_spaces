@@ -7,6 +7,8 @@ class DrawIt < ActivityInstance
   register_event "guess", EventHandlers::Guess
 
   WORDS = File.readlines("db/data/draw_it_words.txt", chomp: true).uniq
+  ROUND_LENGTH = 30.seconds
+  TIME_BETWEEN_REVEALS = 10.seconds
 
   # Note we're delete_all'ing here for perf. This skips callbacks, so be careful there.
   has_many :draw_event_batches, class_name: "DrawIt::DrawEventBatch", foreign_key: "activity_instance_id", dependent: :delete_all
@@ -35,6 +37,7 @@ class DrawIt < ActivityInstance
     puts "tock"
 
     check_time_til_round_end
+    check_time_til_letter_reveal
 
     save
   end
@@ -74,6 +77,7 @@ class DrawIt < ActivityInstance
       given_letters: nil,
       round_number: 1,
       round_expire_time: nil,
+      letter_reveal_time: nil,
     }
   end
 
@@ -88,6 +92,17 @@ class DrawIt < ActivityInstance
   def check_time_til_round_end
     if time_til_round_end&.negative? && storage[:status] == "drawing"
       EventHandlers::OutOfTime.new(instance: self).call({})
+    end
+  end
+
+  def time_til_letter_reveal
+    return unless storage[:letter_reveal_time]
+    (Time.at(storage[:letter_reveal_time]) - Time.now).to_i
+  end
+
+  def check_time_til_letter_reveal
+    if time_til_letter_reveal&.negative? && storage[:status] == "drawing"
+      EventHandlers::RevealLetter.new(instance: self).call({})
     end
   end
 end
