@@ -4,7 +4,7 @@ class Clicker < ActivityInstance
   end
 
   def self.description
-    "A button that increments a multiplayer-synced counter. Endless hours of fun for the whole family!"
+    "Just a multi-player button clicking game. FUN!"
   end
 
   def self.min_users
