@@ -193,7 +193,7 @@ export function AppFrame({
   // TODO: Break all the group panel stuff into it's own component
 
   const hostId = group && group.hostId;
-  const inviteUrl = window.location.origin + "/groups/" + group.key;
+  const inviteUrl = group && window.location.origin + "/groups/" + group.key;
 
   const groupBarMarkup = group && showGroupTab && (
     <Grid item>
