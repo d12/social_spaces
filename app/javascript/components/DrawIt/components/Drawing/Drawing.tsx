@@ -19,6 +19,10 @@ import {
   Button,
 } from "@material-ui/core";
 
+import {
+  garbageCan
+} from "../../../../images";
+
 export interface Props {
   user: User;
   subscription: Cable;
@@ -528,7 +532,7 @@ export default function Drawing({ user, subscription, gameState, events, message
     >
       <Grid container direction="row" className={classes.colorsContainer} >
         {colorsMarkup}
-        <button onClick={createEraseEvent}>Erase</button>
+        <img onClick={createEraseEvent} className={classes.colorSelector} src={garbageCan}></img>
       </Grid>
     </Grid>);
   }

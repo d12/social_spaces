@@ -1,4 +1,3 @@
-// pngs
 export { default as yam } from "./yam.png";
 export { default as info } from "./info.png";
 export { default as cardSpade } from "./card_spade.svg";
@@ -14,3 +13,4 @@ export { default as blobGreen } from "./blob-green.svg";
 export { default as blobPink } from "./blob-pink.svg";
 export { default as blobPurple } from "./blob-purple.svg";
 export { default as blobYellow } from "./blob-yellow.svg";
+export { default as garbageCan } from "./garbage-can.png";
