@@ -690,7 +690,7 @@ export default function Drawing({ user, subscription, gameState, events, message
               alignItems="center"
               className={classes.statusBarFlex}
             >
-              <Timer seconds={gameState.timeTilRoundEnd} />
+              <Timer seconds={gameState.status == "choosing" ? 0 : gameState.timeTilRoundEnd} />
               <Typography variant="h3" style={{ marginLeft: "25px" }}>Round {gameState.roundNumber} of 3</Typography>
               <Grid
                 container
