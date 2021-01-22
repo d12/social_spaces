@@ -579,13 +579,13 @@ export default function Drawing({ user, subscription, gameState, events, message
     <Grid
       container
       direction="row"
-      justify="space-around"
+      justify="center"
       alignItems="center"
-      style={{ marginTop: "50px", paddingLeft: "25%", paddingRight: "25%" }}
+      style={{ marginTop: "50px" }}
     >
-      <Button variant="outlined" color="secondary" onClick={() => selectedWord(0)}>{gameState.wordsToChoose[0]}</Button>
-      <Button variant="outlined" color="secondary" onClick={() => selectedWord(1)}>{gameState.wordsToChoose[1]}</Button>
-      <Button variant="outlined" color="secondary" onClick={() => selectedWord(2)}>{gameState.wordsToChoose[2]}</Button>
+      <Button style={{ margin: "10px" }} variant="outlined" color="secondary" onClick={() => selectedWord(0)}>{gameState.wordsToChoose[0]}</Button>
+      <Button style={{ margin: "10px" }} variant="outlined" color="secondary" onClick={() => selectedWord(1)}>{gameState.wordsToChoose[1]}</Button>
+      <Button style={{ margin: "10px" }} variant="outlined" color="secondary" onClick={() => selectedWord(2)}>{gameState.wordsToChoose[2]}</Button>
     </Grid>
   </Grid>;
 

@@ -102,14 +102,14 @@ export default function DrawIt({
           received: (message: Message) => {
             if (message.gameState) {
               setGameState(message.gameState);
+
+              if (message.gameState.status == "choosing")
+                setWordForDrawer(null);
             }
 
             if (message.chatMessage) {
               setMessages(messages => [...messages, message.chatMessage]);
             }
-
-            if (message.gameState.status == "choosing")
-              setWordForDrawer(null);
 
             if (message.authorId == user.id)
               return;
