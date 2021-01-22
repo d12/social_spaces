@@ -33,6 +33,10 @@ class DrawIt < ActivityInstance
 
   def tick
     puts "tock"
+
+    check_time_til_round_end
+
+    save
   end
 
   def client_data
@@ -79,5 +83,11 @@ class DrawIt < ActivityInstance
     return unless storage[:round_expire_time]
 
     (Time.at(storage[:round_expire_time]) - Time.now).to_i
+  end
+
+  def check_time_til_round_end
+    if time_til_round_end&.negative? && storage[:status] == "drawing"
+      EventHandlers::OutOfTime.new(instance: self).call({})
+    end
   end
 end
