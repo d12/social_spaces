@@ -90,7 +90,7 @@ class DrawIt < ActivityInstance
   end
 
   def check_time_til_round_end
-    if time_til_round_end&.negative? && storage[:status] == "drawing"
+    if time_til_round_end&.<=(0) && storage[:status] == "drawing"
       EventHandlers::OutOfTime.new(instance: self).call({})
     end
   end
@@ -101,7 +101,7 @@ class DrawIt < ActivityInstance
   end
 
   def check_time_til_letter_reveal
-    if time_til_letter_reveal&.negative? && storage[:status] == "drawing"
+    if time_til_letter_reveal&.<=(0) && storage[:status] == "drawing"
       EventHandlers::RevealLetter.new(instance: self).call({})
     end
   end
