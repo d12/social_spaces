@@ -324,7 +324,7 @@ export function AppFrame({
               </Link>
             </Toolbar>
           </AppBar>
-          <Container className={classes.activityContainer}>{children} {endActivityMarkup}</Container>
+          <Container className={classes.activityContainer}>{children}</Container>
         </Grid>
         {groupBarMarkup}
         {/* <Box className={classes.video} id="video-container">
