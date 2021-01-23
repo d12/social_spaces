@@ -44,7 +44,8 @@ export function Timer(props: Props) {
   }, []);
 
   useEffect(() => {
-    setSeconds(props.seconds);
+    if (Math.abs(seconds - props.seconds) > 2)
+      setSeconds(props.seconds);
   }, [props])
 
   return (
