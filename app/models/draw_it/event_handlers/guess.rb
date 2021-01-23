@@ -11,29 +11,39 @@ class DrawIt::EventHandlers::Guess < EventHandler
     return if data["message"].length > MESSAGE_LENGTH_LIMIT
     return unless storage[:status] == "drawing"
 
-    user = storage[:users].find{|u| u[:id] == data["user_id"]}
-    return if user[:has_guessed_current_word]
+    ar_user = User.find(data["user_id"])
+    result = ar_user.rate_limit do
+      user = storage[:users].find{|u| u[:id] == data["user_id"]}
 
-    if(data["message"].downcase == storage[:chosen_word].downcase)
-      user[:has_guessed_current_word] = true
-      user[:score] += (11 - correct_players_count)
+      return if user[:has_guessed_current_word]
 
-      send_websocket_message(instance, {
-        chatMessage: { content: "#{data['user_name']} guessed the word.", type: "correct" },
-        authorId: data["user_id"]
-      })
-    else
-      send_websocket_message(instance, {
-        chatMessage: { author: data["user_name"], content: data["message"], type: "guess" },
-        authorId: data["user_id"]
-      })
+      if(data["message"].downcase == storage[:chosen_word].downcase)
+        user[:has_guessed_current_word] = true
+        user[:score] += (11 - correct_players_count)
+
+        send_websocket_message(instance, {
+          chatMessage: { content: "#{data['user_name']} guessed the word.", type: "correct" },
+          authorId: data["user_id"]
+        })
+      else
+        send_websocket_message(instance, {
+          chatMessage: { author: data["user_name"], content: data["message"], type: "guess" },
+          authorId: data["user_id"]
+        })
+      end
+
+      if(storage[:users].count{ |u| u[:has_guessed_current_word] } == storage[:users].count - 1)
+        next_turn
+      end
+
+      send_gamestate_to_all(instance)
     end
 
-    if(storage[:users].count{ |u| u[:has_guessed_current_word] } == storage[:users].count - 1)
-      next_turn
+    if(result == :rate_limitted)
+      send_websocket_message(ar_user, {
+        chatMessage: { content: "Calm yo tits.", type: "ratelimit" }
+      })
     end
-
-    send_gamestate_to_all(instance)
   end
 
   private

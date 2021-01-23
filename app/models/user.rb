@@ -87,4 +87,29 @@ class User < ApplicationRecord
   def websocket_key
     UserChannel.broadcasting_key(self.id)
   end
+
+  RATE_LIMIT_INTERACTION_COUNT = 7
+  RATE_LIMIT_MAX_TIME_PER_INTERACTION_COUNT = 2.seconds
+
+  # Wraps an interaction in a user-scoped rate limit.
+  # If the user has exceeded the rate limit, the block will not be yielded.
+  def rate_limit(&block)
+    last_five_interactions.unshift(Time.zone.now)
+
+    if(last_five_interactions.length <= RATE_LIMIT_INTERACTION_COUNT)
+      # Not rate limited, we haven't registered 5 total interactions yet
+      save
+
+      return yield
+    end
+
+    last_five_interactions.pop
+    save
+
+    if(last_five_interactions.first - last_five_interactions.last < RATE_LIMIT_MAX_TIME_PER_INTERACTION_COUNT)
+      return :rate_limitted
+    end
+
+    yield
+  end
 end
