@@ -9,6 +9,7 @@ class DrawIt::EventHandlers::Guess < EventHandler
 
   def call(data)
     return if data["message"].length > MESSAGE_LENGTH_LIMIT
+    return unless storage[:status] == "drawing"
 
     user = storage[:users].find{|u| u[:id] == data["user_id"]}
     return if user[:has_guessed_current_word]

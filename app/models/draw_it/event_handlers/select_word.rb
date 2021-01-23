@@ -16,6 +16,10 @@ class DrawIt::EventHandlers::SelectWord < EventHandler
     storage[:letter_reveal_time] = DrawIt::TIME_BETWEEN_REVEALS.from_now.to_i
     storage[:ran_out_of_time] = false
 
+    storage[:users].each do |user|
+      user[:has_guessed_current_word] = false
+    end
+
     # Clear the canvas before the next round
     instance.draw_event_batches.delete_all
     send_websocket_message(instance, { erase: true, authorId: data["user_id"] })
