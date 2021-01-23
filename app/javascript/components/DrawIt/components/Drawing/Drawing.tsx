@@ -472,6 +472,13 @@ export default function Drawing({ user, subscription, gameState, events, message
     processDrawEvents();
   }, [events.current]);
 
+  // Sometimes weird things prevent the above hook from firing, so also manually flush the draw events every 200ms
+  useEffect(() => {
+    const flushDrawEventsInterval = setInterval(processDrawEvents, 200);
+
+    return () => clearInterval(flushDrawEventsInterval);
+  }, [])
+
   // Send events
   useEffect(() => {
     async function sendEvents() {

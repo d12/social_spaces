@@ -37,6 +37,7 @@ export interface GameState {
   roundNumber: number;
   timeTilRoundEnd?: number;
   ranOutOfTime: boolean;
+  version: number;
 }
 
 export enum StrokeType {
@@ -93,6 +94,7 @@ export default function DrawIt({
   const events = useRef<Array<Event>>([]);
   const [messages, setMessages] = useState<Array<ChatMessage>>([]);
   const [wordForDrawer, setWordForDrawer] = useState<string>();
+  const currentVersion = useRef<number>(-1);
 
   useEffect(() => {
     setActivitySubscription(
@@ -100,8 +102,9 @@ export default function DrawIt({
         { channel: "ActivityChannel", activity_instance_id: group.activity.id },
         {
           received: (message: Message) => {
-            if (message.gameState) {
+            if (message.gameState && message.gameState.version > currentVersion.current) {
               setGameState(message.gameState);
+              currentVersion.current = message.gameState.version;
 
               if (message.gameState.status == "choosing")
                 setWordForDrawer(null);

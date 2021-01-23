@@ -3,6 +3,8 @@ class ActivityInstance < ApplicationRecord
 
   before_create :initialize_storage
 
+  before_save :increment_storage_version, if: :will_save_change_to_storage?
+
   belongs_to :group
 
   delegate :users, to: :group
@@ -145,5 +147,10 @@ class ActivityInstance < ApplicationRecord
 
   def broadcast_activity_end_message(reason:)
     GroupChannel.broadcast_activity_end_message(group, reason: reason)
+  end
+
+  def increment_storage_version
+    storage[:version] ||= 0
+    storage[:version] += 1
   end
 end
