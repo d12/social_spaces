@@ -22,7 +22,7 @@ export default function SplashPage({ groupKey }: Props) {
         <input id="name" name="name" type="textbox"></input>
         <input type="submit" value="Submit"></input>
         <input type="hidden" name="authenticity_token" value={csrf}></input>
-        <input type="hidden" name="groupKey" value={groupKey}></input>
+        <input type="hidden" name="groupKey" value={groupKey || ""}></input>
       </form>
     </>
   );
