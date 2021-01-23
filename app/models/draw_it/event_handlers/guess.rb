@@ -1,11 +1,15 @@
 class DrawIt::EventHandlers::Guess < EventHandler
   attr_reader :instance
 
+  MESSAGE_LENGTH_LIMIT = 400
+
   def initialize(instance:)
     @instance = instance
   end
 
   def call(data)
+    return if data["message"].length > MESSAGE_LENGTH_LIMIT
+
     user = storage[:users].find{|u| u[:id] == data["user_id"]}
     return if user[:has_guessed_current_word]
 
