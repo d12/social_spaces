@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import { Cable } from "actioncable";
 
 import { User, Group } from "../ApplicationRoot";
@@ -69,7 +69,7 @@ export interface Event {
 export interface ChatMessage {
   author: string;
   content: string;
-  type: "correct" | "guess" | "notice" | "ratelimit";
+  type: "correct" | "guess" | "notice" | "ratelimit" | "winnersmessage";
 }
 
 function deserializeDrawEvent(input: Array<number>): DrawEvent {
@@ -96,6 +96,23 @@ export default function DrawIt({
   const [wordForDrawer, setWordForDrawer] = useState<string>();
   const currentVersion = useRef<number>(-1);
 
+  const cachedGameState = useRef<GameState>();
+
+  function shouldSeeWinnersMessages(): boolean {
+    const gameState = cachedGameState.current;
+    if (!gameState) {
+      return false;
+    } else if (gameState.users[gameState.drawingUserIndex].id == user.id) {
+      // User is drawing, all good
+      return true;
+    } else if (gameState.users.find(u => u.id == user.id).hasGuessedCurrentWord) {
+      // User has guessed word, all good
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   useEffect(() => {
     setActivitySubscription(
       consumer.subscriptions.create(
@@ -104,6 +121,7 @@ export default function DrawIt({
           received: (message: Message) => {
             if (message.gameState && message.gameState.version > currentVersion.current) {
               setGameState(message.gameState);
+              cachedGameState.current = message.gameState;
               currentVersion.current = message.gameState.version;
 
               if (message.gameState.status == "choosing")
@@ -111,6 +129,9 @@ export default function DrawIt({
             }
 
             if (message.chatMessage) {
+              if (message.chatMessage.type === "winnersmessage" && !shouldSeeWinnersMessages())
+                return;
+
               setMessages(messages => [...messages, message.chatMessage]);
             }
 

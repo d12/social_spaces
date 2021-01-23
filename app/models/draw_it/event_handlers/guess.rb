@@ -9,15 +9,17 @@ class DrawIt::EventHandlers::Guess < EventHandler
 
   def call(data)
     return if data["message"].length > MESSAGE_LENGTH_LIMIT
-    return unless storage[:status] == "drawing"
 
     ar_user = User.find(data["user_id"])
     result = ar_user.rate_limit do
       user = storage[:users].find{|u| u[:id] == data["user_id"]}
 
-      return if user[:has_guessed_current_word]
-
-      if(data["message"].downcase == storage[:chosen_word].downcase)
+      if(storage[:status] == "drawing" && (user[:has_guessed_current_word] || storage[:users][storage[:drawing_user_index]][:id] == user[:id]))
+        send_websocket_message(instance, {
+          chatMessage: { author: data["user_name"], content: data["message"], type: "winnersmessage" },
+          authorId: data["user_id"]
+        })
+      elsif(storage[:status] == "drawing" && (data["message"].downcase == storage[:chosen_word].downcase))
         user[:has_guessed_current_word] = true
         user[:score] += (11 - correct_players_count)
 

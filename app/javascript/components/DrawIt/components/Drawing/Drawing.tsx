@@ -564,7 +564,7 @@ export default function Drawing({ user, subscription, gameState, events, message
     switch (message.type) {
       case "correct":
         return (<Box className={classes.message} key={index}>
-          <Typography display="inline" style={{ color: "#24C024" }}>{message.content}</Typography>
+          <Typography display="inline" style={{ color: "#24D024" }}>{message.content}</Typography>
         </Box>);
       case "notice":
         return (<Box className={classes.message} key={index}>
@@ -578,6 +578,11 @@ export default function Drawing({ user, subscription, gameState, events, message
         return (<Box className={classes.message} key={index}>
           <Typography className={classes.messageAuthor} display="inline">{message.author}: </Typography>
           <Typography display="inline" style={{ color: "#444444" }}>{message.content}</Typography>
+        </Box>);
+      case "winnersmessage":
+        return (<Box className={classes.message} key={index}>
+          <Typography className={classes.messageAuthor} display="inline" style={{ color: "#94C094" }}>{message.author}: </Typography>
+          <Typography display="inline" style={{ color: "#94C094" }}>{message.content}</Typography>
         </Box>);
     }
   });
@@ -686,9 +691,11 @@ export default function Drawing({ user, subscription, gameState, events, message
     }
   });
 
-  const textboxText = isDrawer ? "You can't guess, you're drawing!"
-    : (currentUser.hasGuessedCurrentWord ? "You got it! Waiting for others..."
-      : "Type guesses here");
+  const textboxText = gameState.status != "drawing" ? "Type guesses here" : (
+    isDrawer ? "Chat with people who've guessed." : (
+      currentUser.hasGuessedCurrentWord ? "Chat with people who've guessed." : "Type guesses here"
+    )
+  );
 
   return (
     <>
@@ -771,7 +778,6 @@ export default function Drawing({ user, subscription, gameState, events, message
                     onKeyDown={sendMessageIfEnter}
                     fullWidth={true}
                     autoFocus
-                    disabled={currentUser.hasGuessedCurrentWord || isDrawer}
                   />
                 </Box>
               </Grid>

@@ -17,6 +17,7 @@ import {
   Box,
   TextField,
   Paper,
+  Tooltip,
 } from "@material-ui/core";
 import { ThemeProvider, makeStyles, Theme } from "@material-ui/core/styles";
 import Toast, { ToastSeverity } from "./Toast";
@@ -73,7 +74,8 @@ const useStyles = makeStyles((_theme) => ({
     marginBottom: (drawerWidth - buttonWidth) / 2,
     marginTop: "auto",
   },
-  logoutWithDrawer: {
+  topBarButton: {
+    marginLeft: "40px",
   },
   container: {
     flexWrap: "nowrap",
@@ -265,13 +267,33 @@ export function AppFrame({
     <Toast message={noticeToast} severity={ToastSeverity.INFO} />
   );
 
-  const endActivityMarkup = group && group.activity && (user.id == group.hostId) && (
-    <>
-      <br />
-      <br />
-      <button onClick={EndActivity}>End Activity</button>
-    </>
+  const endActivityHostMarkup = group && group.activity && (user.id == group.hostId) && (
+    <Link
+      onClick={EndActivity}
+      underline="none"
+      color="textSecondary"
+      className={classes.topBarButton}
+    >
+      <Button color="inherit">End Activity</Button>
+    </Link>
   );
+
+  const endActivityNotHostMarkup = group && group.activity && (user.id !== group.hostId) && (
+    <Tooltip
+      title={<span style={{ fontSize: "14px" }}>Only the host can end the activity.</span>}
+    >
+      <Link
+        onClick={EndActivity}
+        underline="none"
+        color="textSecondary"
+        className={classes.topBarButton}
+      >
+        <Button color="inherit" disabled={true}>End Activity</Button>
+      </Link>
+    </Tooltip>
+  );
+
+  const endActivityMarkup = endActivityHostMarkup || endActivityNotHostMarkup
 
   return (
     <>
@@ -289,13 +311,14 @@ export function AppFrame({
               <Typography variant="h6" className={classes.appTitle}>
                 Social Spaces
               </Typography>
+              {endActivityMarkup}
               <Link
                 rel="nofollow"
                 data-method="delete"
                 href="/logout"
                 underline="none"
                 color="textSecondary"
-                className={group ? classes.logoutWithDrawer : ""}
+                className={classes.topBarButton}
               >
                 <Button color="inherit">Logout</Button>
               </Link>
