@@ -661,6 +661,7 @@ export default function Drawing({ user, subscription, gameState, events, message
   useEffect(() => {
     if (gameState.status == "drawing" && previousGameState && previousGameState.status != "drawing") {
       erase(getCanvasContext());
+      setGuess("");
     }
   });
 
