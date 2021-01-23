@@ -21,6 +21,12 @@ class ActivityLoop
       next_cycle_time = begin_time + TICK_FREQUENCY
 
       remove_disconnected_users
+      unless @instance.valid?
+        logger.info("Instance is no longer valid, terminating.")
+
+        @instance.destroy
+        terminate_thread
+      end
 
       begin
         @instance.tick

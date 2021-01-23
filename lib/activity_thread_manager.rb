@@ -58,6 +58,9 @@ class ActivityThreadManager
       Thread.new {
         ActivityLoop.new(instance).run
       }
+    else
+      logger.info("Found unhealthy activity #{instance.id}, terminating")
+      instance.destroy
     end
   end
 
