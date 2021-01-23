@@ -19,12 +19,12 @@ class DrawIt::EventHandlers::Guess < EventHandler
       user[:score] += (11 - correct_players_count)
 
       send_websocket_message(instance, {
-        chatMessage: { author: data["user_name"], content: "#{data['user_name']} guessed the word.", correct: true },
+        chatMessage: { content: "#{data['user_name']} guessed the word.", type: "correct" },
         authorId: data["user_id"]
       })
     else
       send_websocket_message(instance, {
-        chatMessage: { author: data["user_name"], content: data["message"], correct: false },
+        chatMessage: { author: data["user_name"], content: data["message"], type: "guess" },
         authorId: data["user_id"]
       })
     end

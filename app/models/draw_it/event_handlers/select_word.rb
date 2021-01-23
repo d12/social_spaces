@@ -20,6 +20,11 @@ class DrawIt::EventHandlers::SelectWord < EventHandler
       user[:has_guessed_current_word] = false
     end
 
+    send_websocket_message(instance, {
+      chatMessage: { content: "#{user.name} has started drawing.", type: "notice" },
+      authorId: data["user_id"]
+    })
+
     # Clear the canvas before the next round
     instance.draw_event_batches.delete_all
     send_websocket_message(instance, { erase: true, authorId: data["user_id"] })

@@ -69,7 +69,7 @@ export interface Event {
 export interface ChatMessage {
   author: string;
   content: string;
-  correct: boolean;
+  type: "correct" | "guess" | "notice";
 }
 
 function deserializeDrawEvent(input: Array<number>): DrawEvent {

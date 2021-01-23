@@ -561,15 +561,20 @@ export default function Drawing({ user, subscription, gameState, events, message
   });
 
   const messagesMarkup = messages.map((message, index) => {
-    if (message.correct) {
-      return (<Box className={classes.message} key={index}>
-        <Typography display="inline" style={{ color: "#24C024" }}>{message.content}</Typography>
-      </Box>);
-    } else {
-      return (<Box className={classes.message} key={index}>
-        <Typography className={classes.messageAuthor} display="inline">{message.author}: </Typography>
-        <Typography display="inline" style={{ color: "#444444" }}>{message.content}</Typography>
-      </Box>);
+    switch (message.type) {
+      case "correct":
+        return (<Box className={classes.message} key={index}>
+          <Typography display="inline" style={{ color: "#24C024" }}>{message.content}</Typography>
+        </Box>);
+      case "notice":
+        return (<Box className={classes.message} key={index}>
+          <Typography display="inline" style={{ color: "#FCBA03" }}>{message.content}</Typography>
+        </Box>);
+      case "guess":
+        return (<Box className={classes.message} key={index}>
+          <Typography className={classes.messageAuthor} display="inline">{message.author}: </Typography>
+          <Typography display="inline" style={{ color: "#444444" }}>{message.content}</Typography>
+        </Box>);
     }
   });
 
