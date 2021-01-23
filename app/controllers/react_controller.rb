@@ -6,10 +6,7 @@ class ReactController < ApplicationController
   ]
 
   def show
-    if current_group && group_key
-      # Redirect user to / if they're already in a group.
-      # React wouldn't care, this is more to not confuse the user if they try to join
-      # a new group while in a group already
+    if is_group_key_parameter_bad?
       redirect_to react_path
       return
     end
@@ -28,13 +25,20 @@ class ReactController < ApplicationController
     params["room_key"]
   end
 
+  def is_group_key_parameter_bad?
+    group_key && !Group.find_by(key: group_key)
+  end
+
   def add_user_to_group_after_auth
     key = session[:join_group_after_auth] || group_key
+    return unless key
 
-    if !current_group &&
-      current_user &&
-      key &&
-      group = Group.find_by(key: key)
+    if current_user && key && (group = Group.find_by(key: key)) && (group != current_user.group)
+
+      # Better UX when you follow an invite link to get removed from your current group and join the new one.
+      if(current_user.group)
+        current_user.group.remove_user(current_user)
+      end
 
       group.add_user(current_user)
     end
