@@ -299,7 +299,7 @@ export default function Drawing({ user, subscription, gameState, events, message
   ]
 
   function sendMessageIfEnter(e: { keyCode: number; }) {
-    if (e.keyCode === 13) {
+    if (e.keyCode === 13 && guess != "") {
       subscription.send({
         event: "guess",
         userId: user.id,
