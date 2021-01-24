@@ -3,7 +3,7 @@ import { Cable } from "actioncable";
 
 import { ClientEvent } from "../../subscription-manager";
 import { GameState, ActivityUser } from "../../TwoTruthsOneLie";
-import { ActivityCard, ScoreBoard, PlayerScore} from "../../../Shared";
+import { ActivityCard, ScoreBoard, PlayerScore } from "../../../Shared";
 import { makeStyles } from "@material-ui/core/styles";
 
 import {
@@ -85,7 +85,7 @@ export function Voting({ userId, subscription, gameState, currentUserData }: Pro
   const [votedIndex, setVotedIndex] = useState<number>(null);
 
   useEffect(() => {
-    if(userVotedStatementIndex !== votedIndex)
+    if (userVotedStatementIndex !== votedIndex)
       setVotedIndex(userVotedStatementIndex);
   }, [gameState]);
 
@@ -93,7 +93,7 @@ export function Voting({ userId, subscription, gameState, currentUserData }: Pro
     const revealTextMarkup = allUsersHaveVoted ? (
       <Typography
         variant="h3"
-        style={{color: statement.isLie ? "#BD201C" : "#20BD1C"}}
+        style={{ color: statement.isLie ? "#BD201C" : "#20BD1C" }}
         className={classes.revealText}
       >
         {statement.isLie ? "Lie" : "Truth"}
@@ -128,17 +128,17 @@ export function Voting({ userId, subscription, gameState, currentUserData }: Pro
   let message = null;
   let messageColor = "#000000";
 
-  if(currentUserData.hasVoted && !allUsersHaveVoted) {
+  if (currentUserData.hasVoted && !allUsersHaveVoted) {
     message = "Waiting for other's to vote...";
-  } else if(isMyTurn && allUsersHaveVoted) {
+  } else if (isMyTurn && allUsersHaveVoted) {
     const personWord = numberOfWrongUsers === 1 ? "person" : "people";
     message = numberOfWrongUsers === 0 ?
-    "Oof, you didn't fool anyone this time!" :
-    `You fooled ${numberOfWrongUsers} ${personWord}!`;
-  } else if(allUsersHaveVoted && usersVoteWasCorrect) {
+      "Oof, you didn't fool anyone this time!" :
+      `You fooled ${numberOfWrongUsers} ${personWord}!`;
+  } else if (allUsersHaveVoted && usersVoteWasCorrect) {
     message = "You got it, good guess!";
     messageColor = "#20BD1C";
-  } else if(allUsersHaveVoted && !usersVoteWasCorrect) {
+  } else if (allUsersHaveVoted && !usersVoteWasCorrect) {
     message = "Incorrect!";
     messageColor = "#BD201C";
   }
@@ -148,26 +148,27 @@ export function Voting({ userId, subscription, gameState, currentUserData }: Pro
   );
 
   const messageMarkup = message && <Grid
-      container
-      alignItems="center"
-      justify="center"
-      className={classes.message}
-    >
-      <Typography variant="h2" style={{color: messageColor}}>{message}</Typography>
-      {nextTurnButtonMarkup}
-    </Grid>;
+    container
+    alignItems="center"
+    justify="center"
+    className={classes.message}
+  >
+    <Typography variant="h2" style={{ color: messageColor }}>{message}</Typography>
+    {nextTurnButtonMarkup}
+  </Grid>;
 
   const scores: PlayerScore[] = gameState.users.map((user) => {
     return {
       name: user.name,
       score: user.score,
+      id: user.id,
     };
   });
 
   const header = allUsersHaveVoted ?
     "Results:" : (isMyTurn ?
-    `Other players are guessing your lie` :
-    `Which is ${currentUser.name}'s lie?`);
+      `Other players are guessing your lie` :
+      `Which is ${currentUser.name}'s lie?`);
 
   return (
     <>
@@ -197,7 +198,7 @@ export function Voting({ userId, subscription, gameState, currentUserData }: Pro
   );
 
   function submitVote(voteIndex: number): void {
-    if(isMyTurn || allUsersHaveVoted)
+    if (isMyTurn || allUsersHaveVoted)
       return;
 
     setVotedIndex(voteIndex);

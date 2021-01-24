@@ -16,8 +16,8 @@ import {
 
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 
-function blobForIndex(index: number) {
-  switch (index % 5) {
+function blobForId(id: number) {
+  switch (id % 5) {
     case 0: return blobBlue;
     case 1: return blobGreen;
     case 2: return blobYellow;
@@ -86,6 +86,7 @@ const useStyles = makeStyles((_theme) => ({
 export interface PlayerScore {
   name: string;
   score: number;
+  id: number;
 }
 
 interface Props {
@@ -108,7 +109,7 @@ export function ScoreBoard({ scores, selectedIndex }: Props) {
           alignItems="center"
           style={{ flexWrap: "nowrap" }}
         >
-          <img src={blobForIndex(index)} className={classes.blob} />
+          <img src={blobForId(score.id)} className={classes.blob} />
           <Typography className={classes.name}>{score.name}</Typography>
         </Grid>
         <Grid

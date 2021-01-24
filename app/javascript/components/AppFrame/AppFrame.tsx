@@ -28,6 +28,24 @@ import { API } from "../modules/API";
 
 import { jitsiBackground } from "../../images";
 
+import {
+  blobBlue,
+  blobGreen,
+  blobPink,
+  blobPurple,
+  blobYellow
+} from "../../images";
+
+function blobForId(id: number) {
+  switch (id % 5) {
+    case 0: return blobBlue;
+    case 1: return blobGreen;
+    case 2: return blobYellow;
+    case 3: return blobPurple;
+    case 4: return blobPink;
+  }
+}
+
 declare var JitsiMeetExternalAPI: any;
 
 export interface Props {
@@ -222,7 +240,7 @@ export function AppFrame({
             {group.users.map(({ email, name, gravatarUrl, id }) => (
               <ListItem alignItems="center" key={id}>
                 <ListItemAvatar>
-                  <Avatar alt={name} src={gravatarUrl} />
+                  <Avatar alt={name} src={gravatarUrl || blobForId(id)} />
                 </ListItemAvatar>
                 <ListItemText primary={name} />
                 {hostId == id ? "⭐️" : null}

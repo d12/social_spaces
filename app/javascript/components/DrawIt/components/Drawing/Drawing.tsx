@@ -557,6 +557,7 @@ export default function Drawing({ user, subscription, gameState, events, message
     return {
       name: user.name,
       score: user.score,
+      id: user.id,
     };
   });
 

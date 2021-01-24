@@ -37,7 +37,7 @@ class User < ApplicationRecord
 
   # See https://en.gravatar.com/site/implement/hash/
   def gravatar_url
-    return "https://www.gravatar.com/avatar/" unless email
+    return unless email
 
     downcased_email = email.downcase
     gravatar_hash = Digest::MD5.hexdigest(downcased_email)

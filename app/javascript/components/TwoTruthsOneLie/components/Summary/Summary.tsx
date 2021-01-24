@@ -3,7 +3,7 @@ import { Cable } from "actioncable";
 
 import { ClientEvent } from "../../subscription-manager";
 import { GameState } from "../../TwoTruthsOneLie";
-import { ActivityCard, ScoreBoard, PlayerScore} from "../../../Shared";
+import { ActivityCard, ScoreBoard, PlayerScore } from "../../../Shared";
 import { makeStyles } from "@material-ui/core/styles";
 
 import {
@@ -53,6 +53,7 @@ export function Summary({ userId, subscription, gameState }: Props) {
     return {
       name: user.name,
       score: user.score,
+      id: user.id,
     };
   });
 

@@ -18,7 +18,7 @@ export interface User {
   id: number;
   name: string;
   email?: string;
-  gravatarUrl: string;
+  gravatarUrl?: string;
   jitsiJwt?: string;
 }
 
