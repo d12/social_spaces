@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 
 import { Box, Typography } from "@material-ui/core";
 
@@ -34,6 +34,7 @@ export function Timer(props: Props) {
   const classes = useStyles();
 
   const [seconds, setSeconds] = useState<number>(props.seconds);
+  const prevPropsSeconds = usePrevious(props.seconds);
 
   useEffect(() => {
     const intervalID = window.setInterval(() => {
@@ -43,14 +44,24 @@ export function Timer(props: Props) {
     return () => { clearInterval(intervalID) }
   }, []);
 
+  // If the difference between current seconds and new seconds is less than 2 seconds, don't bother changing the timer
   useEffect(() => {
-    if (Math.abs(seconds - props.seconds) > 2)
+    if ((Math.abs(seconds - props.seconds) > 2) && props.seconds != prevPropsSeconds)
       setSeconds(props.seconds);
-  }, [props])
+  }, [props, seconds])
 
   return (
     <Box className={classes.timerContainer}>
       <Typography variant="h3">{formatTime(seconds)}</Typography>
     </Box>
   );
+}
+
+function usePrevious(value: any) {
+  const ref = useRef();
+
+  useEffect(() => {
+    ref.current = value;
+  }, [value]);
+  return ref.current;
 }
