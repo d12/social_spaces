@@ -240,7 +240,7 @@ export function AppFrame({
             {group.users.map(({ email, name, gravatarUrl, id }) => (
               <ListItem alignItems="center" key={id}>
                 <ListItemAvatar>
-                  <Avatar alt={name} src={gravatarUrl || blobForId(id)} />
+                  <Avatar alt={name} src={blobForId(id)} />
                 </ListItemAvatar>
                 <ListItemText primary={name} />
                 {hostId == id ? "⭐️" : null}
