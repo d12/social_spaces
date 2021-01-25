@@ -1,8 +1,6 @@
 Rails.application.routes.draw do
   devise_for :users, :controllers => { :omniauth_callbacks => "users/omniauth_callbacks" }
 
-  mount ActionCable.server => '/cable'
-
   root to: "react#show"
   get "/groups/(:room_key)", to: "react#show", constraints: { room_key: /[a-zA-Z\d]{6}/ }, as: "react"
 

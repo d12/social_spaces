@@ -58,6 +58,15 @@ GEM
       zeitwerk (~> 2.2, >= 2.2.2)
     addressable (2.7.0)
       public_suffix (>= 2.0.2, < 5.0)
+    anycable (1.0.2)
+      anyway_config (>= 1.4.2)
+      grpc (~> 1.17)
+    anycable-rails (1.0.4)
+      actioncable (>= 5)
+      anycable (>= 1.0.0)
+      globalid
+    anyway_config (2.1.0)
+      ruby-next-core (>= 0.11.0)
     babel-source (5.8.35)
     babel-transpiler (0.7.0)
       babel-source (>= 4.0, < 6)
@@ -99,6 +108,9 @@ GEM
       representable (~> 3.0)
       retriable (>= 2.0, < 4.0)
       signet (~> 0.12)
+    google-protobuf (3.14.0)
+    googleapis-common-protos-types (1.0.5)
+      google-protobuf (~> 3.11)
     googleauth (0.12.0)
       faraday (>= 0.17.3, < 2.0)
       jwt (>= 1.4, < 3.0)
@@ -106,6 +118,9 @@ GEM
       multi_json (~> 1.11)
       os (>= 0.9, < 2.0)
       signet (~> 0.14)
+    grpc (1.35.0)
+      google-protobuf (~> 3.14)
+      googleapis-common-protos-types (~> 1.0)
     hashie (4.1.0)
     httpclient (2.8.3)
     i18n (1.8.2)
@@ -224,6 +239,7 @@ GEM
       rspec-mocks (~> 3.9)
       rspec-support (~> 3.9)
     rspec-support (3.9.3)
+    ruby-next-core (0.12.0)
     sass-rails (6.0.0)
       sassc-rails (~> 2.1, >= 2.1.1)
     sassc (2.4.0)
@@ -275,6 +291,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  anycable-rails
   bootsnap (>= 1.4.2)
   byebug
   devise (~> 4.7)
@@ -299,4 +316,4 @@ RUBY VERSION
    ruby 2.6.6p146
 
 BUNDLED WITH
-   1.17.2
+   1.17.3
