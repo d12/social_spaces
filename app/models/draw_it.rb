@@ -30,7 +30,7 @@ class DrawIt < ActivityInstance
   end
 
   def self.max_users
-    8
+    128
   end
 
   def tick
