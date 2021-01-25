@@ -468,13 +468,13 @@ export default function Drawing({ user, subscription, gameState, events, message
     processIndexPtr.current = events.current.length;
   }
 
-  useEffect(() => {
-    processDrawEvents();
-  }, [events.current]);
+  // This mysteriously stopped working, not sure why.
+  // useEffect(() => {
+  //   processDrawEvents();
+  // }, [events.current]);
 
-  // Sometimes weird things prevent the above hook from firing, so also manually flush the draw events every 200ms
   useEffect(() => {
-    const flushDrawEventsInterval = setInterval(processDrawEvents, 200);
+    const flushDrawEventsInterval = setInterval(processDrawEvents, 25);
 
     return () => clearInterval(flushDrawEventsInterval);
   }, [])
