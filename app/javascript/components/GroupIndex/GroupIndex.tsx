@@ -23,7 +23,7 @@ import {
   notEmptyString,
 } from "@shopify/react-form";
 
-import { yam } from "images";
+import { joinTeam, createTeam } from "images";
 import { AppFrame } from "../AppFrame";
 import { User, Group } from "../ApplicationRoot";
 import { API } from "../modules/API";
@@ -135,7 +135,7 @@ export default function GroupIndex({ alertToast, noticeToast, setGroupCallback, 
                       spacing={3}
                     >
                       <Grid item>
-                        <img src={yam} />
+                        <img src={joinTeam} />
                       </Grid>
                       <Grid item>
                         <Typography variant="h5">Join a group</Typography>
@@ -160,7 +160,7 @@ export default function GroupIndex({ alertToast, noticeToast, setGroupCallback, 
                         spacing={3}
                       >
                         <Grid item>
-                          <img src={yam} />
+                          <img src={createTeam} />
                         </Grid>
                         <Grid item>
                           <Typography variant="h5">Create new group</Typography>

@@ -14,3 +14,5 @@ export { default as blobPink } from "./blob-pink.svg";
 export { default as blobPurple } from "./blob-purple.svg";
 export { default as blobYellow } from "./blob-yellow.svg";
 export { default as garbageCan } from "./garbage-can.png";
+export { default as joinTeam } from "./join-team.svg";
+export { default as createTeam } from "./create-team.svg";
