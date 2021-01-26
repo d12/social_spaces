@@ -1,0 +1,13 @@
+#!/usr/bin/env ruby
+
+require "logger"
+
+logger = Logger.new(STDOUT)
+logger.level = Logger::INFO
+
+logger.info "Loading Rails env..."
+
+require_relative "../config/environment"
+require "activity_clock"
+
+ActivityClock.new(logger).run

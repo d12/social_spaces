@@ -2,3 +2,4 @@ server: bundle exec rails s
 assets: bundle exec bin/webpack-dev-server
 anycable: bundle exec anycable
 ws: anycable-go --port=8080
+activity-clock: bundle exec bin/activity-clock

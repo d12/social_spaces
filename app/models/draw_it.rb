@@ -34,8 +34,6 @@ class DrawIt < ActivityInstance
   end
 
   def tick
-    puts "tock"
-
     check_time_til_round_end
     check_time_til_letter_reveal
 
