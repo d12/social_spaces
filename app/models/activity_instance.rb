@@ -77,9 +77,6 @@ class ActivityInstance < ApplicationRecord
     end
 
     handler.new(instance: self).call(data)
-
-    save!
-    send_activity_channel_message({ gameState: client_data })
   end
 
   def disconnect_user(user)
