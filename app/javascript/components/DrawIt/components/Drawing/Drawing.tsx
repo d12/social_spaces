@@ -323,6 +323,7 @@ export default function Drawing({ user, subscription, gameState, events, message
   const eventsToSend = useRef<Array<Event>>([]);
 
   function createEraseEvent() {
+    haveDrawn = true;
     const event: Event = { type: "erase" };
 
     addEvent(event);
@@ -449,7 +450,17 @@ export default function Drawing({ user, subscription, gameState, events, message
 
   // Draw events
   function processDrawEvents() {
-    events.current.slice(processIndexPtr.current, events.current.length).forEach((e: Event) => {
+    const EVENTS_TO_PROCESS = 3;
+
+    let amountToProcess;
+    if (events.current.length - processIndexPtr.current > 50) {
+      // Process all events if we're way behind
+      amountToProcess = events.current.length - processIndexPtr.current;
+    } else {
+      amountToProcess = Math.min(events.current.length - processIndexPtr.current, EVENTS_TO_PROCESS);
+    }
+
+    events.current.slice(processIndexPtr.current, processIndexPtr.current + amountToProcess).forEach((e: Event) => {
       switch (e.type) {
         case "draw":
           const drawEvent: DrawEvent = e.data;
@@ -465,7 +476,7 @@ export default function Drawing({ user, subscription, gameState, events, message
       }
     });
 
-    processIndexPtr.current = events.current.length;
+    processIndexPtr.current = processIndexPtr.current + amountToProcess;
   }
 
   // This mysteriously stopped working, not sure why.
