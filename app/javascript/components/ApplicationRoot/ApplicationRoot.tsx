@@ -20,6 +20,7 @@ export interface User {
   email?: string;
   gravatarUrl?: string;
   jitsiJwt?: string;
+  wsToken: string;
 }
 
 export interface Group {

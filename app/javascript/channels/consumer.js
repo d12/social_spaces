@@ -3,4 +3,12 @@
 
 import { createConsumer } from "@rails/actioncable"
 
-export default createConsumer()
+function cableUrl() {
+  return document.querySelector('meta[name="action-cable-url"]').content;
+}
+
+function createAuthedConsumer(token) {
+  return createConsumer(cableUrl() + "?t=" + token);
+}
+
+export default createAuthedConsumer

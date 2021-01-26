@@ -5,7 +5,7 @@ import { User, Group } from "../ApplicationRoot";
 
 import * as _styles from "./TwoTruthsOneLie.module.scss";
 
-import consumer from "../../channels/consumer";
+import createAuthedConsumer from "../../channels/consumer";
 import { Brainstorming, Voting, Summary, WaitingToStart } from "./components";
 
 interface Props {
@@ -52,7 +52,7 @@ enum Event {
 }
 
 export function CurrentUserData(gameState: GameState, id: number): ActivityUser {
-  return gameState.users.filter(function(u) { return u.id == id})[0];
+  return gameState.users.filter(function (u) { return u.id == id })[0];
 }
 
 export default function TwentyQuestions({
@@ -63,6 +63,8 @@ export default function TwentyQuestions({
   const [subscription, setSubscription] = useState<Cable>();
 
   useEffect(() => {
+    const consumer = createAuthedConsumer(user.wsToken);
+
     setSubscription(
       consumer.subscriptions.create(
         { channel: "ActivityChannel", activity_instance_id: group.activity.id },
@@ -79,7 +81,7 @@ export default function TwentyQuestions({
     return <p>Loading...</p>;
   }
 
-  const currentUserData: ActivityUser = gameState.users.filter(function(u) { return u.id == user.id})[0];
+  const currentUserData: ActivityUser = gameState.users.filter(function (u) { return u.id == user.id })[0];
 
   switch (gameState.status) {
     case ActivityStatus.WAITING_TO_START:

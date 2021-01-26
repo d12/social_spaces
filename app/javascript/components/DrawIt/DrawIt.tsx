@@ -3,7 +3,7 @@ import { Cable } from "actioncable";
 
 import { User, Group } from "../ApplicationRoot";
 
-import consumer from "../../channels/consumer";
+import createAuthedConsumer from "../../channels/consumer";
 
 import Drawing from "./components/Drawing/Drawing";
 
@@ -114,6 +114,8 @@ export default function DrawIt({
   }
 
   useEffect(() => {
+    const consumer = createAuthedConsumer(user.wsToken);
+
     setActivitySubscription(
       consumer.subscriptions.create(
         { channel: "ActivityChannel", activity_instance_id: group.activity.id },

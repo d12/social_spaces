@@ -21,7 +21,7 @@ import {
 } from "@material-ui/core";
 import { ThemeProvider, makeStyles, Theme } from "@material-ui/core/styles";
 import Toast, { ToastSeverity } from "./Toast";
-import consumer from "../../channels/consumer";
+import createAuthedConsumer from "../../channels/consumer";
 
 import { User, Group } from "../ApplicationRoot";
 import { API } from "../modules/API";
@@ -134,6 +134,8 @@ export function AppFrame({
   toasts,
 }: Props) {
   useEffect(() => {
+    const consumer = createAuthedConsumer(user.wsToken);
+
     if (group) {
       consumer.subscriptions.create(
         { channel: "GroupChannel", group_id: group.key },

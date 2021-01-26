@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 
 import * as _styles from "./Clicker.module.scss";
 
-import consumer from "../../channels/consumer";
+import createAuthedConsumer from "../../channels/consumer";
 
 import { User, Group } from "../ApplicationRoot";
 
@@ -27,6 +27,8 @@ export default function Clicker({
   }
 
   useEffect(() => {
+    const consumer = createAuthedConsumer(user.wsToken);
+
     setSubscription(
       consumer.subscriptions.create(
         { channel: "ActivityChannel", activity_instance_id: group.activity.id },

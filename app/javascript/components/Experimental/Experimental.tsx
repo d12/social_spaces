@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import consumer from "../../channels/consumer";
+import createAuthedConsumer from "../../channels/consumer";
 
 import { AppFrame } from "../AppFrame";
 
@@ -46,6 +46,8 @@ export default function Experimental({
   const [flipped, setFlipped] = useState(true);
 
   useEffect(() => {
+    const consumer = createAuthedConsumer(userId);
+
     setSubscription(
       consumer.subscriptions.create(
         { channel: "ActivityChannel", activity_instance_id: instanceId },

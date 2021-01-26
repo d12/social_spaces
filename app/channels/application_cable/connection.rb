@@ -8,14 +8,12 @@ module ApplicationCable
 
     private
 
-    def find_verified_user # this checks whether a user is authenticated with devise
-      if verified_user = env['warden'].user
-        verified_user
-      elsif verified_guest = User.find_by(id: @request.session["guest_user_id"], guest: true)
-        verified_guest
-      else
+    def find_verified_user
+      unless user = User.from_jwt(@request.params[:t])
         reject_unauthorized_connection
       end
+
+      user
     end
   end
 end

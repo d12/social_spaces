@@ -30,6 +30,7 @@ class User < ApplicationRecord
 
   def to_h(authenticated: false)
     json = as_json
+    json["wsToken"] = ws_jwt if authenticated
     # json["jitsiJwt"] = jitsi_jwt if authenticated
 
     json
@@ -111,5 +112,39 @@ class User < ApplicationRecord
     end
 
     yield
+  end
+
+  def ws_jwt
+    pem = OpenSSL::PKey::RSA.new(ENV["WS_TOKEN_PEM"])
+
+    payload = {
+      aud: "socialspaces",
+      exp: Time.now.to_i + (6 * 60 * 60), # 6 hours
+      room: "*",
+      sub: id.to_s
+    }
+
+    headers = {
+      alg: "RS256",
+      typ: "JWT",
+    }
+
+    JWT.encode(payload, pem, "RS256", headers)
+  end
+
+  def self.from_jwt(jwt)
+    pem = OpenSSL::PKey::RSA.new(ENV["WS_TOKEN_PEM"])
+    public_key = pem.public_key
+
+    user_id = JWT.decode(jwt, nil, false)[0]["sub"]&.to_i
+
+    decoded_token = JWT.decode(jwt, public_key, true, { algorithm: "RS256" })
+    if decoded_token[0]["sub"]&.to_i == user_id
+      User.find_by(id: user_id)
+    else
+      nil
+    end
+  rescue JWT::VerificationError, JWT::DecodeError
+    nil
   end
 end
