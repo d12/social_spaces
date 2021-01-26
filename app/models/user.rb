@@ -136,14 +136,9 @@ class User < ApplicationRecord
     pem = OpenSSL::PKey::RSA.new(ENV["WS_TOKEN_PEM"])
     public_key = pem.public_key
 
-    user_id = JWT.decode(jwt, nil, false)[0]["sub"]&.to_i
-
     decoded_token = JWT.decode(jwt, public_key, true, { algorithm: "RS256" })
-    if decoded_token[0]["sub"]&.to_i == user_id
-      User.find_by(id: user_id)
-    else
-      nil
-    end
+
+    User.find_by(id: user_id)
   rescue JWT::VerificationError, JWT::DecodeError
     nil
   end
