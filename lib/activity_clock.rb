@@ -1,3 +1,8 @@
+# WARNING: The Clock will send multiple ticks per second to activities if there are multiple clocks running at once.
+#          If two ticks were sent to an activity at almost the same time, it's possible to get weird "double-actions"
+#          like skipping someone's turn, or moving 2 spaces instead of one. TODO: Solve this with locking. If the lock
+#          is held on an activity, the clock can move on.
+
 class ActivityClock
   attr_reader :logger
 
