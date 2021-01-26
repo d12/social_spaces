@@ -31,6 +31,8 @@ class DrawIt::EventHandlers::SelectWord < EventHandler
 
     send_websocket_message(user, { wordForDrawer: storage[:chosen_word] })
 
+    instance.save!
+
     send_gamestate_to_all(instance)
   end
 

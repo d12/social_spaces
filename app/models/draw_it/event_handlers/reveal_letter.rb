@@ -22,6 +22,9 @@ class DrawIt::EventHandlers::RevealLetter < EventHandler
     index_to_reveal = hidden_letters_indices.sample
 
     storage[:given_letters][index_to_reveal] = storage[:chosen_word][index_to_reveal]
+
+    instance.save
+    send_gamestate_to_all(instance)
   end
 
   def get_hidden_letter_indicies

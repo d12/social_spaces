@@ -29,6 +29,9 @@ class DrawIt::EventHandlers::OutOfTime < EventHandler
     storage[:given_letters] = storage[:chosen_word]
     storage[:ran_out_of_time] = true
     storage[:status] = "choosing"
+
+    instance.save!
+    send_gamestate_to_all(instance)
   end
 
   def give_points_to_drawer

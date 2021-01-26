@@ -38,6 +38,7 @@ class DrawIt::EventHandlers::Guess < EventHandler
         next_turn
       end
 
+      instance.save!
       send_gamestate_to_all(instance)
     end
 

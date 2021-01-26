@@ -16,6 +16,7 @@ class DrawIt::EventHandlers::UserDisconnected < EventHandler
       next_turn
     end
 
+    instance.save!
     send_gamestate_to_all(instance)
   end
 

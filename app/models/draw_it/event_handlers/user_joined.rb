@@ -22,6 +22,8 @@ class DrawIt::EventHandlers::UserJoined < EventHandler
     end
 
     send_websocket_message(user, { drawEvents: draw_events })
+
+    instance.save!
     send_gamestate_to_all(instance)
   end
 
