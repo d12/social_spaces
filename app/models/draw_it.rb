@@ -40,7 +40,7 @@ class DrawIt < ActivityInstance
     save
   end
 
-  def client_data
+  def game_state
     storage.slice(
       :users,
       :status,
@@ -55,6 +55,18 @@ class DrawIt < ActivityInstance
     }).deep_transform_keys { |k|
        k.camelcase(:lower)
     }
+  end
+
+  def user_data(user)
+    data = {
+      drawEvents: draw_event_batches.order(:created_at).pluck(:draw_data).flatten(1)
+    }
+
+    if(storage[:users][storage[:drawing_user_index]][:id] == user.id)
+      data[:wordForDrawer] = storage[:chosen_word]
+    end
+
+    data
   end
 
   # The initial value to use for a instances save state

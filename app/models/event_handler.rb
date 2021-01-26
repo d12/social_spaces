@@ -2,7 +2,7 @@ class EventHandler
   def send_gamestate_to_all(instance)
     instance.save
 
-    send_websocket_message(instance, { gameState: instance.client_data })
+    send_websocket_message(instance, { gameState: instance.game_state })
   end
 
   def send_websocket_message(entity, message)

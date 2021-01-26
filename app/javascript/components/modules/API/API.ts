@@ -2,9 +2,15 @@ enum ApiRoutes {
   CREATE_GROUP = "/api/groups/create",
   START_ACTIVITY = "/api/activities/start",
   END_ACTIVITY = "/api/activities/end",
+  USER_DATA_FOR_ACTIVITY = "/api/activities/user_data",
   LEAVE_GROUP = "/api/groups/leave",
   JOIN_GROUP = "/api/groups/join",
   GET_GROUP = "/api/groups/",
+}
+
+interface UserDataForActivityPayload {
+  drawEvents: Array<Array<number>>;
+  wordForDrawer: string;
 }
 
 export function createGroup() {
@@ -27,6 +33,10 @@ export function endActivity(groupKey: string) {
   return Post(ApiRoutes.END_ACTIVITY, { groupKey: groupKey })
 }
 
+export function getUserDataForActivity(): Promise<UserDataForActivityPayload> {
+  return Get(ApiRoutes.USER_DATA_FOR_ACTIVITY);
+}
+
 export function getGroup(groupKey: string) {
   return Get(ApiRoutes.GET_GROUP + groupKey);
 }
@@ -37,6 +47,7 @@ const APIWrapper = {
   leaveGroup: leaveGroup,
   startActivity: startActivity,
   endActivity: endActivity,
+  getUserDataForActivity: getUserDataForActivity,
   getGroup: getGroup,
 }
 

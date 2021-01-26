@@ -22,8 +22,7 @@ class Experimental < ActivityInstance
   # All the data required for a client to bootstrap itself
   # E.g. When a client joins midway, they need enough information
   # to render the current state of the game
-  def client_data
-    reload
+  def game_state
     {}
   end
 

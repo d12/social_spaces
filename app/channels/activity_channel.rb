@@ -4,7 +4,7 @@ class ActivityChannel < ApplicationCable::Channel
 
     stream_from broadcasting_key
 
-    ActionCable.server.broadcast(broadcasting_key, {gameState: instance.client_data})
+    ActionCable.server.broadcast(broadcasting_key, {gameState: instance.game_state})
   end
 
   def receive(data)

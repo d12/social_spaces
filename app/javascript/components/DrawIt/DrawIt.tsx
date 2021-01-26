@@ -7,6 +7,8 @@ import createAuthedConsumer from "../../channels/consumer";
 
 import Drawing from "./components/Drawing/Drawing";
 
+import { API } from "../modules/API";
+
 interface Props {
   user: User;
   group: Group;
@@ -113,6 +115,19 @@ export default function DrawIt({
     }
   }
 
+  async function getUserActivityData() {
+    const response = await API.getUserDataForActivity();
+    if (response.drawEvents.length > 0) {
+      events.current = [...events.current, ...response.drawEvents.map(drawEvent => {
+        return { type: "draw", data: deserializeDrawEvent(drawEvent) }
+      })];
+    }
+
+    if (response.wordForDrawer) {
+      setWordForDrawer(response.wordForDrawer);
+    }
+  }
+
   useEffect(() => {
     const consumer = createAuthedConsumer(user.wsToken);
 
@@ -176,6 +191,8 @@ export default function DrawIt({
         },
       )
     );
+
+    getUserActivityData();
   }, []);
 
   if (!activitySubscription || !gameState || !gameState.users.find(u => u.id == user.id)) {

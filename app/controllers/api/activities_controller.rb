@@ -30,5 +30,13 @@ module Api
 
       render json: {}, status: 200
     end
+
+    def user_data
+      unless current_user&.group&.activity
+        render json: { errors: ["Must be in an activity to get data"] }
+      end
+
+      render json: current_user.group.activity.user_data(current_user), status: 200
+    end
   end
 end

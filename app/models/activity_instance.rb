@@ -54,15 +54,19 @@ class ActivityInstance < ApplicationRecord
   end
 
   # All the data required for a client to set its local state
-  # E.g. When a client joins midway, they need enough information
-  # to render the current state of the game
-  def client_data
+  # Note that this data is global and sent to all users.
+  # For user-specific data, use #user_data
+  def game_state
     # Transform keys to camelCase as JS will expect
     storage.deep_transform_keys{ |k| k.camelcase(:lower) }
   end
 
   # Used by the game loop. Not currently in use.
   def tick
+    raise NotImplementedError
+  end
+
+  def user_data(user)
     raise NotImplementedError
   end
 

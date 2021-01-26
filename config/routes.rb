@@ -19,5 +19,6 @@ Rails.application.routes.draw do
     post "/groups/leave", to: "groups#leave" # todo, this should be a delete
     post "/activities/start", to: "activities#start"
     post "/activities/end", to: "activities#end"
+    get "/activities/user_data", to: "activities#user_data"
   end
 end

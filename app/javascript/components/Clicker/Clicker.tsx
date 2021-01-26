@@ -6,8 +6,6 @@ import createAuthedConsumer from "../../channels/consumer";
 
 import { User, Group } from "../ApplicationRoot";
 
-import { API } from "../modules/API";
-
 interface Props {
   user: User;
   group: Group;

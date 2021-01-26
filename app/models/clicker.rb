@@ -25,13 +25,13 @@ class Clicker < ActivityInstance
     storage[:count] += 1
     save!
 
-    send_activity_channel_message({ gameState: client_data })
+    send_activity_channel_message({ gameState: game_state })
   end
 
   # All the data required for a client to bootstrap itself
   # E.g. When a client joins midway, they need enough information
   # to render the current state of the game
-  def client_data
+  def game_state
     { count: storage[:count] }
   end
 
