@@ -6,7 +6,7 @@ class DrawIt::EventHandlers::Draw < EventHandler
   end
 
   def call(data)
-    # DrawIt::DrawEventBatch.create(activity_instance: instance, draw_data: data["draw_events"])
+    DrawIt::DrawEventBatch.create(activity_instance: instance, draw_data: data["draw_events"])
 
     send_websocket_message(instance, { drawEvents: data["draw_events"], authorId: data["user_id"] })
   end
