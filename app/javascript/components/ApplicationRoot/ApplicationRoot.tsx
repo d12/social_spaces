@@ -21,6 +21,7 @@ export interface User {
   gravatarUrl?: string;
   jitsiJwt?: string;
   wsToken: string;
+  blobId: number;
 }
 
 export interface Group {

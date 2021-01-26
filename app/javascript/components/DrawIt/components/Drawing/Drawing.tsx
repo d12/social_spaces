@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Cable } from "actioncable";
 
-import { User } from "../../../ApplicationRoot";
+import { Group, User } from "../../../ApplicationRoot";
 import { GameState, DrawEvent, StrokeType, Event, ChatMessage } from "../../DrawIt";
 import { makeStyles, useTheme, withStyles } from "@material-ui/core/styles";
 
@@ -27,6 +27,7 @@ import {
 
 export interface Props {
   user: User;
+  group: Group;
   subscription: Cable;
   gameState: GameState;
   events: React.MutableRefObject<Array<Event>>;
@@ -260,7 +261,7 @@ function serializeDrawEvent(event: DrawEvent): Array<number> {
   ];
 }
 
-export default function Drawing({ user, subscription, gameState, events, messages, wordForDrawer }: Props) {
+export default function Drawing({ user, group, subscription, gameState, events, messages, wordForDrawer }: Props) {
   const classes = useStyles(useTheme());
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -568,7 +569,7 @@ export default function Drawing({ user, subscription, gameState, events, message
     return {
       name: user.name,
       score: user.score,
-      id: user.id,
+      blobId: group.users.find((u) => u.id == user.id).blobId,
     };
   });
 

@@ -161,7 +161,7 @@ export function Voting({ userId, subscription, gameState, currentUserData }: Pro
     return {
       name: user.name,
       score: user.score,
-      id: user.id,
+      blobId: user.id,
     };
   });
 

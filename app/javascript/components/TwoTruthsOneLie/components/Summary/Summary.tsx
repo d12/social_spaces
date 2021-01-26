@@ -53,7 +53,7 @@ export function Summary({ userId, subscription, gameState }: Props) {
     return {
       name: user.name,
       score: user.score,
-      id: user.id,
+      blobId: user.id,
     };
   });
 

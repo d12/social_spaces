@@ -199,5 +199,5 @@ export default function DrawIt({
     return <p>Loading...</p>;
   }
 
-  return <Drawing user={user} subscription={activitySubscription} gameState={gameState} events={events} messages={messages} wordForDrawer={wordForDrawer} />
+  return <Drawing user={user} group={group} subscription={activitySubscription} gameState={gameState} events={events} messages={messages} wordForDrawer={wordForDrawer} />
 }

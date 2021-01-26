@@ -24,7 +24,8 @@ class User < ApplicationRecord
 
   def as_json(*)
     super(only: [:id, :name, :email]).merge({
-      gravatarUrl: gravatar_url
+      gravatarUrl: gravatar_url,
+      blobId: blob_id,
     })
   end
 

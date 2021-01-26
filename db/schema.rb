@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_01_26_185233) do
+ActiveRecord::Schema.define(version: 2021_01_26_200828) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -55,8 +55,11 @@ ActiveRecord::Schema.define(version: 2021_01_26_185233) do
     t.datetime "disconnected_at"
     t.boolean "guest", default: false, null: false
     t.datetime "last_five_interactions", default: [], null: false, array: true
+    t.datetime "joined_group_at"
+    t.integer "blob_id"
     t.index ["disconnected_at"], name: "index_users_on_disconnected_at"
     t.index ["group_id"], name: "index_users_on_group_id"
+    t.index ["joined_group_at"], name: "index_users_on_joined_group_at"
   end
 
   add_foreign_key "activity_instances", "groups"
