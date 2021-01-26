@@ -138,7 +138,7 @@ class User < ApplicationRecord
 
     decoded_token = JWT.decode(jwt, public_key, true, { algorithm: "RS256" })
 
-    User.find_by(id: user_id)
+    User.find_by(id: decoded_token[0]["sub"]&.to_i)
   rescue JWT::VerificationError, JWT::DecodeError
     nil
   end
