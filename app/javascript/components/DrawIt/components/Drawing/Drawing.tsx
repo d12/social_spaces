@@ -365,10 +365,10 @@ export default function Drawing({ user, subscription, gameState, events, message
         strokeType: StrokeType.PAINT,
         strokeColor: selectedColorRef.current,
         strokeWidth: 4,
-        x1: from.x,
-        y1: from.y,
-        x2: to.x,
-        y2: to.y,
+        x1: Math.floor(from.x),
+        y1: Math.floor(from.y),
+        x2: Math.floor(to.x),
+        y2: Math.floor(to.y),
       }
 
       const event: Event = { type: "draw", data: drawEvent };
