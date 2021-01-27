@@ -98,6 +98,7 @@ const useStyles = makeStyles(
       marginBottom: "8px",
       width: "min(50vw, 800px)",
       height: "100%",
+      touchAction: "none",
     },
     canvasWrapper: {
       height: "min(100% - 50px - 4px, 800px)",
@@ -435,17 +436,17 @@ export default function Drawing({ user, group, subscription, gameState, events, 
     }
 
     if (isDrawer) {
-      canvas.addEventListener("mousedown", mouseDown);
-      canvas.addEventListener("mousemove", mouseMove);
-      canvas.addEventListener("mouseup", mouseUp);
-      canvas.addEventListener("mouseout", mouseOut);
+      canvas.addEventListener("pointerdown", mouseDown);
+      canvas.addEventListener("pointermove", mouseMove);
+      canvas.addEventListener("pointerup", mouseUp);
+      canvas.addEventListener("pointerout", mouseOut);
     }
 
     return () => {
-      canvas.removeEventListener("mousedown", mouseDown);
-      canvas.removeEventListener("mousemove", mouseMove);
-      canvas.removeEventListener("mouseup", mouseUp);
-      canvas.removeEventListener("mouseout", mouseDown);
+      canvas.removeEventListener("pointerdown", mouseDown);
+      canvas.removeEventListener("pointermove", mouseMove);
+      canvas.removeEventListener("pointerup", mouseUp);
+      canvas.removeEventListener("pointerout", mouseDown);
     }
   }, [canvasRef, isDrawer]);
 
