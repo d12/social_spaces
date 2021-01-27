@@ -77,6 +77,7 @@ class DrawIt < ActivityInstance
         name: user.name,
         score: 0,
         has_guessed_current_word: false,
+        disconnected: false
       }
     end
 

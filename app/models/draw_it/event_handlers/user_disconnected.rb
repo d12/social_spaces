@@ -8,9 +8,9 @@ class DrawIt::EventHandlers::UserDisconnected < EventHandler
   def call(data)
     user = User.find(data[:user])
 
-    user_is_drawing = storage[:users][storage[:drawing_user_index]][:id] == data[:user]
+    storage[:users].find { |u| u[:id] == data[:user] }[:disconnected] = true
 
-    storage[:users].delete_if { |u| u[:id] == data[:user] }
+    user_is_drawing = storage[:users][storage[:drawing_user_index]][:id] == data[:user]
 
     if(user_is_drawing) # Kill the turn, move on to the next one
       next_turn
