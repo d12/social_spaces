@@ -67,7 +67,8 @@ export default function ApplicationRoot(props: Props) {
     return <SplashPage groupKey={props.groupKey} />
   }
 
-  if (group === undefined || group === null) {
+  if (group === undefined || group === null || !group.users.find(u => u.id == user.id)) {
+    history.pushState({}, null, "/groups");
     return <GroupIndex setGroupCallback={setGroup} user={user} />
   }
 
