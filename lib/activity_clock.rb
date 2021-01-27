@@ -23,6 +23,8 @@ class ActivityClock
         run_tick(instance)
       end
 
+      check_for_inactive_users
+
       time_after_loop = Time.now
 
       time_til_next_loop = next_loop - time_after_loop
@@ -44,6 +46,20 @@ class ActivityClock
   rescue StandardError => e
     logger.error("Error ticking activity #{instance.id}")
     logger.error(e.full_message)
+  end
+
+  def check_for_inactive_users
+    User.where("disconnected_at < ?", 10.seconds.ago).each do |user|
+      unless group = user.group
+        logger.info("User #{user.id} had no group. Unsetting disconnected_at time.")
+        user.update(disconnected_at: nil)
+        next
+      end
+
+      group.remove_user(user)
+
+      logger.info("Removed user #{user.id} from group #{group.key} for inactivity.")
+    end
   end
 
   def instances

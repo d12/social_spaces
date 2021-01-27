@@ -37,14 +37,21 @@ class StartActivityService
   private
 
   def validate
+    validate_group
     validate_actor_is_group_host
     validate_group_is_not_in_an_activity
 
     @errors.empty?
   end
 
+  def validate_group
+    unless @group
+      @errors << "You must be in a group to start an activity"
+    end
+  end
+
   def validate_actor_is_group_host
-    unless @actor == @group.host
+    unless @actor == @group&.host
       @errors << "Only the host can start a new game"
     end
   end
@@ -62,8 +69,7 @@ class StartActivityService
   def build_activity
     @activity_instance = ActivityInstance.new(
       group: @group,
-      activity: @activity,
-      status: :awaiting_activity_thread
+      activity: @activity
     )
   end
 end

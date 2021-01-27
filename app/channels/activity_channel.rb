@@ -1,7 +1,5 @@
 class ActivityChannel < ApplicationCable::Channel
   def subscribed
-    current_user.update(disconnected_at: nil)
-
     stream_from broadcasting_key
 
     ActionCable.server.broadcast(broadcasting_key, {gameState: instance.game_state})
@@ -9,10 +7,6 @@ class ActivityChannel < ApplicationCable::Channel
 
   def receive(data)
     response = instance.reload.process_message(data.deep_transform_keys(&:underscore).with_indifferent_access)
-  end
-
-  def unsubscribed
-    current_user.update(disconnected_at: Time.zone.now)
   end
 
   private

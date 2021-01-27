@@ -15,12 +15,13 @@ class Group < ApplicationRecord
   alias_attribute :activity, :activity_instance
 
   def remove_user(user)
-    user.update(group_id: nil)
+    user.update!(group_id: nil, disconnected_at: nil)
     if host_id == user.id
       set_new_host
     end
 
     if users.reload.any?
+      activity&.disconnect_user(user)
       GroupChannel.broadcast_user_left(self)
     else
       activity&.destroy

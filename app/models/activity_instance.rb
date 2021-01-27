@@ -82,15 +82,9 @@ class ActivityInstance < ApplicationRecord
   end
 
   def disconnect_user(user)
-    return unless users.include?(user)
-
-    group.remove_user(user)
-
-    # TODO: Make sure the error we get is "not enough players"
-    if save
+    if valid?
       process_message({event: "user_disconnected", user: user.id})
     else
-      # TODO: Tell people why the game is being destroyed
       self.end_activity(reason: :not_enough_players)
     end
   end

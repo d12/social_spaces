@@ -17,7 +17,12 @@ class GroupChannel < ApplicationCable::Channel
 
   # Callbacks
   def subscribed
+    current_user.update(disconnected_at: nil)
     @group = Group.find_by(key: params[:group_id])
     stream_for @group
+  end
+
+  def unsubscribed
+    current_user.update(disconnected_at: Time.zone.now)
   end
 end
