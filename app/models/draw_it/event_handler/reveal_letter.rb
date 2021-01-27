@@ -1,4 +1,6 @@
 class DrawIt::EventHandler::RevealLetter < EventHandler
+  include DrawIt::EventHandlerHelper
+
   attr_reader :instance
 
   def initialize(instance:)

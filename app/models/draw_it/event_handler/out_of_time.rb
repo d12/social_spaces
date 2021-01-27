@@ -1,4 +1,6 @@
 class DrawIt::EventHandler::OutOfTime < EventHandler
+  include DrawIt::EventHandlerHelper
+
   attr_reader :instance
 
   def initialize(instance:)
