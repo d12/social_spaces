@@ -569,7 +569,7 @@ export default function Drawing({ user, group, subscription, gameState, events, 
     return {
       name: user.name,
       score: user.score,
-      blobId: group.users.find((u) => u.id == user.id)?.blobId || 0,
+      blobId: group.users.find((u) => u.id == user.id)?.blobId,
     };
   });
 

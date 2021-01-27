@@ -1,12 +1,17 @@
 import {
     blobBlue,
+    blobGray,
     blobGreen,
     blobPink,
     blobPurple,
     blobYellow
 } from "../../images";
 
-export default function blobForUser(blobNumber: number) {
+export default function blobForUser(blobNumber?: number) {
+    if (!blobNumber) {
+        return blobGray;
+    }
+
     switch (blobNumber % 5) {
         case 0: return blobBlue;
         case 1: return blobGreen;
