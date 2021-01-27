@@ -10,7 +10,9 @@ class DrawIt::EventHandler::UserJoined < EventHandler
   def call(data)
     user = User.find(data[:user_id])
 
-    unless storage[:users].find{|a| a[:id] == data[:user_id]}
+    if existing_user = storage[:users].find{|a| a[:id] == data[:user_id]}
+      existing_user[:disconnected] = false
+    else
       storage[:users].push({
         id: user.id,
         name: user.name,
