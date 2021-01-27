@@ -21,26 +21,4 @@ class DrawIt::EventHandler::UserDisconnected < EventHandler
     instance.save!
     send_gamestate_to_all(instance)
   end
-
-  private
-
-  def storage
-    instance.storage
-  end
-
-  # TODO: Deduplicate this logic between here and the guess/select_word event
-  def next_turn
-    storage[:drawing_user_index] = (storage[:drawing_user_index] + 1) % storage[:users].count
-    if(storage[:drawing_user_index] == 0)
-      storage[:round_number] += 1
-    end
-
-    storage[:users].each do |u|
-      u[:has_guessed_current_word] = false
-    end
-
-    storage[:words_to_choose] = DrawIt::WORDS.sample(3)
-    storage[:given_letters] = storage[:chosen_word]
-    storage[:status] = "choosing"
-  end
 end

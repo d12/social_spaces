@@ -34,8 +34,4 @@ class DrawIt::EventHandler::UserJoined < EventHandler
   def draw_events
     instance.draw_event_batches.order(:created_at).pluck(:draw_data).flatten(1)
   end
-
-  def storage
-    instance.storage
-  end
 end

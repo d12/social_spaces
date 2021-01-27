@@ -37,10 +37,4 @@ class DrawIt::EventHandler::SelectWord < EventHandler
 
     send_gamestate_to_all(instance)
   end
-
-  private
-
-  def storage
-    instance.storage
-  end
 end
