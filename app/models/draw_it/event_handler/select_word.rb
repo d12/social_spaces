@@ -1,4 +1,4 @@
-class DrawIt::EventHandlers::SelectWord < EventHandler
+class DrawIt::EventHandler::SelectWord < EventHandler
   attr_reader :instance
 
   def initialize(instance:)

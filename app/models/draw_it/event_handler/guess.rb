@@ -1,4 +1,4 @@
-class DrawIt::EventHandlers::Guess < EventHandler
+class DrawIt::EventHandler::Guess < EventHandler
   attr_reader :instance
 
   MESSAGE_LENGTH_LIMIT = 400

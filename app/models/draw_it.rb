@@ -1,10 +1,10 @@
 class DrawIt < ActivityInstance
-  register_event "draw", EventHandlers::Draw
-  register_event "user_joined", EventHandlers::UserJoined
-  register_event "user_disconnected", EventHandlers::UserDisconnected
-  register_event "erase", EventHandlers::Erase
-  register_event "select_word", EventHandlers::SelectWord
-  register_event "guess", EventHandlers::Guess
+  register_event "draw", EventHandler::Draw
+  register_event "user_joined", EventHandler::UserJoined
+  register_event "user_disconnected", EventHandler::UserDisconnected
+  register_event "erase", EventHandler::Erase
+  register_event "select_word", EventHandler::SelectWord
+  register_event "guess", EventHandler::Guess
 
   WORDS = File.readlines("db/data/draw_it_words.txt", chomp: true).uniq
   ROUND_LENGTH = 75.seconds
@@ -106,7 +106,7 @@ class DrawIt < ActivityInstance
 
   def check_time_til_round_end
     if time_til_round_end&.<=(0) && storage[:status] == "drawing"
-      EventHandlers::OutOfTime.new(instance: self).call({})
+      EventHandler::OutOfTime.new(instance: self).call({})
     end
   end
 
@@ -117,7 +117,7 @@ class DrawIt < ActivityInstance
 
   def check_time_til_letter_reveal
     if time_til_letter_reveal&.<=(0) && storage[:status] == "drawing"
-      EventHandlers::RevealLetter.new(instance: self).call({})
+      EventHandler::RevealLetter.new(instance: self).call({})
     end
   end
 end
