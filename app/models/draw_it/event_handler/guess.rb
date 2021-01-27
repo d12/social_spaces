@@ -36,7 +36,7 @@ class DrawIt::EventHandler::Guess < EventHandler
         })
       end
 
-      if(storage[:users].count{ |u| u[:has_guessed_current_word] } == storage[:users].count - 1)
+      if(storage[:users].none?{ |u| !u[:has_guessed_current_word] && !u[:disconnected] && !(u[:id] == storage[:users][storage[:drawing_user_index]][:id]) })
         next_turn
       end
 

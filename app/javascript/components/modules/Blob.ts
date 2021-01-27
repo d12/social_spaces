@@ -8,7 +8,7 @@ import {
 } from "../../images";
 
 export default function blobForUser(blobNumber?: number) {
-    if (!blobNumber) {
+    if (blobNumber === undefined || blobNumber === null) {
         return blobGray;
     }
 
