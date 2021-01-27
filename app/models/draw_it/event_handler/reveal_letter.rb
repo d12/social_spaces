@@ -33,8 +33,4 @@ class DrawIt::EventHandler::RevealLetter < EventHandler
     word = storage[:given_letters]
     (0 ... word.length).find_all { |i| word[i] == "_" }
   end
-
-  def storage
-    instance.storage
-  end
 end
