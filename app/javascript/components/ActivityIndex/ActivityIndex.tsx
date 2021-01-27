@@ -139,10 +139,8 @@ export default function ActivityIndex({
         <DialogTitle id="alert-dialog-title"><strong>{activity.displayName}</strong></DialogTitle>
         <DialogContent>
           <Paper elevation={0} className={classes.dialogActivityImage} />
-          <DialogContentText id="alert-dialog-description">
-            <Box className={classes.activityDescription}>
-              {activity.description}
-            </Box>
+          <DialogContentText id="alert-dialog-description" className={classes.activityDescription}>
+            {activity.description}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
