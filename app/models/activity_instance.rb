@@ -71,6 +71,12 @@ class ActivityInstance < ApplicationRecord
   end
 
   def process_message(data)
+    number_of_connected_users = storage[:users].count {|u| !u[:disconnected] }
+    if(number_of_connected_users < self.class.min_users)
+      end_activity(reason: :not_enough_players)
+      return
+    end
+
     event = data.delete(:event)
     handler = event_handlers[event]
 
