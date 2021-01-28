@@ -30,7 +30,7 @@ class Group < ApplicationRecord
   end
 
   def add_user(user)
-    user.update!(group_id: id, joined_group_at: Time.now, blob_id: generate_blob_id)
+    user.update!(group_id: id, joined_group_at: Time.now)
 
     GroupChannel.broadcast_user_joined(self)
   end
@@ -71,19 +71,5 @@ class Group < ApplicationRecord
     # Generates a random string from a set of easily readable characters
     charset = %w{ 2 3 4 6 7 9 A C D E F G H J K M N P Q R T V W X Y Z}
     self.key = 6.times.map { charset.to_a[rand(charset.size)] }.join
-  end
-
-  def generate_blob_id
-    current_group_blob_ids = users.pluck(:blob_id)
-    h = {}
-
-    NUMBER_OF_BLOBS.times do |i|
-      h[i] = current_group_blob_ids.count { |id| id == i }
-    end
-
-    min_count = h.values.min
-    blob_ids_with_min_count = h.select{ |k, v| v == min_count }.keys
-
-    blob_ids_with_min_count.sample
   end
 end

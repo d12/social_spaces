@@ -8,6 +8,8 @@ class User < ApplicationRecord
   encrypts :token
   encrypts :refresh_token
 
+  before_save :set_blob_id, if: :will_save_change_to_group_id?
+
   def self.from_omniauth(auth)
     return unless auth
 
@@ -142,5 +144,21 @@ class User < ApplicationRecord
     User.find_by(id: decoded_token[0]["sub"]&.to_i)
   rescue JWT::VerificationError, JWT::DecodeError
     nil
+  end
+
+  def set_blob_id
+    return unless group
+
+    current_group_blob_ids = group.users.pluck(:blob_id)
+    h = {}
+
+    Group::NUMBER_OF_BLOBS.times do |i|
+      h[i] = current_group_blob_ids.count { |id| id == i }
+    end
+
+    min_count = h.values.min
+    blob_ids_with_min_count = h.select{ |k, v| v == min_count }.keys
+
+    self.blob_id = blob_ids_with_min_count.sample
   end
 end
