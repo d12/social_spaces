@@ -13,7 +13,7 @@ class DrawIt::EventHandler::SelectWord < EventHandler
     storage[:chosen_word] = storage[:words_to_choose][data["word_index"].to_i]
     storage[:words_to_choose] = nil
     storage[:status] = "drawing"
-    storage[:given_letters] = "_" * storage[:chosen_word].length
+    storage[:given_letters] = storage[:chosen_word].gsub(/[a-zA-Z]/, "_")
     storage[:round_expire_time] = DrawIt::ROUND_LENGTH.from_now.to_i
     storage[:letter_reveal_time] = DrawIt::TIME_BETWEEN_REVEAL_CHECKS.from_now.to_i
     storage[:ran_out_of_time] = false
