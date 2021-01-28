@@ -8,6 +8,8 @@ class DrawIt::EventHandler::Draw < EventHandler
   end
 
   def call(data)
+    sleep 1
+
     data["draw_events"].each do |draw_event|
       instance.add_draw_event(draw_event)
     end
