@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_01_26_200828) do
+ActiveRecord::Schema.define(version: 2021_01_28_195345) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -22,14 +22,6 @@ ActiveRecord::Schema.define(version: 2021_01_26_200828) do
     t.datetime "updated_at", precision: 6, null: false
     t.json "storage"
     t.index ["group_id"], name: "index_activity_instances_on_group_id"
-  end
-
-  create_table "draw_it_draw_event_batches", force: :cascade do |t|
-    t.integer "activity_instance_id"
-    t.json "draw_data"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["activity_instance_id"], name: "index_draw_it_draw_event_batches_on_activity_instance_id"
   end
 
   create_table "groups", force: :cascade do |t|
