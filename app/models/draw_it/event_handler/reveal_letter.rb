@@ -8,11 +8,15 @@ class DrawIt::EventHandler::RevealLetter < EventHandler
   end
 
   def call(data)
-    reveal_letter
+    current_factor_revealed = (storage[:given_letters].length - storage[:given_letters].count("_") * 1.0) / storage[:given_letters].length
+    current_factor_per_s = current_factor_revealed / (DrawIt::ROUND_LENGTH - instance.time_til_round_end)
+    target_factor_per_s = DrawIt::AMOUNT_OF_WORD_TO_REVEAL / DrawIt::ROUND_LENGTH
 
-    storage[:letter_reveal_time] = DrawIt::TIME_BETWEEN_REVEALS.from_now.to_i
-
-    send_gamestate_to_all(instance)
+    if(current_factor_per_s < target_factor_per_s)
+      reveal_letter
+      storage[:letter_reveal_time] = DrawIt::TIME_BETWEEN_REVEAL_CHECKS.from_now.to_i
+      send_gamestate_to_all(instance)
+    end
   end
 
   private

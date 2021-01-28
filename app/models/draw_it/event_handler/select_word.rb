@@ -15,7 +15,7 @@ class DrawIt::EventHandler::SelectWord < EventHandler
     storage[:status] = "drawing"
     storage[:given_letters] = "_" * storage[:chosen_word].length
     storage[:round_expire_time] = DrawIt::ROUND_LENGTH.from_now.to_i
-    storage[:letter_reveal_time] = DrawIt::TIME_BETWEEN_REVEALS.from_now.to_i
+    storage[:letter_reveal_time] = DrawIt::TIME_BETWEEN_REVEAL_CHECKS.from_now.to_i
     storage[:ran_out_of_time] = false
 
     storage[:users].each do |user|

@@ -8,7 +8,10 @@ class DrawIt < ActivityInstance
 
   WORDS = File.readlines("db/data/draw_it_words.txt", chomp: true).uniq
   ROUND_LENGTH = 60.seconds
-  TIME_BETWEEN_REVEALS = 10.seconds
+
+  # The maximum amount of word to reveal over the duration of the round.
+  AMOUNT_OF_WORD_TO_REVEAL = 0.5
+  TIME_BETWEEN_REVEAL_CHECKS = 5.seconds
 
   class Status
     DRAWING = :drawing
@@ -105,16 +108,16 @@ class DrawIt < ActivityInstance
     Redis.current.lrange(draw_events_redis_key, 0, -1).map{ |v| JSON.parse(v) }
   end
 
-  private
-
-  def draw_events_redis_key
-    "activity-draw-it-draw-events-#{id}"
-  end
-
   def time_til_round_end
     return unless storage[:round_expire_time]
 
     (Time.at(storage[:round_expire_time]) - Time.now).to_i
+  end
+
+  private
+
+  def draw_events_redis_key
+    "activity-draw-it-draw-events-#{id}"
   end
 
   def check_time_til_round_end
