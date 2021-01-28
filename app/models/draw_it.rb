@@ -7,7 +7,7 @@ class DrawIt < ActivityInstance
   register_event "guess", EventHandler::Guess
 
   WORDS = File.readlines("db/data/draw_it_words.txt", chomp: true).uniq
-  ROUND_LENGTH = 15.seconds
+  ROUND_LENGTH = 60.seconds
   TIME_BETWEEN_REVEALS = 10.seconds
 
   class Status
