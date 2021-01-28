@@ -10,7 +10,7 @@ Rails.application.routes.draw do
 
   get "/test", to: "react#test", as: "test"
 
-  post "/guest_signup", to: "users#create_guest", as: "create_guest"
+  post "/guest_signup", to: "sessions#create_guest", as: "create_guest"
 
   namespace :api do
     get "/groups/:key", to: "groups#show"
