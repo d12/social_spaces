@@ -16,6 +16,7 @@ class ReactController < ApplicationController
   end
 
   def test
+    sleep 3
     set_context
   end
 
