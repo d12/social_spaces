@@ -10,9 +10,6 @@ class DrawIt < ActivityInstance
   ROUND_LENGTH = 15.seconds
   TIME_BETWEEN_REVEALS = 10.seconds
 
-  # Note we're delete_all'ing here for perf. This skips callbacks, so be careful there.
-  has_many :draw_event_batches, class_name: "DrawIt::DrawEventBatch", foreign_key: "activity_instance_id", dependent: :delete_all
-
   class Status
     DRAWING = :drawing
   end
@@ -59,7 +56,7 @@ class DrawIt < ActivityInstance
 
   def user_data(user)
     data = {
-      drawEvents: draw_event_batches.order(:created_at).pluck(:draw_data).flatten(1)
+      drawEvents: draw_events
     }
 
     if(storage[:users][storage[:drawing_user_index]][:id] == user.id)
@@ -96,7 +93,23 @@ class DrawIt < ActivityInstance
     }
   end
 
+  def add_draw_event(event)
+    Redis.current.rpush(draw_events_redis_key, event.to_s)
+  end
+
+  def clear_draw_events
+    Redis.current.del(draw_events_redis_key)
+  end
+
+  def draw_events
+    Redis.current.lrange(draw_events_redis_key, 0, -1).map{ |v| JSON.parse(v) }
+  end
+
   private
+
+  def draw_events_redis_key
+    "activity-draw-it-draw-events-#{id}"
+  end
 
   def time_til_round_end
     return unless storage[:round_expire_time]

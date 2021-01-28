@@ -28,7 +28,7 @@ class DrawIt::EventHandler::SelectWord < EventHandler
     })
 
     # Clear the canvas before the next round
-    instance.draw_event_batches.delete_all
+    instance.clear_draw_events
     send_websocket_message(instance, { erase: true, authorId: data["user_id"] })
 
     send_websocket_message(user, { wordForDrawer: storage[:chosen_word] })

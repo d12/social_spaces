@@ -25,15 +25,7 @@ class DrawIt::EventHandler::UserJoined < EventHandler
       send_websocket_message(user, { wordForDrawer: storage[:chosen_word] })
     end
 
-    send_websocket_message(user, { drawEvents: draw_events })
-
     instance.save!
     send_gamestate_to_all(instance)
-  end
-
-  private
-
-  def draw_events
-    instance.draw_event_batches.order(:created_at).pluck(:draw_data).flatten(1)
   end
 end

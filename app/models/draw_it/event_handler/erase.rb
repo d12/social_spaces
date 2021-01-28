@@ -8,7 +8,7 @@ class DrawIt::EventHandler::Erase < EventHandler
   end
 
   def call(data)
-    instance.draw_event_batches.delete_all
+    instance.clear_draw_events
 
     send_websocket_message(instance, { erase: true, authorId: data["user_id"] })
   end
