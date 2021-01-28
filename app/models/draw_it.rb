@@ -7,7 +7,7 @@ class DrawIt < ActivityInstance
   register_event "guess", EventHandler::Guess
 
   WORDS = File.readlines("db/data/draw_it_words.txt", chomp: true).uniq
-  ROUND_LENGTH = 10.seconds
+  ROUND_LENGTH = 60.seconds
 
   # The maximum amount of word to reveal over the duration of the round.
   AMOUNT_OF_WORD_TO_REVEAL = 0.5
