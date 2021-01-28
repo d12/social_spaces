@@ -9,6 +9,7 @@ class User < ApplicationRecord
   encrypts :refresh_token
 
   before_save :set_blob_id, if: :will_save_change_to_group_id?
+  before_save :set_joined_group_at, if: :will_save_change_to_group_id?
 
   def self.from_omniauth(auth)
     return unless auth
@@ -160,5 +161,13 @@ class User < ApplicationRecord
     blob_ids_with_min_count = h.select{ |k, v| v == min_count }.keys
 
     self.blob_id = blob_ids_with_min_count.sample
+  end
+
+  def set_joined_group_at
+    if group
+      self.joined_group_at = Time.now
+    else
+      self.joined_group_at = nil
+    end
   end
 end

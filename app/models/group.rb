@@ -30,7 +30,7 @@ class Group < ApplicationRecord
   end
 
   def add_user(user)
-    user.update!(group_id: id, joined_group_at: Time.now)
+    user.update!(group_id: id)
 
     GroupChannel.broadcast_user_joined(self)
   end
