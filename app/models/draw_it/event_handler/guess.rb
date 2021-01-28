@@ -23,7 +23,7 @@ class DrawIt::EventHandler::Guess < EventHandler
         })
       elsif(storage[:status] == "drawing" && (data["message"].downcase == storage[:chosen_word].downcase))
         user[:has_guessed_current_word] = true
-        user[:score] += (11 - correct_players_count)
+        user[:score] += score_for_correct_guess
 
         send_websocket_message(instance, {
           chatMessage: { content: "#{data['user_name']} guessed the word.", type: "correct" },
@@ -49,5 +49,16 @@ class DrawIt::EventHandler::Guess < EventHandler
         chatMessage: { content: "Calm yo tits.", type: "ratelimit" }
       })
     end
+  end
+
+  private
+
+  def ratio_of_time_left_to_total_time
+    (instance.time_til_round_end * 1.0) / DrawIt::ROUND_LENGTH
+  end
+
+  # -10 / +10 stuff ensures you will always get at least 10 points for guessing correct
+  def score_for_correct_guess
+    ((DrawIt::MAXIMUM_POINTS_PER_GUESS - 10) * ratio_of_time_left_to_total_time).round(-1) + 10 # Round to 10s
   end
 end

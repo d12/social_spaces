@@ -41,7 +41,7 @@ module DrawIt::EventHandlerHelper
   end
 
   def give_points_to_drawer
-    storage[:users][storage[:drawing_user_index]][:score] += (correct_players_count * storage[:chosen_word].length)
+    storage[:users][storage[:drawing_user_index]][:score] += ((correct_players_count * storage[:chosen_word].length) * 5).round(-1)
   end
 
   def correct_players_count
