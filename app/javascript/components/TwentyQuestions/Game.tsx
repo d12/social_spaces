@@ -75,6 +75,6 @@ export default function Game({
       }
 
     default:
-      return <p>Loading...</p>;
+      return null;
   }
 }

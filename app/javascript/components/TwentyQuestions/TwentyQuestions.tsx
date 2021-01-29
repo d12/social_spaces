@@ -153,7 +153,7 @@ export default function TwentyQuestions({
   };
 
   if (gameState === undefined) {
-    return <>Loading...</>;
+    return null;
   } else {
     // return (
     //   <>

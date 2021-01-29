@@ -196,7 +196,7 @@ export default function DrawIt({
   }, []);
 
   if (!activitySubscription || !gameState || !gameState.users.find(u => u.id == user.id)) {
-    return <p>Loading...</p>;
+    return null;
   }
 
   return <Drawing user={user} group={group} subscription={activitySubscription} gameState={gameState} events={events} messages={messages} wordForDrawer={wordForDrawer} />

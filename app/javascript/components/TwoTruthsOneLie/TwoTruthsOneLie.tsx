@@ -78,7 +78,7 @@ export default function TwentyQuestions({
   }, []);
 
   if (!subscription || !gameState) {
-    return <p>Loading...</p>;
+    return null;
   }
 
   const currentUserData: ActivityUser = gameState.users.filter(function (u) { return u.id == user.id })[0];
