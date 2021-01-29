@@ -18,7 +18,7 @@ module DrawIt::EventHandlerHelper
       u[:has_guessed_current_word] = false
     end
 
-    storage[:words_to_choose] = DrawIt::WORDS_HASH[storage[:difficulty]].sample(3)
+    storage[:words_to_choose] = (DrawIt::WORDS_HASH[storage[:difficulty]] - storage[:chosen_words]).sample(3)
     storage[:given_letters] = storage[:chosen_word]
     storage[:ran_out_of_time] = ran_out_of_time
     storage[:status] = "choosing"
