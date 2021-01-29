@@ -6,7 +6,7 @@ class DrawIt < ActivityInstance
   register_event "select_word", EventHandler::SelectWord
   register_event "guess", EventHandler::Guess
 
-  WORDS = JSON.parse(File.read("db/data/draw_it_words.json"))["medium"]
+  WORDS_HASH = JSON.parse(File.read("db/data/draw_it_words.json"))
   ROUND_LENGTH = 60.seconds
 
   # The maximum amount of word to reveal over the duration of the round.
@@ -85,7 +85,7 @@ class DrawIt < ActivityInstance
 
     {
       status: "choosing",
-      words_to_choose: WORDS.sample(3),
+      words_to_choose: WORDS_HASH["medium"].sample(3), # TODO, once we have a config step, this should init to nil
       chosen_word: nil,
       drawing_user_index: 0,
       users: users_array,
@@ -95,6 +95,7 @@ class DrawIt < ActivityInstance
       letter_reveal_time: nil,
       ran_out_of_time: false,
       version: 0,
+      difficulty: "medium", # TODO, once we have a config step, this should init to nil
     }
   end
 
