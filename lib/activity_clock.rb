@@ -49,7 +49,7 @@ class ActivityClock
   end
 
   def check_for_inactive_users
-    User.where("disconnected_at < ?", 10.seconds.ago).each do |user|
+    User.where("disconnected_at < ?", User::INACTIVITY_TIMEOUT.ago).each do |user|
       unless group = user.group
         logger.info("User #{user.id} had no group. Unsetting disconnected_at time.")
         user.update(disconnected_at: nil)

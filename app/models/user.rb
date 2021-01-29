@@ -11,6 +11,10 @@ class User < ApplicationRecord
   before_save :set_blob_id, if: :will_save_change_to_group_id?
   before_save :set_joined_group_at, if: :will_save_change_to_group_id?
 
+  # This period of time after disconnecting from the websocket,
+  # the user will get kicked from the group
+  INACTIVITY_TIMEOUT = 20.seconds
+
   def self.from_omniauth(auth)
     return unless auth
 
