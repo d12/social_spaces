@@ -8,7 +8,7 @@ class DrawIt < ActivityInstance
   register_event "play_again", EventHandler::PlayAgain
 
   WORDS_HASH = JSON.parse(File.read("db/data/draw_it_words.json"))
-  ROUND_LENGTH = 5.seconds
+  ROUND_LENGTH = 60.seconds
 
   # The maximum amount of word to reveal over the duration of the round.
   AMOUNT_OF_WORD_TO_REVEAL = 0.5
