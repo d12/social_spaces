@@ -96,7 +96,7 @@ class DrawIt < ActivityInstance
       ran_out_of_time: false,
       version: 0,
       difficulty: "medium", # TODO, once we have a config step, this should init to nil
-      chosen_words: []
+      chosen_words: [],
     }
   end
 
