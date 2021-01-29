@@ -9,6 +9,8 @@ import { ScoreBoard, PlayerScore, Timer } from "../../../Shared";
 
 import { CSSTransition, SwitchTransition } from 'react-transition-group';
 
+import { API } from "../../../modules/API";
+
 import {
   Box,
   Grid,
@@ -17,6 +19,7 @@ import {
   Typography,
   TextField,
   Button,
+  Tooltip,
 } from "@material-ui/core";
 
 import useMediaQuery from '@material-ui/core/useMediaQuery';
@@ -179,6 +182,10 @@ const useStyles = makeStyles(
     canvasOverlayExitActive: {
       transition: `opacity ${canvasOverlayAnimationLength}ms ease-in-out`,
       opacity: 0,
+    }, finalScore: {
+      marginTop: "10px",
+    }, finalScoreHeader: {
+      marginBottom: "30px",
     }
   })
 );
@@ -300,6 +307,11 @@ export default function Drawing({ user, group, subscription, gameState, events, 
     "#9B51E0",
   ]
 
+  function endActivity() {
+    if (user.id == group.hostId)
+      API.endActivity(group.key);
+  }
+
   function sendMessageIfEnter(e: { keyCode: number; }) {
     if (e.keyCode === 13 && guess != "" && guess.length < 400) {
       subscription.send({
@@ -325,6 +337,8 @@ export default function Drawing({ user, group, subscription, gameState, events, 
   const eventsToSend = useRef<Array<Event>>([]);
 
   function createEraseEvent() {
+    if (gameState.status != "drawing") return;
+
     haveDrawn = true;
     const event: Event = { type: "erase" };
 
@@ -636,7 +650,7 @@ export default function Drawing({ user, group, subscription, gameState, events, 
 
   const outOfTimeText = gameState.ranOutOfTime ? "Out of time!" : "";
 
-  const revealText = gameState.status === "choosing" && gameState.givenLetters && <Grid
+  const revealText = (gameState.status === "choosing" || gameState.status == "game_over") && gameState.givenLetters && <Grid
     container
     className={classes.canvasTextContainer}
     direction="column"
@@ -652,6 +666,98 @@ export default function Drawing({ user, group, subscription, gameState, events, 
     exit: classes.canvasOverlayExit,
     exitActive: classes.canvasOverlayExitActive,
   };
+
+  function colorForPlace(place: number): string {
+    switch (place) {
+      case 1:
+        return "#FFD700";
+
+      case 2:
+        return "#B0B0B0";
+
+      case 3:
+        return "#CD7F32";
+
+      default:
+        return "#000000";
+    }
+  }
+
+  function playAgain() {
+    if (gameState.status != "game_over" || user.id !== group.hostId)
+      return;
+
+    subscription.send({
+      event: "play_again"
+    });
+  }
+
+  const gameOverMarkup = gameState.status === "game_over" && <Grid
+    container
+    className={classes.canvasTextContainer}
+    direction="column"
+    justify="center"
+    alignItems="center"
+  >
+    <Typography variant="h2" className={classes.finalScoreHeader}>
+      Game over!
+    </Typography>
+    <Box>
+      {[...gameState.users].sort((a, b) => (b.score - a.score)).map((u, index) => (
+        <Box key={u.id} className={classes.finalScore}>
+          <Typography variant="h3">
+            <span style={{ color: colorForPlace(index + 1) }}>#{index + 1}</span> - {u.name}
+          </Typography>
+        </Box>
+      ))}
+    </Box>
+    <Grid
+      container
+      direction="row"
+      justify="center"
+      alignItems="center"
+      style={{ marginTop: "50px" }}
+    >
+      <Tooltip
+        title={user.id == group.hostId ? "" :
+          <span style={{ fontSize: "14px" }}>
+            Only the host can restart the game.
+          </span>
+        }
+      >
+        <span>
+          <Button
+            style={{ margin: "10px" }}
+            variant="outlined"
+            color="secondary"
+            disabled={user.id !== group.hostId}
+            onClick={playAgain}
+          >
+            Play again
+          </Button>
+        </span>
+      </Tooltip>
+      <Tooltip
+        title={user.id == group.hostId ? "" :
+          <span style={{ fontSize: "14px" }}>
+            Only the host can end the activity for the group.
+          </span>
+        }
+      >
+        <span>
+          <Button
+            style={{ margin: "10px" }}
+            variant="outlined"
+            color="secondary"
+            disabled={user.id !== group.hostId}
+            onClick={endActivity}
+          >
+            End Activity
+          </Button>
+        </span>
+      </Tooltip>
+    </Grid>
+  </Grid>;
 
   function nextAnimStep() {
     if (animStep > 1)
@@ -681,17 +787,29 @@ export default function Drawing({ user, group, subscription, gameState, events, 
     if (gameState.status == "drawing" && previousGameState && previousGameState.status != "drawing") {
       erase(getCanvasContext());
       setGuess("");
+      setAnimStep(0);
     }
   });
 
-  const canvasOverlayElement = (selectAWordMarkupDrawer || selectAWordMarkupOther) && <SwitchTransition>
+  // On drawing -> game_over
+  useEffect(() => {
+    if (gameState.status == "game_over") {
+      if (animStep == 0) {
+        setAnimStep(1); // Show the word reveal first
+      } else {
+        setAnimStep(2);
+      }
+    }
+  }, [gameState]);
+
+  const canvasOverlayElement = (selectAWordMarkupDrawer || selectAWordMarkupOther || gameOverMarkup) && <SwitchTransition>
     <CSSTransition
       timeout={canvasOverlayAnimationLength}
       classNames={transitionStyles}
       key={animStep}
-      onEntered={() => setTimeout(nextAnimStep, 2000)}
+      onEntered={() => setTimeout(nextAnimStep, 1200)}
     >
-      {animStep === 0 ? <></> : (animStep === 1 ? revealText : (selectAWordMarkupDrawer || selectAWordMarkupOther))}
+      {animStep === 0 ? <></> : (animStep === 1 ? revealText : (selectAWordMarkupDrawer || selectAWordMarkupOther || gameOverMarkup))}
     </CSSTransition>
   </SwitchTransition>;
 
@@ -728,7 +846,7 @@ export default function Drawing({ user, group, subscription, gameState, events, 
               alignItems="center"
               className={classes.statusBarFlex}
             >
-              <Timer seconds={gameState.status == "choosing" ? 0 : gameState.timeTilRoundEnd} />
+              <Timer seconds={gameState.status == "drawing" ? gameState.timeTilRoundEnd : 0} />
               <Typography variant="h3" style={{ marginLeft: "25px" }}>Round {gameState.roundNumber} of 3</Typography>
               <Grid
                 container

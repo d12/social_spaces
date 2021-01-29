@@ -61,6 +61,7 @@ export interface DrawEvent {
 enum ActivityStatus {
   DRAWING = "drawing",
   CHOOSING = "choosing",
+  GAME_OVER = "game_over",
 }
 
 export interface Event {

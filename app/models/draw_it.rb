@@ -5,15 +5,18 @@ class DrawIt < ActivityInstance
   register_event "erase", EventHandler::Erase
   register_event "select_word", EventHandler::SelectWord
   register_event "guess", EventHandler::Guess
+  register_event "play_again", EventHandler::PlayAgain
 
   WORDS_HASH = JSON.parse(File.read("db/data/draw_it_words.json"))
-  ROUND_LENGTH = 60.seconds
+  ROUND_LENGTH = 5.seconds
 
   # The maximum amount of word to reveal over the duration of the round.
   AMOUNT_OF_WORD_TO_REVEAL = 0.5
-  TIME_BETWEEN_REVEAL_CHECKS = 5.seconds
+  TIME_BETWEEN_REVEAL_CHECKS = 8.seconds
 
   MAXIMUM_POINTS_PER_GUESS = 200
+
+  NUMBER_OF_ROUNDS = 3
 
   class Status
     DRAWING = :drawing

@@ -6,8 +6,13 @@ module DrawIt::EventHandlerHelper
     end
 
     give_points_to_drawer
+    storage[:given_letters] = storage[:chosen_word]
 
     next_player_index, next_round = get_next_player
+
+    if next_round && storage[:round_number] == DrawIt::NUMBER_OF_ROUNDS
+      return end_of_game
+    end
 
     storage[:drawing_user_index] = next_player_index
     if(next_round)
@@ -19,7 +24,6 @@ module DrawIt::EventHandlerHelper
     end
 
     storage[:words_to_choose] = (DrawIt::WORDS_HASH[storage[:difficulty]] - storage[:chosen_words]).sample(3)
-    storage[:given_letters] = storage[:chosen_word]
     storage[:ran_out_of_time] = ran_out_of_time
     storage[:status] = "choosing"
   end
@@ -38,6 +42,10 @@ module DrawIt::EventHandlerHelper
         return [index, next_round]
       end
     end
+  end
+
+  def end_of_game
+    storage[:status] = "game_over"
   end
 
   def give_points_to_drawer
