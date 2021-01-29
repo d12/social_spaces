@@ -289,6 +289,17 @@ export function AppFrame({
     <Toast message={noticeToast} severity={ToastSeverity.INFO} />
   );
 
+  const leaveGroupMarkup = group && group.activity && (
+    <Link
+      onClick={LeaveGroup}
+      underline="none"
+      color="textSecondary"
+      className={classes.topBarButton}
+    >
+      <Button color="inherit">Leave Group</Button>
+    </Link>
+  );
+
   const endActivityHostMarkup = group && group.activity && (user.id == group.hostId) && (
     <Link
       onClick={EndActivity}
@@ -334,6 +345,7 @@ export function AppFrame({
                 Social Spaces
               </Typography>
               {endActivityMarkup}
+              {leaveGroupMarkup}
               <Link
                 rel="nofollow"
                 data-method="delete"
