@@ -6,7 +6,7 @@ class DrawIt < ActivityInstance
   register_event "select_word", EventHandler::SelectWord
   register_event "guess", EventHandler::Guess
 
-  WORDS = File.readlines("db/data/draw_it_words.txt", chomp: true).uniq
+  WORDS = JSON.parse(File.read("db/data/draw_it_words.json"))["medium"]
   ROUND_LENGTH = 60.seconds
 
   # The maximum amount of word to reveal over the duration of the round.

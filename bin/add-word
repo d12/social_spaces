@@ -1,0 +1,22 @@
+#!/usr/bin/env ruby
+
+require 'json'
+
+difficulty_map = {
+    "e" => "easy",
+    "m" => "medium",
+    "h" => "hard",
+}
+
+word =  ARGV[0]
+difficulties = [ARGV[1], ARGV[2], ARGV[3]].compact
+
+
+json = JSON.parse(File.read("db/data/draw_it_words.json"))
+
+difficulties.each do |d|
+    json[difficulty_map[d]] << word
+    json[difficulty_map[d]] = json[difficulty_map[d]].uniq.sort
+end
+
+File.write("db/data/draw_it_words.json", JSON.pretty_generate(json, {:indent => "    "}))
