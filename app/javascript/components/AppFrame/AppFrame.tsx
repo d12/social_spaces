@@ -87,6 +87,7 @@ const useStyles = makeStyles((_theme) => ({
   container: {
     flexWrap: "nowrap",
     height: "100vh",
+    overflow: "hidden",
   },
   drawerFlexBox: {
     height: "100%",
