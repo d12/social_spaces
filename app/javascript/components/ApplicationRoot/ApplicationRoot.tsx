@@ -40,6 +40,7 @@ export interface Activity {
 }
 
 interface Props {
+  groupName?: string;
   groupKey?: string;
   user: User;
   group: Group;
@@ -64,7 +65,7 @@ export default function ApplicationRoot(props: Props) {
   }
 
   if (user === undefined || user === null) {
-    return <SplashPage groupKey={props.groupKey} />
+    return <SplashPage groupKey={props.groupKey} groupName={props.groupName} />
   }
 
   if (group === undefined || group === null || !group.users.find(u => u.id == user.id)) {

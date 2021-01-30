@@ -47,9 +47,14 @@ class ReactController < ApplicationController
     session[:join_group_after_auth] = nil
   end
 
+  def group_host_name
+    Group.find_by(key: group_key)&.host&.name
+  end
+
   def set_context
     @context = {
       group_key: group_key, # Used when unauthenticated, to redirect to group after login
+      group_name: group_host_name,
       user: current_user&.to_h(authenticated: true),
       group: current_group&.to_h,
       all_activities: ACTIVITIES.map(&:to_h),

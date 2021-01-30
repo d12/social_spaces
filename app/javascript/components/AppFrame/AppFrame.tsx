@@ -39,10 +39,10 @@ declare var JitsiMeetExternalAPI: any;
 
 export interface Props {
   children?: React.ReactNode;
-  user: User;
+  user?: User;
   showGroupTab?: boolean;
   group?: Group;
-  setGroupCallback(group: Group): void;
+  setGroupCallback?(group: Group): void;
   alertToast?: string;
   noticeToast?: string;
   toasts?: Array<string>;
@@ -136,6 +136,9 @@ export function AppFrame({
   }
 
   useEffect(() => {
+    if (!user)
+      return;
+
     const consumer = createAuthedConsumer(user.wsToken);
 
     if (group) {
@@ -210,7 +213,7 @@ export function AppFrame({
 
       history.replaceState(null, "", `/groups/${group.key}`);
     }
-  }, []);
+  }, [user]);
 
   const classes = useStyles();
 
@@ -326,6 +329,19 @@ export function AppFrame({
     </Tooltip>
   );
 
+  const logoutButtonMarkup = user && (
+    <Link
+      rel="nofollow"
+      data-method="delete"
+      href="/logout"
+      underline="none"
+      color="textSecondary"
+      className={classes.topBarButton}
+    >
+      <Button color="inherit">Logout</Button>
+    </Link>
+  );
+
   const endActivityMarkup = endActivityHostMarkup || endActivityNotHostMarkup;
 
   return (
@@ -346,16 +362,7 @@ export function AppFrame({
               </Typography>
               {endActivityMarkup}
               {leaveGroupMarkup}
-              <Link
-                rel="nofollow"
-                data-method="delete"
-                href="/logout"
-                underline="none"
-                color="textSecondary"
-                className={classes.topBarButton}
-              >
-                <Button color="inherit">Logout</Button>
-              </Link>
+              {logoutButtonMarkup}
             </Toolbar>
           </AppBar>
           <Container className={classes.activityContainer}>{children}</Container>
