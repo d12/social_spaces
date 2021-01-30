@@ -43,6 +43,8 @@ const canvasHeight = 600;
 
 const canvasOverlayAnimationLength = 1000;
 
+const sendEventsIntervalTime = 150;
+
 const useStyles = makeStyles(
   () => ({
     statusCard: {
@@ -466,14 +468,23 @@ export default function Drawing({ user, group, subscription, gameState, events, 
 
   // Draw events
   function processDrawEvents() {
-    const EVENTS_TO_PROCESS = 3;
+    const EVENTS_TO_PROCESS = 2;
 
     let amountToProcess;
-    if (events.current.length - processIndexPtr.current > 50) {
-      // Process all events if we're way behind
-      amountToProcess = events.current.length - processIndexPtr.current;
+    const numberOfEventsInTheQueue = events.current.length - processIndexPtr.current;
+
+    if (numberOfEventsInTheQueue == 0) {
+      amountToProcess = 0;
+    } else if (numberOfEventsInTheQueue < 15) {
+      amountToProcess = 1;
+    } else if (numberOfEventsInTheQueue < 30) {
+      amountToProcess = 2;
+    } else if (numberOfEventsInTheQueue < 45) {
+      amountToProcess = 3;
+    } else if (numberOfEventsInTheQueue < 60) {
+      amountToProcess = 6;
     } else {
-      amountToProcess = Math.min(events.current.length - processIndexPtr.current, EVENTS_TO_PROCESS);
+      amountToProcess = numberOfEventsInTheQueue;
     }
 
     events.current.slice(processIndexPtr.current, processIndexPtr.current + amountToProcess).forEach((e: Event) => {
@@ -545,7 +556,7 @@ export default function Drawing({ user, group, subscription, gameState, events, 
       sendIndexPtr.current = len;
     }
 
-    const sendEventsInterval = window.setInterval(sendEvents, 50);
+    const sendEventsInterval = window.setInterval(sendEvents, sendEventsIntervalTime);
 
     return () => {
       clearInterval(sendEventsInterval);
