@@ -39,10 +39,12 @@ class DrawIt < ActivityInstance
   end
 
   def tick
-    check_time_til_round_end
-    check_time_til_letter_reveal
+    with_lock do
+      check_time_til_round_end
+      check_time_til_letter_reveal
 
-    save
+      save
+    end
   end
 
   def game_state

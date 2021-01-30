@@ -84,7 +84,9 @@ class ActivityInstance < ApplicationRecord
       raise "#{self.class.name} does not implement a handler for event #{event}"
     end
 
-    handler.new(instance: self).call(data)
+    with_lock do
+      handler.new(instance: self).call(data)
+    end
   end
 
   def disconnect_user(user)
